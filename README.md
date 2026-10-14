@@ -1,12 +1,12 @@
-# Design proposal: a lingua franca for epi modeling
+# A lingua franca for epi modeling
 
-_**Version:** 0.1 | **Date:** 2026.08.25 | **Status:** Under development, not yet human-reviewed_
+_**Version:** 1.0 | **Date:** 2026.10.13 | **Status:** Implementation in progress
 
 ## Introduction
 
-This project contains ideas for implementing a _lingua franca_ for epi modeling. Principles of the lingua franca include:
+This project describes the design of a _lingua franca_ for epi modeling. Principles of the lingua franca include:
 
-- It should capture the best aspects of existing epi models (in terms of flexibility, simplicity, and elegance), and improve upon them when possible. In other words, **a model should never be easier to write without the lingua franca than with it**.
+- It should capture the best aspects of all existing epi models (in terms of flexibility, simplicity, and elegance), and improve upon them when possible. In other words, **a model should never be easier to write without the lingua franca than with it**. A concrete definition of this is that compared to existing epi models, the _lingua franca_ should require no more lines of code that the original, and be as fast or faster.
 - Be AI-native, serving as a rigorous-yet-simple and deterministic representation of modeling concepts (as expressed as prose or using other modeling frameworks) into code.
 - Provide a unified representation across different modeling paradigms, including at least:
     - Compartmental/ODE models
@@ -22,14 +22,23 @@ Why do we need a lingua franca? Why can't LLMs just write disease models directl
 - AI is most efficient and accurate as a thin wrapper for code that already provides most desired functionality; imagine an LLM trying to correctly do a dataframe merge without access to R or `pandas`.
 - A lingua franca serves as a rigorous source of truth for comparing other models to, and provides a robust endpoint (MCP) to develop AI skills, guardrails, and evals against. If a compartmental model written in R with EpiModel gives a different result than an agent-based model written in Python in Vivarium, currently it's extremely difficult to understand why. A lingua franca allows the differences between models to be clarified and explored.
 
+While AI is not always very creative, we can be certain that the _lingua franca_ can do **at least as well** as existing models. AI is the perfect tool for this: it can easily review all existing models, see who did it best, and at minimum copy that implementation (and improve upon it as possible).
+
+We used Starsim as the base for the _lingua franca_ because agent-based modeling is the most complex paradigm; all other models can be expressed as agent-based models, and of course real diseases act on agents (humans). The _lingua franca_ will be released as Starsim v4.
+
 ## Project structure
 
-- `approaches` contains a review of the current approaches used in the epi modeling landscape, based on https://starsim.org/disease_modeling_landscape. *[first pass done and reviewed by humans]*
-- `best-practices` distills the modeling landscape into best practices for each type of modeling. *[second pass done after human review]*
-- `design` contains design specifications for the language, based on the best practices described. *[second pass done after human review]*
-- `examples` contains examples of models written in other frameworks to be expressed by the lingua franca. *[not done]*
-- `vignettes` contains translations of the model examples into the lingua franca. *[not done]*
-- `webapp` is a tool for viewing `examples` models side by side with their `vignettes` translations, with diff-style markup. *[not done]*
+The _lingua franca_ was built up in stages:
+
+| | Section | What it is |
+|---|---|---|
+| 1 | [Approaches](approaches/index.qmd) | A review of the current approaches used in the epi modeling landscape, based on https://starsim.org/disease_modeling_landscape |
+| 2 | [Best practices](best-practices/index.qmd) | A distillation of the modleing landscape into best practices for each aspect of building disease models |
+| 3 | [Design](design/index.qmd) | The design of the language, written as an extension of Starsim |
+| 4 | [Examples](examples/index.qmd) | Other frameworks' own example models, and their translations into Starsim v4 |
+| 5 | [Compare](webapp/index.qmd) | A tool for comparing example models between the original source and the _lingua franca_ |
+
+The [status page](admin/implementation.md) tracks how much has been implemented so far.
 
 ## AI disclaimer
 
