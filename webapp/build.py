@@ -161,16 +161,15 @@ def model_page(model):
     return '\n'.join(out)
 
 
-def first_number(text):
-    """ The first number in a cell, in seconds if it is a time: "33 ms, or 0.5 ms for a repeated run" gives 0.033 """
-    match = re.search(r'(\d[\d,]*(?:\.\d+)?)(?: *(ms|s)\b)?', text)
-    value = float(match.group(1).replace(',', ''))
-    return value/1000 if match.group(2) == 'ms' else value
+def numbers(text):
+    """ The numbers in a cell, in seconds if they are times: "33 ms, or 0.5 ms for a repeated run" gives [0.033, 0.0005] """
+    matches = re.findall(r'(\d[\d,]*(?:\.\d+)?)(?: *(ms|s)\b)?', text)
+    return [float(value.replace(',', ''))/(1000 if unit == 'ms' else 1) for value, unit in matches]
 
 
 def mark(original, starsim):
-    """ A Starsim cell, marked for the stylesheet as meeting its target (no more than the original) or not """
-    target = 'pass' if first_number(starsim) <= first_number(original) else 'fail'
+    """ A Starsim cell, marked for the stylesheet as meeting its target (no more than the original) or not; it uses the original's first number and Starsim's last, which is the repeated run where there is one """
+    target = 'pass' if numbers(starsim)[-1] <= numbers(original)[0] else 'fail'
     return f'[{starsim}]{{.{target}}}'
 
 
