@@ -12,6 +12,8 @@ To see what either one writes:
 """
 import os
 import re
+import csv
+import html
 import sciris as sc
 
 root = sc.thispath(__file__).parent
@@ -34,8 +36,23 @@ def code_files(folder, suffix=None, exclude=()):
     return sorted(paths, key=lambda path: (len(path.parts), str(path)))
 
 
+def sheet(path):
+    """ A CSV file as a table, laid out as it is in the file: no row is taken to be the header, since a sheet may hold several tables """
+    with open(path, newline='') as f:
+        rows = list(csv.reader(f))
+    width = max(len(row) for row in rows)
+    out = ['```{=html}', '<div class="sheet"><table>']
+    for row in rows:
+        cells = [html.escape(cell.strip()) for cell in row] + ['']*(width - len(row))
+        out += ['<tr>' + ''.join(f'<td>{cell}</td>' for cell in cells) + '</tr>']
+    out += ['</table></div>', '```']
+    return '\n'.join(out)
+
+
 def code_block(path):
-    """ A file as a fenced code block (with tildes, since the file may contain backticks) """
+    """ A file as a fenced code block (with tildes, since the file may contain backticks), or as a table if it is a CSV file """
+    if path.suffix == '.csv':
+        return sheet(path)
     lang = languages.get(path.suffix, 'default')
     return f'~~~~~{{.{lang}}}\n{read(path)}\n~~~~~'
 

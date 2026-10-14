@@ -8,7 +8,7 @@
     const id = decodeURIComponent(location.hash.slice(1));
     const chosen = models.find(model => model.id === id) || models[0];
     models.forEach(model => { model.hidden = model !== chosen; });
-    links.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + chosen.id));
+    links.forEach(link => link.classList.toggle('chosen', decodeURIComponent(link.hash) === '#' + chosen.id)); // Not the href attribute, which Quarto rewrites
   }
 
   window.addEventListener('hashchange', show);

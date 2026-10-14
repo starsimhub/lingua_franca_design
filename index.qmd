@@ -24,7 +24,7 @@ Each step builds on the one before. Every section starts with a summary, with th
 | 1 | [Approaches](approaches/index.qmd) | A review of how existing frameworks represent models |
 | 2 | [Best practices](best-practices/index.qmd) | A position on how each modeling concept should be expressed, drawn from the review |
 | 3 | [Design](design/index.qmd) | The specification of the language, written against Starsim (`import starsim as ss`) |
-| 4 | [Models](examples/index.qmd) | Other frameworks' own example models, and their translations into Starsim |
+| 4 | [Examples](examples/index.qmd) | Other frameworks' own example models, and their translations into Starsim |
 | 5 | [Compare](webapp/index.qmd) | Each original next to its translation, side by side |
 
 The [status page](admin/implementation.md) tracks how much has been implemented so far.

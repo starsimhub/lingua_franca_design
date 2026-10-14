@@ -15,11 +15,28 @@
   color: var(--bs-body-color);
 }
 
-.model-picker a:hover,
-.model-picker a.active {
-  border-color: var(--bs-primary);
-  background: var(--bs-primary);
+.model-picker a:hover {
+  border-color: #2780e3;
+}
+
+.model-picker a.chosen {
+  border-color: #2780e3;
+  background: #2780e3;
   color: #fff;
+  font-weight: 600;
+}
+
+/* A CSV file, shown as the sheet it is */
+.sheet {
+  overflow-x: auto;
+  font-size: 0.8em;
+}
+
+.sheet td {
+  height: 1.8em;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--bs-border-color);
+  white-space: nowrap;
 }
 
 .compare {

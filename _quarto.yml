@@ -59,7 +59,7 @@ website:
       - href: design/index.qmd
         text: Design
       - href: examples/index.qmd
-        text: Models
+        text: Examples
       - href: webapp/index.qmd
         text: Compare
       - href: admin/implementation.md
@@ -136,14 +136,33 @@ website:
           text: "**Summary**"
         - href: design/README.md
           text: Reading guide
-        - "design/[0-9]*.md"
+        - design/00-overview.md
+        - design/01-objects.md
+        - design/02-types.md
+        - design/03-states-and-transitions.md
+        - design/04-parameters.md
+        - design/05-dimensions.md
+        - design/06-routes.md
+        - design/07-effects.md
+        - design/08-interventions.md
+        - design/09-results.md
+        - design/10-execution.md
+        - design/11-random.md
+        - design/12-backends.md
+        - design/13-inference.md
+        - design/14-model-spec.md
+        - design/15-errors.md
+        - design/16-interop.md
+        - design/17-vocabulary.md
+        - design/18-conformance.md
+        - design/19-open-questions.md
 
     - id: models
-      title: Models
+      title: Examples
       contents:
         - href: examples/index.qmd
           text: "**Summary**"
-        - section: Examples (originals)
+        - section: Originals
           contents:
             - href: examples/README.md
               text: About the examples
@@ -185,6 +204,8 @@ format:
     toc-depth: 3
     code-copy: true
     code-overflow: scroll
+    grid:
+      body-width: 1100px
     highlight-style: github
     filters:
       - _filters/links.lua

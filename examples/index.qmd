@@ -1,5 +1,5 @@
 ---
-title: "Models"
+title: "Examples"
 ---
 
 The design is tested on models that other people wrote. [Examples](README.md) are models from other frameworks, kept as their authors wrote them; [vignettes](../vignettes/README.md) are the same models written in Starsim.
