@@ -7,7 +7,7 @@ The translation of [examples/epydemix/sir_kenya](../../../examples/epydemix/sir_
 | Measure | Original | Starsim | |
 |---|---|---|---|
 | Lines of model code | 7 | 10 | Not counting the lines that load the data, in either |
-| One stochastic run | 0.006 s | 0.055 s | In process, without imports or loading the data |
+| One stochastic run | 0.006 s | 0.035 s, or 0.0008 s for a repeated run | In process, without imports or loading the data. 100 runs take 0.56 s in the original and 0.07 s as `sim.run(n_runs=100)` |
 | Results | | | The mean of 100 runs: peaks within 0.3%, a day apart at most; final size the same (99.63%) |
 
 Measured on 13 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine.

@@ -7,7 +7,7 @@ The translation of [examples/flepimop/seir_2pop](../../../examples/flepimop/seir
 | Measure | Original | Starsim | |
 |---|---|---|---|
 | Lines of model code | 42, plus 10 lines of CSV | 15 | One Starsim line is over 100 characters, so counts twice |
-| One run | 8.4 s | 0.11 s | The original is timed as a whole command, about 7 s of which is compiling, on every run |
+| One run | 8.4 s | 0.040 s, or 0.0008 s for a repeated run | The original is timed as a whole command, about 7 s of which is compiling, on every run |
 | Results | | | Every compartment in both provinces within 0.05 people |
 
 Measured on 13 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine.

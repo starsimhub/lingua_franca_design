@@ -7,7 +7,7 @@ The translation of [examples/epimodel/sis-network](../../../examples/epimodel/si
 | Measure | Original | Starsim | |
 |---|---|---|---|
 | Lines of model code | 13 | 8 | |
-| One run | 3.9 s | 0.63 s | The original also takes 0.66 s to estimate the network first |
+| One run | 3.9 s | 0.38 s | The original also takes 0.66 s to estimate the network first |
 | Results | | | **Do not agree.** About 193 of 500 are infected at equilibrium, against 227; and the epidemic gets there sooner (181 infected at step 50, against 113) |
 
 Measured on 13 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine.

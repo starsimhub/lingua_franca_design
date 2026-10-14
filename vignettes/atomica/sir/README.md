@@ -7,7 +7,7 @@ The translation of [examples/atomica/sir](../../../examples/atomica/sir). The mo
 | Measure | Original | Starsim | |
 |---|---|---|---|
 | Lines of model code | 62 | 17 | The original is counted as rows of its two spreadsheets, plus three lines of Python |
-| One run | 0.0024 s | 0.026 s | The original does not count reading the spreadsheets (about 0.1 s) |
+| One run | 0.0024 s | 0.033 s, or 0.0005 s for a repeated run | The original does not count reading the spreadsheets (about 0.1 s); nearly all of the 0.033 s is building the sim |
 | Results | | | Every compartment identical, to rounding error |
 
 Measured on 13 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine.

@@ -7,7 +7,7 @@ The translation of [examples/memilio/secir](../../../examples/memilio/secir). Th
 | Measure | Original | Starsim | |
 |---|---|---|---|
 | Lines of model code | 44 | 14 | |
-| One run | 0.63 s | 0.19 s | The original is timed as a whole command; its `simulate()` call alone takes 0.08 ms |
+| One run | 0.63 s | 0.06 s, or 0.001 s for a repeated run | The original is timed as a whole command; its `simulate()` call alone takes 0.08 ms. |
 | Results | | | Within 67 people of 83,000 at every time, which is the error of the reference itself (it is interpolated between steps of about two days); deaths within 0.5 |
 
 Measured on 13 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine.

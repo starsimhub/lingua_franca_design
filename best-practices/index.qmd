@@ -1,0 +1,44 @@
+---
+title: "Best practices"
+---
+
+This section takes a position on how each modeling concept should be expressed. It sits second in the project's chain: [approaches](../approaches/README.md) reviews what existing frameworks do, best practices argues for what they *should* do, [design](../design/00-overview.md) turns those positions into specifications, and `examples` and `vignettes` test them against models from other frameworks. Every recommendation is checked against the project's north star: **a model should never be easier to write without the lingua franca than with it.** Concretely, each main framework's own examples should be writable here in no more lines of model code, and run in no more time, than the original. Proposed code is written as Starsim (`import starsim as ss`).
+
+## The positions in brief
+
+- **Declare transitions as data, in one vocabulary at several lengths.** Arrow strings (`ss.transmission('S -> I', beta=0.05)`), operators (`S >> I @ beta * I`), and `ss.Transition(...)` all build the same object, so the library can diagram, stratify, and run the model under different solvers. See [model-structure](model-structure.md).
+- **Guess the default, and print it.** Where the right answer is obvious nearly every time (exponential dwell times, homogeneous mixing, the solver), the library takes it and marks it in `describe()`; errors are for cases where a wrong guess would be silently harmful. See [principles](principles.md).
+- **Plain Python is always available and is not second class.** Every slot that takes a number also takes a function, and any module can have a `step()` method; the library tries it and says plainly where it cannot run. See [principles](principles.md).
+- **The disease says how infectious the pathogen is; the networks say how contact happens.** The user never writes `/N`: with no network, mixing is homogeneous and `beta` is the classical transmission rate; with one, `beta` is per contact. See [population-and-mixing](population-and-mixing.md).
+- **One model text, with `solver=` choosing how it runs.** `solver='auto'` runs a purely compartmental model as an exact ODE and anything with individual-level structure as agents; an explicitly requested solver that does not fit uses the standard approximation and says so, stopping only when none exists. See [paradigm-conversion](paradigm-conversion.md) and [compartmental](compartmental.md).
+- **Stratification is an operator applied to a finished model.** Age, space, risk, strain, and vaccination status are all dimensions added with `stratify(...)`, and a metapopulation is a model stratified by place with optional mobility. See [stratification](stratification.md) and [metapopulation](metapopulation.md).
+- **Scale another module's quantity with `ss.modify`, and keep Starsim's ordered loop.** A modifier never overwrites the base value and modifiers combine multiplicatively by default; anything more complex is ordinary code in `step()`. See [composition-and-effects](composition-and-effects.md).
+- **An intervention is what plus delivery.** Delivery is a few keywords (`eligible=`, `coverage=`, `capacity=`) or one function, with eligibility written against the model's real attributes; many interventions are just an `ss.transfer` or an `ss.modify`. See [interventions](interventions.md).
+- **Results are declared with the model, and fitting needs no likelihood.** Every state gets a count and every named transition a flow, data attaches to results by column name, and `sim.calibrate()` fits every parameter that has bounds to every result that has data. See [results-and-observation](results-and-observation.md) and [calibration](calibration.md).
+- **Keep what Starsim already gets right.** Its time types, per-distribution random number streams, common random numbers, agent architecture, and single module abstraction stay. See [time-and-units](time-and-units.md), [stochasticity-and-reproducibility](stochasticity-and-reproducibility.md), and [agent-based](agent-based.md).
+
+## The documents
+
+Each document gives a recommendation, the evidence from existing frameworks, the proposal next to the original framework's code, trade-offs, what was rejected, and open questions; several details are marked there as unsettled. The [README](README.md) is the full index.
+
+| Document | Position |
+|---|---|
+| **The principles** | |
+| [principles](principles.md) | The user is an epidemiologist, not a programmer: the model text reads like the algorithm in the modeler's head, defaults are guessed and printed, and vocabulary size is a design constraint. |
+| **Cross-cutting concerns** | |
+| [model-structure](model-structure.md) | The central document: a disease is a labeled graph of states and transitions, declared as data wherever possible and as plain Python wherever not. |
+| [time-and-units](time-and-units.md) | Keep Starsim's time types and names; accept bare numbers, which take the sim's unit (or count in timesteps when nothing has a unit); print the conversions and dimension-check rate expressions. |
+| [parameters-and-distributions](parameters-and-distributions.md) | Declare parameters and refuse unknown names; every slot accepts anything from a number to a function; values live inline by default. |
+| [stratification](stratification.md) | One operator covers every dimension, supplying multiplicative adjustments that the base model never mentions. |
+| [population-and-mixing](population-and-mixing.md) | Factor transmission into infectiousness and contact; homogeneous mixing is the default; a bare state in a rate means contact with people in it, and `I.n` means the count. |
+| [composition-and-effects](composition-and-effects.md) | `ss.modify` for the one-line case, `step()` for everything else; modified quantities have a base and an effective value; Starsim's ordered loop stays. |
+| [interventions](interventions.md) | An intervention is what plus delivery; coverage and capacity are different things; interventions carry a cost; scenarios live in the model file. |
+| [results-and-observation](results-and-observation.md) | One results concept: automatic counts and flows, ratios as arithmetic on states, reported quantities with `ss.outcome`; a sim is one trajectory and a MultiSim is many. |
+| [stochasticity-and-reproducibility](stochasticity-and-reproducibility.md) | Keep per-distribution streams and common random numbers, report where that guarantee does not hold, give each run an identity with `sim.hash()`, and check convergence. |
+| [calibration](calibration.md) | Nothing extra is declared: normalized absolute error by default, a likelihood optional, and the fitting method chosen from the model and printed. |
+| **By paradigm** | |
+| [compartmental](compartmental.md) | A purely compartmental model runs as an exact ODE by default, not as homogeneous agents; non-exponential dwell times become generated Erlang stages; `equations()` prints the system. |
+| [stochastic-compartmental](stochastic-compartmental.md) | Stochasticity is a choice of named solver (Gillespie, tau-leaping, chain-binomial, SDE), not a property of the model; the approximation is named, and extinction is reported. |
+| [metapopulation](metapopulation.md) | Space is a stratification dimension, with or without movement; mobility is given by a named model or by real movement data; commuting is distinguished from migration. |
+| [agent-based](agent-based.md) | Keep Starsim's agent architecture and ordered loop; the disease declaration is the same as under every other solver; states that are not people hold counts alongside the agents. |
+| [paradigm-conversion](paradigm-conversion.md) | `solver='auto'` never approximates the mixing or drops individual-level structure; `solvers()` shows what can run where; agreement between solvers is tested on simple models and not promised for complex ones. |
