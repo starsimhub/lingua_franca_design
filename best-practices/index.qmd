@@ -17,28 +17,4 @@ This section takes a position on how each modeling concept should be expressed. 
 - **Results are declared with the model, and fitting needs no likelihood.** Every state gets a count and every named transition a flow, data attaches to results by column name, and `sim.calibrate()` fits every parameter that has bounds to every result that has data. See [results-and-observation](results-and-observation.md) and [calibration](calibration.md).
 - **Keep what Starsim already gets right.** Its time types, per-distribution random number streams, common random numbers, agent architecture, and single module abstraction stay. See [time-and-units](time-and-units.md), [stochasticity-and-reproducibility](stochasticity-and-reproducibility.md), and [agent-based](agent-based.md).
 
-## The documents
-
-Each document gives a recommendation, the evidence from existing frameworks, the proposal next to the original framework's code, trade-offs, what was rejected, and open questions; several details are marked there as unsettled. The [README](README.md) is the full index.
-
-| Document | Position |
-|---|---|
-| **The principles** | |
-| [principles](principles.md) | The user is an epidemiologist, not a programmer: the model text reads like the algorithm in the modeler's head, defaults are guessed and printed, and vocabulary size is a design constraint. |
-| **Cross-cutting concerns** | |
-| [model-structure](model-structure.md) | The central document: a disease is a labeled graph of states and transitions, declared as data wherever possible and as plain Python wherever not. |
-| [time-and-units](time-and-units.md) | Keep Starsim's time types and names; accept bare numbers, which take the sim's unit (or count in timesteps when nothing has a unit); print the conversions and dimension-check rate expressions. |
-| [parameters-and-distributions](parameters-and-distributions.md) | Declare parameters and refuse unknown names; every slot accepts anything from a number to a function; values live inline by default. |
-| [stratification](stratification.md) | One operator covers every dimension, supplying multiplicative adjustments that the base model never mentions. |
-| [population-and-mixing](population-and-mixing.md) | Factor transmission into infectiousness and contact; homogeneous mixing is the default; a bare state in a rate means contact with people in it, and `I.n` means the count. |
-| [composition-and-effects](composition-and-effects.md) | `ss.modify` for the one-line case, `step()` for everything else; modified quantities have a base and an effective value; Starsim's ordered loop stays. |
-| [interventions](interventions.md) | An intervention is what plus delivery; coverage and capacity are different things; interventions carry a cost; scenarios live in the model file. |
-| [results-and-observation](results-and-observation.md) | One results concept: automatic counts and flows, ratios as arithmetic on states, reported quantities with `ss.outcome`; a sim is one trajectory and a MultiSim is many. |
-| [stochasticity-and-reproducibility](stochasticity-and-reproducibility.md) | Keep per-distribution streams and common random numbers, report where that guarantee does not hold, give each run an identity with `sim.hash()`, and check convergence. |
-| [calibration](calibration.md) | Nothing extra is declared: normalized absolute error by default, a likelihood optional, and the fitting method chosen from the model and printed. |
-| **By paradigm** | |
-| [compartmental](compartmental.md) | A purely compartmental model runs as an exact ODE by default, not as homogeneous agents; non-exponential dwell times become generated Erlang stages; `equations()` prints the system. |
-| [stochastic-compartmental](stochastic-compartmental.md) | Stochasticity is a choice of named solver (Gillespie, tau-leaping, chain-binomial, SDE), not a property of the model; the approximation is named, and extinction is reported. |
-| [metapopulation](metapopulation.md) | Space is a stratification dimension, with or without movement; mobility is given by a named model or by real movement data; commuting is distinguished from migration. |
-| [agent-based](agent-based.md) | Keep Starsim's agent architecture and ordered loop; the disease declaration is the same as under every other solver; states that are not people hold counts alongside the agents. |
-| [paradigm-conversion](paradigm-conversion.md) | `solver='auto'` never approximates the mixing or drops individual-level structure; `solvers()` shows what can run where; agreement between solvers is tested on simple models and not promised for complex ones. |
+The [reading guide](README.md) says how each document is laid out and lists them all.

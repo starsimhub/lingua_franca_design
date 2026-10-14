@@ -6,44 +6,10 @@ This section reviews 22 existing epi modeling frameworks, one document each on a
 
 ## Key takeaways
 
-The [full comparison](README.md) presents these as observations for `best-practices` to argue with, not conclusions.
+- **Rigorous structure and expressive interventions have not appeared together.** The frameworks with the best model specifications ([camdl](camdl.md), [odin](odin.md), [summer2](summer2.md)) have almost no intervention vocabulary, and the best intervention vocabularies ([EMOD](emod.md), [EpiHiper](epihiper.md), [Starsim](starsim.md), [Atomica](atomica.md)) sit on weak or absent structural specification.
+- **Transitions should be named data.** Where they are code, a model cannot be diagrammed, checked, or converted. Several frameworks independently separate spontaneous transitions from contact-mediated ones.
+- **One model under several paradigms has been shown, but only in part.** [camdl](camdl.md), [epipack](epipack.md), and [EMULSION](emulsion.md) each run one model text more than one way. Writing transmission so that mass-action, contact-matrix, and edge-based forms are one declaration is called the hardest unsolved problem.
+- **Typed rates, probabilities, and durations keep being reinvented**, and frameworks without them show the errors that untyped time allows.
+- **A data format is a poor thing to write a model in.** YAML and JSON models have good declarative semantics and are hard to write and read.
 
-- **Structural rigor and intervention expressiveness have not appeared together.** The best model specifications ([camdl](camdl.md), [odin](odin.md), [summer2](summer2.md), [epipack](epipack.md)) have essentially no intervention vocabulary; the best intervention vocabularies ([EMOD](emod.md), [EpiHiper](epihiper.md), [Starsim](starsim.md), [Atomica](atomica.md)) sit on weak or absent structural specification.
-- **Typed rates, probabilities, and durations keep being reinvented.** Starsim, camdl, Atomica, and [EMULSION](emulsion.md) each distinguish them in a different medium; [EpiModel](epimodel.md) and odin show the errors that untyped time allows.
-- **Transitions should be named data, and there are two kinds.** Where transitions are code (Starsim, EpiModel), a model cannot be diagrammed, checked, or converted. [EoN](eon.md), epipack, and EpiHiper independently separate spontaneous transitions from contact-mediated ones.
-- **One specification under several paradigms has been demonstrated, but only partly.** camdl runs one text on three compartmental backends, epipack drives ODE and stochastic runs from one process list, and EMULSION switches between compartmental and individual-based with one keyword. Writing transmission so that mass-action, contact-matrix, and edge-based forms are one declaration is called the hardest unsolved problem, and EoN shows that network-to-compartmental conversion is a choice of closure.
-- **Dwell-time distribution is an axis most frameworks silently fix as exponential.** [MEmilio](memilio.md) needs separate model families to span it; EpiHiper declares a distribution per transition.
-- **A data format is a poor thing to write a model in.** EMULSION and [flepiMoP](flepimop.md) (YAML) and EMOD and EpiHiper (JSON) have good declarative semantics and hostile ergonomics. The reviews conclude that a readable grammar should sit on top of a canonical data serialization.
-- **Interventions need declared eligibility, combination rules, and ordering.** EMOD and EpiHiper express who is targeted as data. [Vivarium](vivarium.md) and [epidemics](epidemics.md) state how overlapping effects combine. [individual](individual.md) makes within-step order irrelevant.
-- **Structure should be specifiable by its generating model.** EpiModel fits networks from target statistics, and [LASER](laser.md) ships named mobility models.
-
-## Framework reviews
-
-| Framework | Language | Paradigm(s) | What to learn from it |
-|---|---|---|---|
-| [Starsim](starsim.md) | Python | Agent-based (primary), network, metapopulation, ODE-style compartmental | Typed time, per-module timesteps, common random numbers, and one `Route` for networks and mixing pools; transitions and connectors are still code. |
-| [EpiModel](epimodel.md) | R | ODE, stochastic random mixing, dynamic network (TERGM) | Contact networks fitted from target statistics and diagnosed before use; a parallel `param`/`init`/`control` API across three model classes; untyped time as the cautionary part. |
-| [camdl](camdl.md) | camdl DSL (OCaml, Rust) | Compartmental: ODE, chain-binomial, Gillespie | Dimensional types checked before a run, named transitions as data, one model text on three backends, and a declarative observation block. |
-| [odin](odin.md) | R DSL generating C++ | ODE, discrete-time stochastic | Order-independent equations, `zero_every` accumulators for incidence, a likelihood in the model file, and a language/engine/inference split. |
-| [summer2](summer2.md) | Python (JAX) | Compartmental: ODE, stochastic | Stratification as a validated transformation of a finished model, made possible by a closed vocabulary of named flow kinds. |
-| [MEmilio](memilio.md) | C++, Python bindings | ODE, IDE, LCT, SDE, metapopulation, agent-based, hybrid | Paradigms form a lattice with dwell time as one axis; each family is a separate implementation, which shows what a shared specification would save. |
-| [EMULSION](emulsion.md) | YAML DSL (Python engine) | Compartmental, individual-based, hybrid, metapopulation | One keyword switches the same model between compartmental and individual-based; rate, probability, or duration per transition. The switch's limits are undocumented. |
-| [epymorph](epymorph.md) | Python (SymPy) | Metapopulation | Disease, movement, and geography as independent parts, with declared, typed, shaped data requirements bound separately. |
-| [MetaCast](metacast.md) | Python | Metapopulation ODE | Stratification and metapopulation structure as one dimension operation, with transfers between coordinates and a framework-computed force of infection. |
-| [Epydemix](epydemix.md) | Python | Compartmental: stochastic, deterministic | `spontaneous`/`mediated` transition kinds that users can extend, calendar dates throughout, and bundled population and contact data. |
-| [epipack](epipack.md) | Python (SymPy) | Compartmental: ODE, stochastic, network | One reaction-tuple list drives ODE, Gillespie, and symbolic analysis; the network mode needs a separate vocabulary, so the unification is incomplete. |
-| [EMOD](emod.md) | C++ engine, JSON models | Agent-based with node-level metapopulation | A four-part campaign grammar (where, when and how many, to whom, what) with declarative targeting and waning; the disease model itself is not specifiable. |
-| [epiworld](epiworld.md) | C++ core; R and Python bindings | Agent-based: network, fully connected, mixing matrix | One engine with identical semantics in two host languages; viruses and tools as agent-attached objects with multiplicative effects. |
-| [individual](individual.md) | R, C++ core | Agent-based, discrete time | The minimal primitive set, with queued updates that make process order within a step irrelevant. |
-| [SimInf](siminf.md) | R, generated C | Stochastic compartmental (Gillespie) on a network of nodes | Readable transition strings, scheduled events driven by real movement data, and discrete and continuous state side by side. |
-| [Atomica](atomica.md) | Python engine, Excel models | Deterministic compartmental, cascades, budget optimization | A non-programmer specification path: transition matrix, parameter `Format` column, characteristics, and programs with costs. |
-| [EoN](eon.md) | Python (NetworkX) | Stochastic network simulation plus analytic ODE approximations | The model as two directed graphs, and a runnable ladder of approximations for measuring what each closure assumption loses. |
-| [flepiMoP](flepimop.md) | Python and R, YAML config | Metapopulation compartmental with inference | A whole workflow in one document, with chainable outcomes (source, probability, delay, duration) and a modifier grammar for interventions and scenarios. |
-| [EpiHiper](epihiper.md) | C++, JSON models | Agent-based on explicit contact networks | Disease model and interventions both as data: per-transition dwell-time distributions and a sets/variables/triggers/operations rule language, in very verbose JSON. |
-| [Vivarium](vivarium.md) | Python | Agent-based microsimulation | Value pipelines (one producer, registered modifiers, a declared combiner), a named lifecycle, and declared read/write access to state. |
-| [LASER](laser.md) | Python, Numba | Spatial agent-based, discrete time | A library of spatial-interaction models and stated performance principles, as a contrast with Starsim's design choices. |
-| [epidemics](epidemics.md) | R (odin) | Deterministic compartmental; one stochastic model | The opposite choice: fixed model structures with composable scenario elements, and a written design-principles document that states its composition rule. |
-
-## Where to go for detail
-
-[README.md](README.md) is the full comparison: the landscape table, the selection process and exclusions, and all twelve cross-cutting findings. [notes.md](notes.md) has brief entries for frameworks without a full review, including Mesa, Catalyst.jl, SBML, and ASKEM AMR / MIRA.
+The [full comparison](README.md) has the table of all the frameworks, how they were chosen, and every cross-cutting finding. Each framework then has its own review, and [other frameworks](notes.md) has brief entries for those without one.

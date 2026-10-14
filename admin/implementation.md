@@ -1,6 +1,6 @@
 # Implementation plan
 
-Status of the Starsim v4 implementation of the design spec. The code is in `/home/cliffk/idm/starsim` on the `v4` branch; section numbers refer to the files in `design/`. Checked items run and have a test in `tests/test_transitions.py` or `tests/test_deliveries.py`.
+Status of the Starsim v4 implementation of the design spec. The code is in the [Starsim repository](https://github.com/starsimhub/starsim), on the `v4` branch; section numbers refer to the files in `design/`. Checked items run and have a test in `tests/test_transitions.py` or `tests/test_deliveries.py`.
 
 ## Build set
 

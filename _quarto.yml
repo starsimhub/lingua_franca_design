@@ -76,8 +76,6 @@ website:
           text: "**Summary**"
         - href: approaches/README.md
           text: Full comparison
-        - href: approaches/notes.md
-          text: Brief notes
         - section: Framework reviews
           contents:
             - approaches/atomica.md
@@ -102,6 +100,8 @@ website:
             - approaches/starsim.md
             - approaches/summer2.md
             - approaches/vivarium.md
+            - href: approaches/notes.md
+              text: Other frameworks
 
     - id: best-practices
       title: Best practices
@@ -109,7 +109,7 @@ website:
         - href: best-practices/index.qmd
           text: "**Summary**"
         - href: best-practices/README.md
-          text: About these documents
+          text: Reading guide
         - section: Documents
           contents:
             - best-practices/principles.md
@@ -135,19 +135,14 @@ website:
         - href: design/index.qmd
           text: "**Summary**"
         - href: design/README.md
-          text: About the specification
-        - section: Specification
-          contents: "design/[0-9]*.md"
+          text: Reading guide
+        - "design/[0-9]*.md"
 
     - id: models
       title: Models
       contents:
         - href: examples/index.qmd
           text: "**Summary**"
-        - href: webapp/index.qmd
-          text: Compare side by side
-        - href: webapp/README.md
-          text: About the comparison
         - section: Examples (originals)
           contents:
             - href: examples/README.md

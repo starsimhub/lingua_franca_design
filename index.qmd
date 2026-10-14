@@ -4,7 +4,7 @@ subtitle: "A design for one way of writing disease models across paradigms, and 
 toc: false
 ---
 
-*Under development, and not yet fully reviewed by humans. AI tools (mostly Claude) were used to summarize information, compare and assess frameworks, extract code examples, and create vignettes. Assessments and design decisions are owned by the humans.*
+*Under development. AI tools (mostly Claude) were used to summarize information, compare and assess frameworks, extract code examples, and create vignettes. The work has been reviewed by humans, who own the assessments and design decisions.*
 
 ## The idea
 
@@ -27,7 +27,7 @@ Each step builds on the one before. Every section starts with a summary, with th
 | 4 | [Models](examples/index.qmd) | Other frameworks' own example models, and their translations into Starsim |
 | 5 | [Compare](webapp/index.qmd) | Each original next to its translation, side by side |
 
-The [status page](admin/implementation.md) tracks how much of the specification Starsim v4 implements.
+The [status page](admin/implementation.md) tracks how much has been implemented so far.
 
 ## Does it pass its own test?
 

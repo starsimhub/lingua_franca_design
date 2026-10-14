@@ -15,7 +15,7 @@ import re
 import sciris as sc
 
 root = sc.thispath(__file__).parent
-skip = ['.xlsx', '.pyc', '.ipynb', '.gz'] # Not shown: binary files, and notebooks that are also there as a script
+skip = ['.xlsx', '.pyc', '.ipynb', '.gz', '.html'] # Not shown: binary files, notebooks that are also there as a script, and pages Quarto is part way through writing
 languages = {'.py':'python', '.R':'r', '.yaml':'yaml', '.yml':'yaml'} # Anything else is shown as plain text
 
 
@@ -24,12 +24,12 @@ def read(path):
     return sc.loadtext(path).rstrip('\n')
 
 
-def code_files(folder, exclude=()):
-    """ The source files in a folder and its subfolders, as paths relative to it, with those at the top first """
+def code_files(folder, suffix=None, exclude=()):
+    """ The source files in a folder and its subfolders (optionally of one kind), as paths relative to it, with those at the top first """
     paths = []
     for path in sc.getfilelist(folder, recursive=True, nopath=False):
         path = sc.path(path)
-        if path.is_file() and path.suffix not in skip and path.name not in exclude and '__pycache__' not in path.parts:
+        if path.is_file() and path.suffix not in skip and path.name not in exclude and '__pycache__' not in path.parts and suffix in [None, path.suffix]:
             paths.append(path.relative_to(folder))
     return sorted(paths, key=lambda path: (len(path.parts), str(path)))
 
@@ -83,6 +83,14 @@ def table_rows(text):
     return [[cell.strip() for cell in row] for row in rows[2:]]
 
 
+def friendly_times(text):
+    """ Write the times under a second in milliseconds: "0.0024 s" becomes "2.4 ms" """
+    def convert(match):
+        seconds = float(match.group(1))
+        return f'{seconds*1000:g} ms' if seconds < 1 else match.group(0)
+    return re.sub(r'(\d+(?:\.\d+)?) s\b', convert, text)
+
+
 def load_model(folder):
     """ Everything known about one example and its vignette """
     meta = sc.objdict(sc.loadyaml(folder / 'meta.yaml'))
@@ -97,12 +105,12 @@ def load_model(folder):
         title    = title,
         intro    = intro.split('\n\n')[0],
         vintro   = vintro,
-        table    = vbody.pop('Comparison', ''),
+        table    = friendly_times(vbody.pop('Comparison', '')),
         notes    = vbody,
         folder   = folder / 'original',
         vfolder  = vfolder,
         original = code_files(folder / 'original'),
-        starsim  = code_files(vfolder, exclude=['README.md', 'compare.py']),
+        starsim  = code_files(vfolder, suffix='.py', exclude=['compare.py']),
     )
     return model
 
@@ -138,7 +146,7 @@ def model_page(model):
 
 def scorecard_row(model):
     """ The row of the scorecard for one model: lines, time, and whether the results agree """
-    link = f'[{model.meta.framework}: {model.folder.parent.name}](/webapp/index.qmd#{model.id})'
+    link = f'[{model.meta.framework}<br>{model.folder.parent.name}](/webapp/index.qmd#{model.id})'
     rows = table_rows(model.table)
     if not rows:
         return f'| {link} | {model.meta.language} | | *Not written yet* | | | |'
