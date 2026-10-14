@@ -1,33 +1,8 @@
 ---
-title: "A lingua franca for epi modeling"
-subtitle: "A design for one way of writing disease models across paradigms, and its implementation as Starsim v4"
 toc: false
 ---
 
-*Under development. AI tools (mostly Claude) were used to summarize information, compare and assess frameworks, extract code examples, and create vignettes. The work has been reviewed by humans, who own the assessments and design decisions.*
-
-## The idea
-
-A lingua franca for epi modeling is a single, rigorous-yet-simple way of writing a disease model, whatever kind of model it is. It should:
-
-- Capture the best aspects of existing frameworks and improve on them where possible. The test is that **a model should never be easier to write without the lingua franca than with it.**
-- Be AI-native: a deterministic representation of modeling concepts that an LLM can write, read, and check, and a source of truth to compare other models against.
-- Give one representation across paradigms: compartmental (ODE), stochastic compartmental, metapopulation, and agent-based.
-- Allow conversion between frameworks (such as EpiModel to epydemix) and between paradigms (such as compartmental to agent-based).
-
-## How the project is organized
-
-Each step builds on the one before. Every section starts with a summary, with the full documents behind it.
-
-| | Section | What it is |
-|---|---|---|
-| 1 | [Approaches](approaches/index.qmd) | A review of how existing frameworks represent models |
-| 2 | [Best practices](best-practices/index.qmd) | A position on how each modeling concept should be expressed, drawn from the review |
-| 3 | [Design](design/index.qmd) | The specification of the language, written against Starsim (`import starsim as ss`) |
-| 4 | [Examples](examples/index.qmd) | Other frameworks' own example models, and their translations into Starsim |
-| 5 | [Compare](webapp/index.qmd) | Each original next to its translation, side by side |
-
-The [status page](admin/implementation.md) tracks how much has been implemented so far.
+{{< include README.md >}}
 
 ## Does it pass its own test?
 

@@ -3,7 +3,6 @@ project:
   output-dir: _site
   render: # Quarto skips a README.md in a subfolder unless it is named, so each model is listed here and in the sidebar
     - index.qmd
-    - README.md
     - approaches/
     - approaches/README.md
     - best-practices/

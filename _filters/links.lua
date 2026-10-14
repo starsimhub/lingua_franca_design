@@ -1,5 +1,6 @@
 -- Links to a folder work on GitHub, which shows the folder's README. On the site they
 -- need a page, so point them at the folder's summary (index.qmd) if it has one, or its README.
+-- The README in the root folder is the home page (index.qmd includes it), so links to it go there.
 
 local function exists(path)
   local file = io.open(path, 'r')
@@ -21,9 +22,15 @@ function Link(link)
   local target = link.target
   if target:match('^%a[%w+.-]*:') or target:match('^[#/]') then return link end -- A URL, an anchor, or a path from the root
   local path, anchor = target:match('^([^#]*)(.*)$')
+  local here = pandoc.path.directory(quarto.doc.input_file)
+  local root = path:match('^(.*)README%.md$')
+  if root and exists(pandoc.path.join({here, root, '_quarto.yml'})) then -- The root README is the home page
+    link.target = root .. 'index.qmd' .. anchor
+    return link
+  end
   local last = path:gsub('/+$', ''):match('([^/]*)$')
   if last:match('%.%w+$') and last ~= '..' then return link end -- A file, not a folder
-  local folder = pandoc.path.join({pandoc.path.directory(quarto.doc.input_file), path})
+  local folder = pandoc.path.join({here, path})
   for _, name in ipairs({'index.qmd', 'README.md'}) do
     if exists(pandoc.path.join({folder, name})) then
       link.target = pandoc.path.join({path, name}) .. anchor
