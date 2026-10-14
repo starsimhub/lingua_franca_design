@@ -1,12 +1,12 @@
 """
-Build the pages that compare each example with its vignette. It is run by Quarto
-before each render (`pre-render` in `_quarto.yml`), and writes two files:
+Write the Markdown that compares each example with its vignette, from the files in
+`examples/<framework>/<model>` and `vignettes/<framework>/<model>`. The pages that
+show it call these functions as they are rendered, so nothing here is saved to a file:
 
-    webapp/index.qmd    Every model: the original and the Starsim version side by side
-    _scorecard.md       One row per model: lines of code, run time, and agreement
+    comparison()    Every model: the original and the Starsim version side by side (webapp/index.qmd)
+    scorecard()     One row per model: lines of code, run time, and agreement (index.qmd, examples/index.qmd)
 
-Both are made from `examples/<framework>/<model>` and `vignettes/<framework>/<model>`,
-so neither is edited by hand or committed.
+To see what either one writes:
 
     python webapp/build.py
 """
@@ -17,15 +17,6 @@ import sciris as sc
 root = sc.thispath(__file__).parent
 skip = ['.xlsx', '.pyc', '.ipynb', '.gz'] # Not shown: binary files, and notebooks that are also there as a script
 languages = {'.py':'python', '.R':'r', '.yaml':'yaml', '.yml':'yaml'} # Anything else is shown as plain text
-header = '''---
-title: "Compare models"
-page-layout: full
-toc: false
-include-after-body: _picker.html
----
-
-Each model in [examples](/examples/index.qmd) as its framework's authors wrote it, next to its translation in [vignettes](/vignettes/README.md). Pick a model:
-'''
 
 
 def read(path):
@@ -156,18 +147,28 @@ def scorecard_row(model):
     return f'| {link} | {model.meta.language} | {lines[1]} | {lines[2]} | {time[1]} | {time[2]} | {results} |'
 
 
-if __name__ == '__main__':
+def load_models():
+    """ Every example that has a `meta.yaml`, in order of framework """
     folders = sorted(path.parent for path in (root / 'examples').glob('*/*/meta.yaml'))
-    models = [load_model(folder) for folder in folders]
+    return [load_model(folder) for folder in folders]
 
-    picker = ' '.join(f'[{model.meta.framework}]({"#" + model.id}){{.model-link}}' for model in models)
-    page = [header, f'::: {{.model-picker}}\n{picker}\n:::\n'] + [model_page(model) for model in models]
-    sc.savetext(root / 'webapp' / 'index.qmd', '\n'.join(page))
 
-    scorecard = [
+def comparison():
+    """ The comparison page: a link to pick each model, then a section for each """
+    models = load_models()
+    picker = ' '.join(f'[{model.meta.framework}](#{model.id}){{.model-link}}' for model in models)
+    return '\n'.join([f'::: {{.model-picker}}\n{picker}\n:::\n'] + [model_page(model) for model in models])
+
+
+def scorecard():
+    """ The scorecard: a table with a row for each model """
+    out = [
         '| Model | Language | Lines: original | Lines: Starsim | Time: original | Time: Starsim | Results |',
         '|---|---|---|---|---|---|---|',
-    ] + [scorecard_row(model) for model in models]
-    sc.savetext(root / '_scorecard.md', '\n'.join(scorecard) + '\n')
+    ] + [scorecard_row(model) for model in load_models()]
+    return '\n'.join(out)
 
-    print(f'Wrote webapp/index.qmd and _scorecard.md for {len(models)} models')
+
+if __name__ == '__main__':
+    print(scorecard())
+    print(comparison())

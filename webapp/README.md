@@ -22,11 +22,11 @@ Because the two sides are different languages, a plain textual diff will not be 
 
 A first version is part of the project's website, which is built with [Quarto](https://quarto.org) from the Markdown files in this repository:
 
-- `build.py` reads each model's `meta.yaml`, original source, vignette, and vignette `README.md`, and writes the comparison page (`webapp/index.qmd`) and the scorecard (`_scorecard.md`). Quarto runs it before each render, so neither file is edited or committed.
+- `build.py` reads each model's `meta.yaml`, original source, vignette, and vignette `README.md`, and writes the Markdown for the comparison page and the scorecard. The pages that show them (`webapp/index.qmd`, and the scorecard on the home and models pages) call it as they are rendered, so there are no generated files to keep up to date.
 - `_picker.html` is the script that shows one model at a time.
 - The model picker, side-by-side panes, syntax highlighting, the vignette's notes, and the scorecard are done. Diff-style markup, aligned scrolling, anchored annotations, and the results comparison are not: they wait on a format for a vignette to declare which of its blocks corresponds to which of the original's.
 
-To build the site, run `quarto render` in the root folder (it needs `sciris`), or `quarto preview` to see it while editing. A new model also needs its two `README.md` files added to the `render` and `sidebar` lists in `_quarto.yml`.
+To build the site, run `quarto render` in the root folder (it needs `sciris` and `jupyter`), or `quarto preview` to see it while editing. A new model also needs its two `README.md` files added to the `render` and `sidebar` lists in `_quarto.yml`.
 
 ## Relationship to other folders
 

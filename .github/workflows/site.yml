@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: pip install sciris
+      - run: pip install sciris jupyter
       - uses: quarto-dev/quarto-actions/setup@v2
       - run: quarto render
       - uses: actions/upload-pages-artifact@v3

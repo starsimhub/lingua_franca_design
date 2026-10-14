@@ -34,5 +34,11 @@ The [status page](admin/implementation.md) tracks how much of the specification 
 Each translation is held to two numbers from its original: no more lines of model code, and no more compute time. This is where each model stands; the model names link to the side-by-side comparison.
 
 ::: {.scorecard}
-{{< include /_scorecard.md >}}
+```{python}
+#| echo: false
+#| output: asis
+import sciris as sc
+build = sc.importbypath('webapp/build.py')
+print(build.scorecard())
+```
 :::

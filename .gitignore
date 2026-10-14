@@ -226,10 +226,8 @@ _envs/*/*
 !_envs/*/requirements.txt
 !_envs/*/renv.lock
 
-# Quarto site: the output, and the pages written by webapp/build.py
+# Quarto site: the output
 /_site/
 /.quarto/
-/_scorecard.md
-/webapp/index.qmd
 
 **/*.quarto_ipynb

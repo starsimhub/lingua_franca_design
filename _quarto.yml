@@ -1,7 +1,6 @@
 project:
   type: website
   output-dir: _site
-  pre-render: python webapp/build.py
   render: # Quarto skips a README.md in a subfolder unless it is named, so each model is listed here and in the sidebar
     - index.qmd
     - README.md

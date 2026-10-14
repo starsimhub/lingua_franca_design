@@ -18,7 +18,13 @@ It must also give the same results, within a stated tolerance. A vignette that m
 The model names link to the [side-by-side comparison](../webapp/index.qmd), which shows the original code next to the Starsim version.
 
 ::: {.scorecard}
-{{< include /_scorecard.md >}}
+```{python}
+#| echo: false
+#| output: asis
+import sciris as sc
+build = sc.importbypath('../webapp/build.py')
+print(build.scorecard())
+```
 :::
 
 ## What is in each folder
