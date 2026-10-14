@@ -7,12 +7,22 @@ local function exists(path)
   return file ~= nil
 end
 
+local function is_folder(path)
+  local file = io.open(path, 'r')
+  local found = file:read(1)
+  file:close()
+  return found == nil
+end
+
 function Link(link)
+  link.content = link.content:walk({Link = function(inner) -- A file name that is already inside a link stays as it was
+    if inner.classes:includes('file-link') then return inner.content end
+  end})
   local target = link.target
-  if target:match('^%a[%w+.-]*:') or target:match('^[#/]') then return nil end -- A URL, an anchor, or a path from the root
+  if target:match('^%a[%w+.-]*:') or target:match('^[#/]') then return link end -- A URL, an anchor, or a path from the root
   local path, anchor = target:match('^([^#]*)(.*)$')
   local last = path:gsub('/+$', ''):match('([^/]*)$')
-  if last:match('%.%w+$') and last ~= '..' then return nil end -- A file, not a folder
+  if last:match('%.%w+$') and last ~= '..' then return link end -- A file, not a folder
   local folder = pandoc.path.join({pandoc.path.directory(quarto.doc.input_file), path})
   for _, name in ipairs({'index.qmd', 'README.md'}) do
     if exists(pandoc.path.join({folder, name})) then
@@ -20,4 +30,20 @@ function Link(link)
       return link
     end
   end
+  return link
+end
+
+-- A file named in the text (`original/sir.py`, `reference/`) links to that file on GitHub, if it is
+-- there next to the page. Markdown files are left alone: they are pages of the site.
+local repo = 'https://github.com/starsimhub/lingua_franca_design/'
+
+function Code(code)
+  local name = code.text
+  if name:match('[%s*]') or name:match('^[/.]') or name:match('%.q?md$') then return nil end
+  if not (name:match('%.%w+$') or name:match('/$')) then return nil end
+  local path = pandoc.path.join({pandoc.path.directory(quarto.doc.input_file), name})
+  if not exists(path) then return nil end
+  local kind = is_folder(path) and 'tree' or 'blob'
+  local target = repo .. kind .. '/main/' .. pandoc.path.make_relative(path, quarto.project.directory)
+  return pandoc.Link({code}, target, '', pandoc.Attr('', {'file-link'}))
 end
