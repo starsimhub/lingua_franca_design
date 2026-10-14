@@ -161,15 +161,28 @@ def model_page(model):
     return '\n'.join(out)
 
 
+def first_number(text):
+    """ The first number in a cell, in seconds if it is a time: "33 ms, or 0.5 ms for a repeated run" gives 0.033 """
+    match = re.search(r'(\d[\d,]*(?:\.\d+)?)(?: *(ms|s)\b)?', text)
+    value = float(match.group(1).replace(',', ''))
+    return value/1000 if match.group(2) == 'ms' else value
+
+
+def mark(original, starsim):
+    """ A Starsim cell, marked for the stylesheet as meeting its target (no more than the original) or not """
+    target = 'pass' if first_number(starsim) <= first_number(original) else 'fail'
+    return f'[{starsim}]{{.{target}}}'
+
+
 def scorecard_row(model):
     """ The row of the scorecard for one model: lines, time, and whether the results agree """
-    link = f'[{model.meta.framework}<br>{model.folder.parent.name}](/webapp/index.qmd#{model.id})'
+    link = f'[**{model.meta.framework}**<br>{model.folder.parent.name}](/webapp/index.qmd#{model.id})'
     rows = table_rows(model.table)
     if not rows:
         return f'| {link} | {model.meta.language} | | *Not written yet* | | | |'
     lines, time = rows[0], rows[1]
     results = '; '.join(row[3] for row in rows[2:])
-    return f'| {link} | {model.meta.language} | {lines[1]} | {lines[2]} | {time[1]} | {time[2]} | {results} |'
+    return f'| {link} | {model.meta.language} | {lines[1]} | {mark(lines[1], lines[2])} | {time[1]} | {mark(time[1], time[2])} | {results} |'
 
 
 def load_models():

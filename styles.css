@@ -68,3 +68,12 @@
 .scorecard td:first-child {
   white-space: nowrap;
 }
+
+/* Starsim's lines and time: green if no more than the original's, red if more (translucent, so they work in the dark theme too) */
+.scorecard td:has(.pass) {
+  background-color: rgba(25, 135, 84, 0.18);
+}
+
+.scorecard td:has(.fail) {
+  background-color: rgba(220, 53, 69, 0.18);
+}
