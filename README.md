@@ -4,9 +4,9 @@ _**Version:** 1.0 | **Date:** 2026.10.13 | **Status:** Implementation in progres
 
 ## Introduction
 
-This project describes the design of a _lingua franca_ for epi modeling. Principles of the lingua franca include:
+This project describes the design of a _lingua franca_ for epi modeling. The lingua franca should:
 
-- It should capture the best aspects of all existing epi models (in terms of flexibility, simplicity, and elegance), and improve upon them when possible. In other words, **a model should never be easier to write without the lingua franca than with it**. A concrete definition of this is that compared to existing epi models, the _lingua franca_ should require no more lines of code than the original, and be as fast or faster.
+- Capture the best aspects of all existing epi models (in terms of flexibility, simplicity, and elegance), and improve upon them when possible. In other words, **a model should never be easier to write without the lingua franca than with it**. A concrete definition of this is that compared to existing epi models, the _lingua franca_ should require no more lines of code than the original, and be as fast or faster.
 - Be AI-native, serving as a rigorous-yet-simple and deterministic representation of modeling concepts (as expressed as prose or using other modeling frameworks) into code.
 - Provide a unified representation across different modeling paradigms, including at least:
     - Compartmental/ODE models
