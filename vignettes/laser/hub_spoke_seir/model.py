@@ -19,7 +19,7 @@ seir = ss.Disease(
     recovery  = ss.progression('I -> R', dur=ss.normal(14, 2, unit='days')),
     init      = dict(I=ss.by(patch=[0, 100] + [0]*14)), # 100 infectious people in Town 1
 )
-seir.stratify(patch=places, mobility=ss.Mobility(ss.gravity(c=2.5), away=3/32))
+seir.stratify(patch=places, mobility=ss.Mobility(ss.gravity(c=2.5), kind='force', away=3/32))
 sim = ss.Sim(seir, total_pop=sum(pop), n_agents=175_000, stop=ss.days(365))
 
 if __name__ == '__main__':

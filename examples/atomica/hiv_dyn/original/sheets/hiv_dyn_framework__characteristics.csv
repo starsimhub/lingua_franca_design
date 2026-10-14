@@ -1,0 +1,8 @@
+Code Name,Display Name,Components,Setup Weight,Databook Page
+alive,Population size,"sus, undx, dx, linked, tx, lost, vs",1,stocks
+all_people,All PLHIV,"undx, dx, linked, tx, lost, vs",1,stocks
+all_dx,Aware of their status,"dx, linked, tx, lost, vs",1,stocks
+all_ever_linked,Ever in care,"linked, tx, lost, vs",1,stocks
+all_curr_linked,Currently in care,"linked, tx, vs",1,stocks
+all_tx,Currently treated,"tx, vs",1,stocks
+all_vs,Virally suppressed,vs,1,stocks

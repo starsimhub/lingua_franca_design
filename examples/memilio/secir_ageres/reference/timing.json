@@ -1,0 +1,7 @@
+{
+  "seconds": 0.4673,
+  "what": "python ode_secir_ageres.py, as one command (nearly all of it is starting Python and importing; the call to simulate() itself takes about 0.11 ms, for 36 adaptive time points)",
+  "machine": "x86_64",
+  "cpus": 20,
+  "system": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39"
+}

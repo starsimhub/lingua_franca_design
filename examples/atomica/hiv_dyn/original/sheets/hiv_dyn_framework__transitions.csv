@@ -1,0 +1,11 @@
+Transition Matrix,source,sus,undx,dx,linked,tx,lost,vs,dead_hiv,dead_other
+source,,birth_rate,,,,,,,,
+sus,,,acq_rate,,,,,,,death_other
+undx,,,,diag,,,,,death_hiv,death_other
+dx,,,,,link_time,,,,death_hiv,death_other
+linked,,,,,,initiate,loss,,death_hiv,death_other
+tx,,,,,,,loss,supp_rate,death_hivtx,death_other
+lost,,,,,link_time,,,,death_hiv,death_other
+vs,,,,,,fail_rate,loss,,death_hivvs,death_other
+dead_hiv,,,,,,,,,,
+dead_other,,,,,,,,,,

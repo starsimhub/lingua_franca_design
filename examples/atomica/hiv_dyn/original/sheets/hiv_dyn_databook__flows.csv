@@ -1,0 +1,47 @@
+Annual number of births,Units,Constant,,2016,2017,2018,2019
+females,Number,,OR,287992.41,,,
+males,Number,,OR,276698.58999999997,,,
+,,,,,,,
+Estimated number of new HIV infections annually,Units,Constant,,2016,2017,2018,2019
+females,Number,,OR,150000,,,
+males,Number,,OR,110000,,,
+,,,,,,,
+Annual number of tests done,Units,Constant,,2016,2017,2018,2019
+females,Number,,OR,6400000,,,
+males,Number,,OR,3600000,,,
+,,,,,,,
+Average time taken to be linked to care (years),Units,Constant,,2016,2017,2018,2019
+females,Duration,,OR,0.7,,,
+males,Duration,,OR,1.2,,,
+,,,,,,,
+Annual number newly initiated onto treatment,Units,Constant,,2016,2017,2018,2019
+females,Number,,OR,269448,,,
+males,Number,,OR,179632,,,
+,,,,,,,
+Loss-to-follow-up rate,Units,Constant,,2016,2017,2018,2019
+females,Rate (per year),,OR,0.2,,,
+males,Rate (per year),,OR,0.3,,,
+,,,,,,,
+Time after initiating ART to achieve viral suppression (years),Units,Constant,,2016,2017,2018,2019
+females,Duration,0.2,OR,,,,
+males,Duration,0.2,OR,,,,
+,,,,,,,
+Treatment failure rate,Units,Constant,,2016,2017,2018,2019
+females,Rate (per year),0.16,OR,,,,
+males,Rate (per year),0.16,OR,,,,
+,,,,,,,
+Death rate for those with untreated HIV,Units,Constant,,2016,2017,2018,2019
+females,Rate (per year),0.053,OR,,,,
+males,Rate (per year),0.053,OR,,,,
+,,,,,,,
+Death rate for those with on unsuppressive ART,Units,Constant,,2016,2017,2018,2019
+females,Rate (per year),0.0258534,OR,,,,
+males,Rate (per year),0.0258534,OR,,,,
+,,,,,,,
+Death rate for those with on suppressive ART,Units,Constant,,2016,2017,2018,2019
+females,Rate (per year),0.01219,OR,,,,
+males,Rate (per year),0.01219,OR,,,,
+,,,,,,,
+Background mortality rate,Units,Constant,,2016,2017,2018,2019
+females,Rate (per year),0.015,OR,,,,
+males,Rate (per year),0.015,OR,,,,

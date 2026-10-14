@@ -1,0 +1,7 @@
+{
+  "seconds": 1.1554,
+  "what": "Rscript, as one command: starting R, generating and compiling the C code with odin::odin (about 1.0 s), and one run of 365 days with deSolve::dede (the run itself, `mod$run(0:365)`, takes about 2.0 ms)",
+  "machine": "x86_64",
+  "cpus": 20,
+  "system": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39"
+}

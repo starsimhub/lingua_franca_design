@@ -1,0 +1,7 @@
+{
+  "seconds": 0.0008,
+  "what": "model.run() on a model that is already built and compiled (the last of the seven, with four derived outputs); importing summer2 and JAX, and building, compiling, and running all seven takes 3.5 s",
+  "machine": "x86_64",
+  "cpus": 20,
+  "system": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39"
+}

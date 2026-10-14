@@ -23,15 +23,15 @@ if __name__ == '__main__':
     for state in 'SIR':
         for age in ['young', 'old']:
             for location in ['urban', 'rural']:
-                ours = res[f'n_{state}'].select(age=age, location=location).values
-                theirs = np.array(ref[f'{state}_{age}_{location}'][1])
+                ours = res[f'n_{state}'].select(age=age, location=location).values[:-1] # A stock at index k is the number after step k ...
+                theirs = np.array(ref[f'{state}_{age}_{location}'][1])[1:] # ... and the original's at time k+1
                 worst = max(worst, np.abs(ours - theirs).max())
     print(f'largest difference in any compartment: {worst:.3g} people (of 1,000)')
 
     for solver in ['binomial', 'abm']:
         runs = sim.new(verbose=0, solver=solver, **(dict(n_agents=1000) if solver == 'abm' else {})).run(n_runs=100).results.sir
-        ode = res.n_R[-1]
-        print(f'{solver}: recovered at the end {runs.n_R.values.mean(axis=0)[-1]:.0f} (ODE {ode:.0f})')
+        ode = res.n_R[-2] # At the stop; the last is one step past it
+        print(f'{solver}: recovered at the end {runs.n_R.values.mean(axis=0)[-2]:.0f} (ODE {ode:.0f})')
 
     def run():
         ss.Sim(sim.inputs, verbose=0).run()

@@ -12,28 +12,52 @@ project:
     - examples/index.qmd
     - examples/README.md
     - examples/atomica/sir/README.md
+    - examples/atomica/hiv_dyn/README.md
     - examples/camdl/sir/README.md
+    - examples/camdl/stratified/README.md
     - examples/emulsion/sir/README.md
+    - examples/emulsion/quickstart/README.md
     - examples/epimodel/sis-network/README.md
+    - examples/epimodel/hiv/README.md
     - examples/epydemix/sir_kenya/README.md
+    - examples/epydemix/covid19/README.md
     - examples/flepimop/seir_2pop/README.md
+    - examples/flepimop/vaccine_scenarios/README.md
+    - examples/ghana_measles/seir_districts/README.md
     - examples/laser/hub_spoke_seir/README.md
+    - examples/laser/england_wales/README.md
     - examples/memilio/secir/README.md
+    - examples/memilio/secir_ageres/README.md
     - examples/odin/stochastic_sir_arrays/README.md
+    - examples/odin/seir_array/README.md
     - examples/siminf/sir_herds/README.md
+    - examples/siminf/sise3/README.md
     - examples/summer2/sir-age-location/README.md
+    - examples/summer2/seir-age-clinical/README.md
     - vignettes/README.md
     - vignettes/atomica/sir/README.md
+    - vignettes/atomica/hiv_dyn/README.md
     - vignettes/camdl/sir/README.md
+    - vignettes/camdl/stratified/README.md
     - vignettes/emulsion/sir/README.md
+    - vignettes/emulsion/quickstart/README.md
     - vignettes/epimodel/sis-network/README.md
+    - vignettes/epimodel/hiv/README.md
     - vignettes/epydemix/sir_kenya/README.md
+    - vignettes/epydemix/covid19/README.md
     - vignettes/flepimop/seir_2pop/README.md
+    - vignettes/flepimop/vaccine_scenarios/README.md
+    - vignettes/ghana_measles/seir_districts/README.md
     - vignettes/laser/hub_spoke_seir/README.md
+    - vignettes/laser/england_wales/README.md
     - vignettes/memilio/secir/README.md
+    - vignettes/memilio/secir_ageres/README.md
     - vignettes/odin/stochastic_sir_arrays/README.md
+    - vignettes/odin/seir_array/README.md
     - vignettes/siminf/sir_herds/README.md
+    - vignettes/siminf/sise3/README.md
     - vignettes/summer2/sir-age-location/README.md
+    - vignettes/summer2/seir-age-clinical/README.md
     - webapp/
     - webapp/README.md
     - admin/implementation.md
@@ -166,31 +190,55 @@ website:
             - href: examples/README.md
               text: About the examples
             - examples/atomica/sir/README.md
+            - examples/atomica/hiv_dyn/README.md
             - examples/camdl/sir/README.md
+            - examples/camdl/stratified/README.md
             - examples/emulsion/sir/README.md
+            - examples/emulsion/quickstart/README.md
             - examples/epimodel/sis-network/README.md
+            - examples/epimodel/hiv/README.md
             - examples/epydemix/sir_kenya/README.md
+            - examples/epydemix/covid19/README.md
             - examples/flepimop/seir_2pop/README.md
+            - examples/flepimop/vaccine_scenarios/README.md
+            - examples/ghana_measles/seir_districts/README.md
             - examples/laser/hub_spoke_seir/README.md
+            - examples/laser/england_wales/README.md
             - examples/memilio/secir/README.md
+            - examples/memilio/secir_ageres/README.md
             - examples/odin/stochastic_sir_arrays/README.md
+            - examples/odin/seir_array/README.md
             - examples/siminf/sir_herds/README.md
+            - examples/siminf/sise3/README.md
             - examples/summer2/sir-age-location/README.md
+            - examples/summer2/seir-age-clinical/README.md
         - section: Vignettes (in Starsim)
           contents:
             - href: vignettes/README.md
               text: About the vignettes
             - vignettes/atomica/sir/README.md
+            - vignettes/atomica/hiv_dyn/README.md
             - vignettes/camdl/sir/README.md
+            - vignettes/camdl/stratified/README.md
             - vignettes/emulsion/sir/README.md
+            - vignettes/emulsion/quickstart/README.md
             - vignettes/epimodel/sis-network/README.md
+            - vignettes/epimodel/hiv/README.md
             - vignettes/epydemix/sir_kenya/README.md
+            - vignettes/epydemix/covid19/README.md
             - vignettes/flepimop/seir_2pop/README.md
+            - vignettes/flepimop/vaccine_scenarios/README.md
+            - vignettes/ghana_measles/seir_districts/README.md
             - vignettes/laser/hub_spoke_seir/README.md
+            - vignettes/laser/england_wales/README.md
             - vignettes/memilio/secir/README.md
+            - vignettes/memilio/secir_ageres/README.md
             - vignettes/odin/stochastic_sir_arrays/README.md
+            - vignettes/odin/seir_array/README.md
             - vignettes/siminf/sir_herds/README.md
+            - vignettes/siminf/sise3/README.md
             - vignettes/summer2/sir-age-location/README.md
+            - vignettes/summer2/seir-age-clinical/README.md
 
 format:
   html:

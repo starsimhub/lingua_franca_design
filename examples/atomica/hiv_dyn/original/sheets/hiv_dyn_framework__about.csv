@@ -1,0 +1,13 @@
+Name,Description
+HIV with dynamics,Framework for an HIV model with vital dynamics and new infections
+,
+Instructions,
+"Use this file to specify the structure of your model. Any extra sheets will be ignored, so you can include other information in them",
+,
+Page Overview,
+Databook Pages,Specify which worksheets will be present in the databook
+Compartments,Specify the states that an individual can be in - an individual is only ever in one compartment at a time
+Transitions,Specify which transitions between compartments are possible
+Characteristics,Specify groups of people (e.g. groups of compartments) for data entry
+Parameters,Define how to compute the flows between compartments
+Cascades,Use the Cascades sheet to define the cascade if it is more complex than just all characteristics in sequence

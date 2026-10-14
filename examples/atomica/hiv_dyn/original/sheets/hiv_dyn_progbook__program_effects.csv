@@ -1,0 +1,23 @@
+Test yield,Baseline value,Coverage interaction,Impact interaction,Uncertainty,,Testing - clinics,Testing - outreach,Same-day initiation counselling,Classic initiation counselling,Client tracing,Advanced adherence support,Whatsapp adherence support
+Females,0,Additive,,,,0.027,0.027,,,,,
+Males,0,Additive,,,,0.029,0.029,,,,,
+,,,,,,,,,,,,
+Test sensitivity,Baseline value,Coverage interaction,Impact interaction,Uncertainty,,Testing - clinics,Testing - outreach,Same-day initiation counselling,Classic initiation counselling,Client tracing,Advanced adherence support,Whatsapp adherence support
+Females,0,Additive,,,,0.99,0.99,,,,,
+Males,0,Additive,,,,0.99,0.99,,,,,
+,,,,,,,,,,,,
+Average time taken to be linked to care (years),Baseline value,Coverage interaction,Impact interaction,Uncertainty,,Testing - clinics,Testing - outreach,Same-day initiation counselling,Classic initiation counselling,Client tracing,Advanced adherence support,Whatsapp adherence support
+Females,1.5,Additive,,,,0.5,0.3,,,0.2,,
+Males,2.2,Additive,,,,0.6,0.4,,,0.3,,
+,,,,,,,,,,,,
+Initiation rate,Baseline value,Coverage interaction,Impact interaction,Uncertainty,,Testing - clinics,Testing - outreach,Same-day initiation counselling,Classic initiation counselling,Client tracing,Advanced adherence support,Whatsapp adherence support
+Females,0,Additive,,,,,,0.98,0.92,,,
+Males,0,Additive,,,,,,,,,,
+,,,,,,,,,,,,
+Loss-to-follow-up rate,Baseline value,Coverage interaction,Impact interaction,Uncertainty,,Testing - clinics,Testing - outreach,Same-day initiation counselling,Classic initiation counselling,Client tracing,Advanced adherence support,Whatsapp adherence support
+Females,0.5,Additive,,,,,,,,,0.1,0.2
+Males,0.7,Additive,,,,,,,,,0.15,0.25
+,,,,,,,,,,,,
+Treatment failure rate,Baseline value,Coverage interaction,Impact interaction,Uncertainty,,Testing - clinics,Testing - outreach,Same-day initiation counselling,Classic initiation counselling,Client tracing,Advanced adherence support,Whatsapp adherence support
+Females,0.3,Additive,,,,,,,,,0.1,0.15
+Males,0.4,Additive,,,,,,,,,0.15,0.2

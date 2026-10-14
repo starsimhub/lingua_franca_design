@@ -1,0 +1,9 @@
+,,Targeted to (populations),,,Targeted to (compartments),,,,,,
+Abbreviation,Display name,Females,Males,,Susceptible,Undiagnosed,Diagnosed,Linked to care,Treated,Lost to follow-up,Virally suppressed (comp)
+Testing - clinics,Testing - clinics,Y,Y,,Y,Y,N,N,N,N,N
+Testing - outreach,Testing - outreach,Y,Y,,Y,Y,N,N,N,N,N
+Same-day initiation counselling,Same-day initiation counselling,Y,Y,,N,N,Y,Y,N,N,N
+Classic initiation counselling,Classic initiation counselling,Y,Y,,N,N,Y,Y,N,N,N
+Client tracing,Client tracing,Y,Y,,N,N,N,N,Y,Y,N
+Advanced adherence support,Advanced adherence support,Y,Y,,N,N,N,N,Y,Y,N
+Whatsapp adherence support,Whatsapp adherence support,Y,Y,,N,N,N,N,Y,Y,N

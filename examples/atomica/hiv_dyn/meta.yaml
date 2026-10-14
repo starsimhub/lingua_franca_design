@@ -1,0 +1,9 @@
+framework: atomica
+model: hiv_dyn
+version: 1.32.4
+source: atomica/library/hiv_dyn_framework.xlsx, hiv_dyn_databook.xlsx, and hiv_dyn_progbook.xlsx, and atomica/demos.py, in the atomica 1.32.4 package from PyPI (https://github.com/atomicateam/atomica/tree/main/atomica/library), run as at.demo('hiv_dyn') does
+commit: none (the PyPI release 1.32.4, dated 2026-09-01; upstream has no tag for it)
+license: MIT
+language: Excel spreadsheets (run from Python)
+env: _envs/atomica
+lines: 217

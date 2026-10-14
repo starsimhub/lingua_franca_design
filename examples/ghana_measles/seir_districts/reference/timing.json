@@ -1,0 +1,7 @@
+{
+  "seconds": 0.8443,
+  "what": "gm.Sim(data.districts).run(), with the data already loaded",
+  "machine": "x86_64",
+  "cpus": 20,
+  "system": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39"
+}

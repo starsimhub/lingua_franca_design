@@ -19,9 +19,9 @@ ref = tools.read_results(os.path.join(root, 'examples', 'odin', 'stochastic_sir_
 if __name__ == '__main__':
     res = sim.new(verbose=0).run(n_runs=2000).results.sir
     for state in 'SIR':
-        ours, theirs = res[f'n_{state}'].values.mean(axis=0), np.array(ref[state][1])
+        ours, theirs = res[f'n_{state}'].values.mean(axis=0)[:-1], np.array(ref[state][1])[1:] # A stock at index k is the number after step k, the original's at time k+1
         print(f'{state}: mean at the end {ours[-1]:7.1f} (original {theirs[-1]:7.1f}); largest difference in the mean {np.abs(ours - theirs).max():5.1f} people of 1,001')
-    print(f'runs that died out: {(res.n_R.values[:, -1] < 50).mean():.1%}')
+    print(f'runs that died out: {(res.n_R.values[:, -2] < 50).mean():.1%}')
 
     def run():
         ss.Sim(sim.inputs, verbose=0).run()

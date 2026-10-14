@@ -1,0 +1,9 @@
+framework: epimodel
+model: hiv
+version: 2.6.2
+source: the "HIV Transmission with Care Cascade and PrEP" example of the EpiModel Gallery, examples/hiv/model.R and examples/hiv/module-fx.R in https://github.com/EpiModel/EpiModel-Gallery (rendered at https://epimodel.github.io/EpiModel-Gallery/)
+commit: 5e4f50879f225a13a99a52932ce9b6d2d7f5f705 (8 October 2026)
+license: MIT (the Gallery); EpiModel itself is GPL-3
+language: R
+env: _envs/epimodel
+lines: 405

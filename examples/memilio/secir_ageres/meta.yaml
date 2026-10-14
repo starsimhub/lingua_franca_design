@@ -1,0 +1,9 @@
+framework: memilio
+model: secir_ageres
+version: 2.4.1
+source: https://github.com/SciCompMod/memilio/blob/v2.4.1/pycode/examples/simulation/ode_secir_ageres.py
+commit: v2.4.1 (c2c884ce)
+license: Apache-2.0
+language: Python (bindings to C++)
+env: _envs/memilio
+lines: 45

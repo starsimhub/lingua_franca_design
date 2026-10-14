@@ -1,0 +1,5 @@
+Scenario,Cum_infections,Final_prev,Mean_inc_100py,Pct_diagnosed,Pct_on_ART,Pct_suppressed,Infections_averted
+No intervention,459,0.145,1.81,0,0,0,0
+Cascade (95-95-95),74,0.051,0.14,97.7,91.9,89.8,385
+PrEP (50% coverage),244,0.073,0.8,0,0,0,215
+Cascade + PrEP,45,0.038,0.07,98.1,92.2,90,414

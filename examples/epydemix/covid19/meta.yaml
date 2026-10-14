@@ -1,0 +1,9 @@
+framework: epydemix
+model: covid19
+version: 1.4.0
+source: https://github.com/epistorm/epydemix/blob/v1.4.0/tutorials/07_Covid-19_Example.ipynb (code cells 2 to 13)
+commit: v1.4.0 (e4fc556f); population data from https://github.com/epistorm/epydemix-data at v1.2.0
+license: GPL-3.0
+language: Python
+env: _envs/epydemix
+lines: 161

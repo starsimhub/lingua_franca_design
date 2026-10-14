@@ -1,0 +1,18 @@
+Code Name,Display Name,Format,Default Value,Minimum Value,Maximum Value,Function,Targetable,Databook Page
+birth_rate,Annual number of births,number,,0,,,n,flows
+num_acq,Estimated number of new HIV infections annually,number,,0,,,n,flows
+acq_rate,Acquisition rate,rate,,0,,"num_acq/max(sus,num_acq)",n,
+num_test,Annual number of tests done,number,,0,,,n,flows
+test_yield,Test yield,rate,,0,,undx/(undx+sus),y,
+pos_test,Annual number tested positive,number,,0,,num_test*test_yield,n,
+diag,Test sensitivity,rate,,0,,"pos_test/max(undx,pos_test)",y,
+link_time,Average time taken to be linked to care (years),duration,,0,,,y,flows
+num_initiate,Annual number newly initiated onto treatment,number,,0,,,n,flows
+initiate,Initiation rate,rate,,0,,"num_initiate/max(linked,num_initiate)",y,
+loss,Loss-to-follow-up rate,rate,,0,,,y,flows
+supp_rate,Time after initiating ART to achieve viral suppression (years),duration,0.2,0,,,n,flows
+fail_rate,Treatment failure rate,rate,0.16,0,,,y,flows
+death_hiv,Death rate for those with untreated HIV,rate,0.053,0,,,n,flows
+death_hivtx,Death rate for those with on unsuppressive ART,rate,0.0258534,0,,,n,flows
+death_hivvs,Death rate for those with on suppressive ART,rate,0.01219,0,,,n,flows
+death_other,Background mortality rate,rate,0.015,0,,,n,flows

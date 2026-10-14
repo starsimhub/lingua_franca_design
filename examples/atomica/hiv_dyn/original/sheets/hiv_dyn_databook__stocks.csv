@@ -1,0 +1,27 @@
+Population size,Units,Constant,,2016,2017,2018,2019
+females,Number,,OR,28514100,,,
+males,Number,,OR,27395900,,,
+,,,,,,,
+All PLHIV,Units,Constant,,2016,2017,2018,2019
+females,Number,,OR,3390000,,,
+males,Number,,OR,2540000,,,
+,,,,,,,
+Aware of their status,Units,Constant,,2016,2017,2018,2019
+females,Number,,OR,2440800,,,
+males,Number,,OR,1676400,,,
+,,,,,,,
+Ever in care,Units,Constant,,2016,2017,2018,2019
+females,Number,,OR,2237400,,,
+males,Number,,OR,1384300,,,
+,,,,,,,
+Currently in care,Units,Constant,,2016,2017,2018,2019
+females,Number,,OR,2034000,,,
+males,Number,,OR,1092200,,,
+,,,,,,,
+Currently treated,Units,Constant,,2016,2017,2018,2019
+females,Number,,OR,1728900,,,
+males,Number,,OR,939800,,,
+,,,,,,,
+Virally suppressed,Units,Constant,,2016,2017,2018,2019
+females,Number,,OR,1017000,,,
+males,Number,,OR,508000,,,

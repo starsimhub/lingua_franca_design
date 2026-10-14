@@ -1,0 +1,9 @@
+framework: odin
+model: seir_array
+version: 1.2.7
+source: tests/testthat/examples/seir_array_odin.R at https://github.com/mrc-ide/odin (the age-structured model the README points to, array_odin.R, with a latent period written as a delay), run over the year of its deSolve counterpart, seir_array_deSolve.R
+commit: 1.2.7 (the CRAN release, which has no tag in the repository; sha256 of odin_1.2.7.tar.gz is e707777bbcf2744c25ac20c845fd4e05732a78e66a5553611db0877903abaf86)
+license: MIT
+language: R (the odin modeling language)
+env: _envs/odin
+lines: 53

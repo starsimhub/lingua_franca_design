@@ -21,11 +21,12 @@ places = dict(central_city='Central City', town_1='Town 1', interim_1a='Interim 
 def report(label, res):
     print(label)
     for key,name in dict(total=None, **places).items():
-        ours = res.n_I.values if name is None else res.n_I.select(patch=name).values
-        theirs = np.array(ref['I' if name is None else f'I_{key}'][1])
-        done = res.n_R.values[-1] if name is None else res.n_R.select(patch=name).values[-1]
+        # A stock at index k is the number after step k, on day k+1; the original's start at day 0, and end on day 365, the stop
+        ours = (res.n_I.values if name is None else res.n_I.select(patch=name).values)[:-1]
+        theirs = np.array(ref['I' if name is None else f'I_{key}'][1])[1:]
+        done = res.n_R.values[-2] if name is None else res.n_R.select(patch=name).values[-2]
         ref_done = ref['R' if name is None else f'R_{key}'][1][-1]
-        print(f'  {key:13s} peak infectious {ours.max():9,.0f} on day {ours.argmax():3d} (original {theirs.max():9,.0f} on day {theirs.argmax():3d}); recovered at the end {done:9,.0f} ({ref_done:9,.0f})')
+        print(f'  {key:13s} peak infectious {ours.max():9,.0f} on day {ours.argmax() + 1:3d} (original {theirs.max():9,.0f} on day {theirs.argmax() + 1:3d}); recovered at the end {done:9,.0f} ({ref_done:9,.0f})')
     return
 
 

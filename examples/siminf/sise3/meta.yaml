@@ -1,0 +1,9 @@
+framework: siminf
+model: sise3
+version: 11.1.0
+source: the example in man/events_SISe3.Rd (the same as in man/u0_SISe3.Rd; written in man/examples/SISe3.R and R/SISe3.R) at https://github.com/stewid/SimInf, with the data that the package provides as u0_SISe3 and events_SISe3; the model itself is src/models/SISe3.c
+commit: v11.1.0 (7a78909d; the CRAN release, sha256 of SimInf_11.1.0.tar.gz is bcd4a0ef80edbb8b4fa76cbd9b90b37ee470c81c00a368562ab6cdc18145954e)
+license: GPL-3.0
+language: R (and C, for the built-in model)
+env: _envs/siminf
+lines: 27

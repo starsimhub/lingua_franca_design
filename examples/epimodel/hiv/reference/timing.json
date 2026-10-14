@@ -1,0 +1,7 @@
+{
+  "seconds": 53.9832,
+  "what": "one netsim simulation (1040 weekly steps, 1500 nodes, two network layers), the mean over the 40 reference runs on one core, inside one R session; it excludes starting R and loading EpiModel, and estimating the two networks (netest, 1.2 s, once)",
+  "machine": "x86_64",
+  "cpus": 20,
+  "system": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39"
+}

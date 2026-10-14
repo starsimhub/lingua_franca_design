@@ -9,7 +9,7 @@ sis = ss.Disease(
     recovery  = ss.progression('I -> S', rate=ss.prob(0.05)),
     init      = dict(I=10),
 )
-partners = ss.RandomNet(n_contacts=ss.poisson(0.7), dur=ss.expon(scale=50)) # A mean of 0.7 partners, for a mean of 50 steps
+partners = ss.PartnerNet(n_contacts=0.7, concurrency=0.22, max_contacts=3, dur=50) # 175 partnerships among 500, 110 with two or more, none with four, lasting 50 steps
 sim = ss.Sim(sis, networks=partners, n_agents=500, stop=500)
 
 if __name__ == '__main__':

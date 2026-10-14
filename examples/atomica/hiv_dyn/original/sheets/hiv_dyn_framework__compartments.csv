@@ -1,0 +1,11 @@
+Code Name,Display Name,Is Source,Is Sink,Databook Page
+source,Source,y,n,
+sus,Susceptible,n,n,
+undx,Undiagnosed,n,n,
+dx,Diagnosed,n,n,
+linked,Linked to care,n,n,
+tx,Treated,n,n,
+lost,Lost to follow-up,n,n,
+vs,Virally suppressed (comp),n,n,
+dead_hiv,Dead (HIV/AIDS),n,y,
+dead_other,Dead (other),n,y,

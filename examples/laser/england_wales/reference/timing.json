@@ -1,0 +1,7 @@
+{
+  "seconds": 3.0447,
+  "what": "Running the model once in Python (667,864 agents in 53 places, 3,650 daily steps, on all cores), with the data loaded and the cells before the run already run; the median of 49 runs in one process after a first run of 4.7 s that includes compiling",
+  "machine": "x86_64",
+  "cpus": 20,
+  "system": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39"
+}

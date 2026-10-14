@@ -96,7 +96,12 @@ def sections(text):
 
 def table_rows(text):
     """ The rows of the first Markdown table in a text, as lists of cells, without the header """
-    rows = [line.strip().strip('|').split('|') for line in text.splitlines() if line.startswith('|')]
+    rows = []
+    for line in text.splitlines():
+        if line.startswith('|'):
+            rows.append(line.strip().strip('|').split('|'))
+        elif rows: # The end of the first table
+            break
     return [[cell.strip() for cell in row] for row in rows[2:]]
 
 
