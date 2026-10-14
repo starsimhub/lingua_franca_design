@@ -1,0 +1,9 @@
+Code Name,Display Name,Databook Page,Databook Order,Setup Weight,Components,Denominator,Default Value
+ch_all,Total number of entities,state_variables,,,"sus, inf, rec",,
+ch_prev,Prevalence,state_variables,,,inf,ch_all,
+ch_infrec,Number ever infected,,,,"inf, rec",,
+ch_infsus,Number infected or susceptible,,,,"inf, sus",,
+ch_newinf,Number not at risk of death,,,,"sus, rec",,
+ch_propinfrec,Proportion ever infected,,,,ch_infrec,ch_all,
+ch_propinfsus,Proportion infected or susceptible,,,,ch_infsus,ch_all,
+ch_propnewinf,Proportion not at risk of death,,,,ch_newinf,ch_all,

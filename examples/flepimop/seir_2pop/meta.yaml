@@ -1,0 +1,9 @@
+framework: flepimop
+model: seir_2pop
+version: gempyor 2.1+ad62f2d0
+source: https://github.com/HopkinsIDD/flepiMoP/blob/ad62f2d00082de5b60e62100be7b24fddc6931da/examples/tutorials/config_sample_2pop.yml, with model_input/geodata_sample_2pop.csv, mobility_sample_2pop.csv, and ic_2pop.csv from the same folder
+commit: ad62f2d0 (main, 27 June 2025; the latest tag, v1.2, predates both the tutorial and the flepimop simulate command)
+license: GPL-3.0
+language: YAML (a flepiMoP configuration)
+env: _envs/flepimop
+lines: 42

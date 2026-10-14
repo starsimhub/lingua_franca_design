@@ -1,0 +1,5 @@
+,sus,inf,rec,dead
+sus,,foi,,susdeath
+inf,,,recrate,"susdeath,infdeath"
+rec,,,,susdeath
+dead,,,,

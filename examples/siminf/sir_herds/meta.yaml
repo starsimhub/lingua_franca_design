@@ -1,0 +1,9 @@
+framework: siminf
+model: sir_herds
+version: 11.1.0
+source: the example in man/events_SIR.Rd (written in R/SIR.R) at https://github.com/stewid/SimInf, with the data that the package provides through u0_SIR() and events_SIR()
+commit: v11.1.0 (7a78909d; the CRAN release, sha256 of SimInf_11.1.0.tar.gz is bcd4a0ef80edbb8b4fa76cbd9b90b37ee470c81c00a368562ab6cdc18145954e)
+license: GPL-3.0
+language: R
+env: _envs/siminf
+lines: 12

@@ -1,0 +1,9 @@
+framework: LASER
+model: hub_spoke_seir
+version: laser-generic 1.1.0, laser-core 1.0.5
+source: https://github.com/InstituteforDiseaseModeling/laser-generic/blob/v1.1.0/docs/tutorials/notebooks/grid_examples.ipynb (the last two sections, "Non-grid() custom scenario" and "SEIR model")
+commit: v1.1.0 (e35ce1de)
+license: MIT
+language: Python
+env: _envs/laser
+lines: 50

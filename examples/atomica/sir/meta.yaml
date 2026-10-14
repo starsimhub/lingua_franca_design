@@ -1,0 +1,9 @@
+framework: atomica
+model: sir
+version: 1.32.4
+source: atomica/library/sir_framework.xlsx and sir_databook.xlsx in the atomica 1.32.4 package from PyPI (https://github.com/atomicateam/atomica/tree/main/atomica/library), run as at.demo('sir') does
+commit: none (the PyPI release 1.32.4, dated 2026-09-01; upstream has no tag for it)
+license: MIT
+language: Excel spreadsheets (run from Python)
+env: _envs/atomica
+lines: 62

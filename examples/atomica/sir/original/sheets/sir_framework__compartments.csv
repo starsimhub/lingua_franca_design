@@ -1,0 +1,5 @@
+Code Name,Display Name,Is Source,Is Sink,Is Junction,Databook Page,Databook Order,Setup Weight
+sus,Susceptible,n,n,n,state_variables,,
+inf,Infected,n,n,n,,,
+rec,Recovered,n,n,n,,,
+dead,Dead,n,y,n,,,

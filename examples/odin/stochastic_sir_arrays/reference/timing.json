@@ -1,0 +1,7 @@
+{
+  "seconds": 0.931,
+  "what": "Rscript, as one command: starting R, generating and compiling the C code with odin::odin (about 1.3 s), and one run of 100 groups for 100 steps (the run itself, `x$run(0:100)`, takes about 2.0 ms)",
+  "machine": "x86_64",
+  "cpus": 20,
+  "system": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39"
+}

@@ -1,0 +1,7 @@
+Code Name,Display Name,Format,Databook Page,Targetable,Databook Order,Default Value,Function
+transpercontact,Transmission probability per contact,Probability,parameters,y,,0.0008,
+contacts,Number of contacts annually,,parameters,y,,80,
+recrate,Average duration of infections (years),Duration,parameters,y,,0.5,
+infdeath,Death rate for infected people,Rate,parameters,y,,0.016,
+susdeath,Death rate for susceptible people,Rate,parameters,y,,0.008,
+foi,Force of infection,Rate,,,,,(1 - (1-ch_prev*transpercontact)**floor(contacts)*(1-ch_prev*transpercontact*(contacts-floor(contacts))))*(1-susdeath)

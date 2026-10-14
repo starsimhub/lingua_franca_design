@@ -1,0 +1,9 @@
+framework: epimodel
+model: sis-network
+version: 2.6.2
+source: the "Network Model Pipeline" section (steps 1 to 3) of the vignette "Introduction to EpiModel", https://cran.r-project.org/web/packages/EpiModel/vignettes/Intro.html (source at https://github.com/EpiModel/EpiModel/blob/v2.6.2/vignettes/Intro.Rmd)
+commit: v2.6.2 (baeea356)
+license: GPL-3
+language: R
+env: _envs/epimodel
+lines: 13

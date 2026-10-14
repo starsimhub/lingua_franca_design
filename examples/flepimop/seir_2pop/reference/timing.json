@@ -1,0 +1,7 @@
+{
+  "seconds": 8.4071,
+  "what": "flepimop simulate config_sample_2pop.yml, as one command (nearly all of it is starting Python and compiling the integrator with Numba, which is done again on every run)",
+  "machine": "x86_64",
+  "cpus": 20,
+  "system": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39"
+}

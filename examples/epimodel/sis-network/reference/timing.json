@@ -1,0 +1,7 @@
+{
+  "seconds": 3.882,
+  "what": "netsim with nsims = 1 (500 steps, 500 nodes), the median of 5 after a warm-up, inside one R session; it excludes starting R and loading EpiModel, and estimating the network (netest, 0.66 s, once)",
+  "machine": "x86_64",
+  "cpus": 20,
+  "system": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39"
+}

@@ -1,0 +1,9 @@
+framework: camdl
+model: sir
+version: 0.1.0+e8219d1c
+source: pycamdl/examples/sir.camdl in a local checkout of https://github.com/vsbuffalo/camdl
+commit: e8219d1c (the file itself is not yet committed upstream)
+license: MIT
+language: camdl
+env: _envs/camdl
+lines: 30

@@ -1,0 +1,7 @@
+{
+  "seconds": 0.0093,
+  "what": "camdl simulate --backend ode, as one command (the model is already compiled and cached)",
+  "machine": "x86_64",
+  "cpus": 20,
+  "system": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39"
+}

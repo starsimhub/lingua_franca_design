@@ -1,0 +1,7 @@
+{
+  "seconds": 0.0063,
+  "what": "model.run_simulations(Nsim=1): one stochastic run of 123 daily steps, in process, without the import or the data download (the 100 runs of the original take 0.56 s)",
+  "machine": "x86_64",
+  "cpus": 20,
+  "system": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39"
+}

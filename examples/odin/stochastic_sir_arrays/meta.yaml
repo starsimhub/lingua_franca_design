@@ -1,0 +1,9 @@
+framework: odin
+model: stochastic_sir_arrays
+version: 1.2.7
+source: inst/examples/discrete_stochastic_sir_arrays.R at https://github.com/mrc-ide/odin, run as in the "discrete" vignette (vignettes/discrete.Rmd)
+commit: 1.2.7 (the CRAN release, which has no tag in the repository; sha256 of odin_1.2.7.tar.gz is e707777bbcf2744c25ac20c845fd4e05732a78e66a5553611db0877903abaf86; the file is the same on master, d8ff0208)
+license: MIT
+language: R (the odin modeling language)
+env: _envs/odin
+lines: 27

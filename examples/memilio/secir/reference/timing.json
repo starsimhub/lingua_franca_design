@@ -1,0 +1,7 @@
+{
+  "seconds": 0.6293,
+  "what": "python ode_secir_simple.py, as one command (nearly all of it is starting Python, importing, and drawing the plot; the call to simulate() itself takes about 0.08 ms, for 51 adaptive time points)",
+  "machine": "x86_64",
+  "cpus": 20,
+  "system": "Linux-6.8.0-146-generic-x86_64-with-glibc2.39"
+}

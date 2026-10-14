@@ -1,0 +1,14 @@
+Transmission probability per contact,Provenance,Units,Uncertainty,Constant,,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018
+adults,Framework-supplied default,Probability,,0.008,OR,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,
+Number of contacts annually,Provenance,Units,Uncertainty,Constant,,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018
+adults,Framework-supplied default,N.A.,,80,OR,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,
+Average duration of infections (years),Provenance,Units,Uncertainty,Constant,,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018
+adults,Framework-supplied default,Duration (years),,5,OR,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,
+Death rate for infected people,Provenance,Units,Uncertainty,Constant,,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018
+adults,Framework-supplied default,Rate (per year),,0.016,OR,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,
+Death rate for susceptible people,Provenance,Units,Uncertainty,Constant,,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018
+adults,Framework-supplied default,Rate (per year),,0.008,OR,,,,,,,,,,,,,,,,,,,

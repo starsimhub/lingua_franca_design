@@ -1,0 +1,12 @@
+framework: emulsion
+model: sir
+version: 1.1.1
+source: models/features/compart_SIR.yaml, IBM_SIR.yaml, and hybrid_SIR.yaml in the source distribution at https://pypi.org/project/emulsion/1.1.1/ (the repository, https://git.renater.fr/emulsion-public.git, could not be reached)
+commit: 1.1.1 (the PyPI release; sha256 of emulsion-1.1.1.tar.gz is bb7bbbb73e7715fc28b66037dc614a3c3f571ff03fe1802cae412f763002c79e)
+license: Apache-2.0
+language: YAML (the EMULSION modeling language)
+env: _envs/emulsion
+lines:
+  compartment: 81
+  ibm: 86
+  hybrid: 92

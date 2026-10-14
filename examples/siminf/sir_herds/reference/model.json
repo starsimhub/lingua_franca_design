@@ -1,0 +1,38 @@
+{
+  "nodes": 1600,
+  "compartments": [
+    "S",
+    "I",
+    "R"
+  ],
+  "transitions": [
+    "S -> beta*S*I/(S+I+R) -> I",
+    "I -> gamma*I -> R"
+  ],
+  "beta": 0.16,
+  "gamma": 0.01,
+  "times": {
+    "first": 1,
+    "last": 1460,
+    "step": 1,
+    "unit": "day"
+  },
+  "initial_total": {
+    "S": 196168,
+    "I": 1,
+    "R": 0
+  },
+  "events": {
+    "exit": 182535,
+    "enter": 182685,
+    "intTrans": 0,
+    "extTrans": 101472
+  },
+  "events_total": 466692,
+  "files": {
+    "initial": "u0.csv",
+    "events": "events.csv.gz",
+    "events_summary": "events_summary.csv",
+    "select_matrix": "select_matrix.csv"
+  }
+}

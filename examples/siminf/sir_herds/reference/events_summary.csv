@@ -1,0 +1,5 @@
+event,count,individuals,select,shift,proportion,first_time,last_time
+exit,182535,182535,4,0,0,1,1460
+enter,182685,182685,1,0,0,1,1460
+intTrans,0,0,,,,,
+extTrans,101472,101472,4,0,0,1,1460
