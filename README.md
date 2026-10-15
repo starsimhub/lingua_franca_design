@@ -1,6 +1,6 @@
 # A lingua franca for epi modeling
 
-**Version:** 1.0 | **Date:** 2026.10.13 | **Status:** Implementation in progress
+**Version:** 1.1 | **Date:** 2026.10.15 | **Status:** Implementation in progress
 
 ## Introduction
 
