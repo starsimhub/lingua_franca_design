@@ -9,7 +9,7 @@ The translation of [examples/summer2/seir-age-clinical](../../../examples/summer
 | Lines of model code | 134 (55 for the model alone) | 15 | The original builds and runs the model seven times to request its outputs one group at a time; in Starsim every output but one is there without being asked for, by selecting groups of a result (the proportion in hospital is a division in `compare.py`) |
 | One ODE run | 0.0008 s | 0.024 s, or 0.0002 s for a run of a sim that is already built | The original takes 3.5 s the first time, to import JAX and build and compile all seven models; after that, Starsim is about 4 times faster |
 | Results, ODE | | | Every compartment within 0.0006 people of 1,000; every derived output within 0.005% of its peak. From the same start, the stratified model and the same model written as four states (`as_states()` in `compare.py`) agree to 2e-14 people |
-| Results, other solvers | | | The mean of 100 stochastic runs ends with 554 recovered and the agent-based runs with 566, against 580 in the ODE, probably because the epidemic sometimes dies out from its 10 initial cases |
+| Results, other solvers | | | The mean of 100 stochastic runs ends with 554 recovered and the agent-based runs with 568, against 580 in the ODE, probably because the epidemic sometimes dies out from its 10 initial cases |
 
 Measured on 14 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine.
 

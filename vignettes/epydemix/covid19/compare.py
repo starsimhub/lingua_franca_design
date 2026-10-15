@@ -27,8 +27,8 @@ scenarios = ['persistence', 'moderate', 'high']
 
 
 def weekly(daily, times):
-    """ Sum daily flows (index 0 is the first day) over the weeks ending at each reference time (days to the end of the week's last day) """
-    return np.array([daily[..., max(0, int(t) - 7):int(t)].sum(axis=-1) for t in times]).T
+    """ Sum daily flows over the weeks ending at each reference time (days to the end of the week's last day; a flow at index k is the number during the step ending then) """
+    return np.array([daily[..., max(0, int(t) - 6):int(t) + 1].sum(axis=-1) for t in times]).T
 
 
 def show(label, ours, key):
@@ -43,7 +43,7 @@ def show(label, ours, key):
 
 def runs(scenario, n, pars=None):
     """ A function giving a result of n runs of a scenario, with a row for each run """
-    sim = model.sim.new(verbose=0, pars=pars, interventions=model.reopening.get(scenario))
+    sim = model.sim.new(verbose=0, pars=pars, interventions=model.reopening.get(scenario), stop='2020-08-03') # To the end of 2 August, the original's last day
     if scenario == 'persistence': # Nothing but compartments: all the runs in one call to the kernel
         res = sim.run(n_runs=n).results.covid
         return lambda key, **kw: res[key].select(**kw).values if kw else res[key].values
@@ -60,7 +60,7 @@ if __name__ == '__main__':
         if scenario == 'persistence':
             for group in data['groups']:
                 show(f'  deaths {group}', weekly(get('deaths', age=group), times).mean(axis=0), f'fixed_{scenario}_deaths_{group}')
-            for name,state in dict(E='n_E', I='n_I', R='n_R', D='n_D').items(): # The original's are at the end of each day, ours at the start of the next
+            for name,state in dict(E='n_E', I='n_I', R='n_R', D='n_D').items(): # The original's day k is at the end of that day, ours at index k (index 0 is the start)
                 show(f'  {name}', get(state).mean(axis=0)[1:], f'fixed_{scenario}_{name}')
             print(f'  total deaths by 2 August: {get("cum_deaths")[:, -1].mean():,.0f} (original {ref[f"fixed_{scenario}_D4"][1][-1]:,.0f})')
 

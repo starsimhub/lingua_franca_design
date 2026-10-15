@@ -8,7 +8,7 @@ The translation of [examples/laser/england_wales](../../../examples/laser/englan
 |---|---|---|---|
 | Lines of model code | 126 | 62 | 12 lines are over 100 characters, so count twice. The original's 126 are for one run; with the notebook's sweep over 150 parameter sets, 172 |
 | One run | 3.0 s | 131 s | 667,864 agents for 3,650 days. LASER runs on all 20 cores; Starsim on one. Starsim's time includes building the sim |
-| Results | | | **Agree.** Over the 10 years, 106,466 infections against 106,639 (means of 5 and 50 runs; each of the 5 Starsim runs is inside the original's 5% to 95% range of 103,139 to 108,758); in each of seven places from Norwich to Southwold within 3.4%; 529,390 people at the end against 529,833, and 43,041 deaths in the first year against 43,037. The share of weeks with no infections in each place, in the second half, correlates at 0.99 across places, but is a little lower on average (0.59 against 0.63) |
+| Results | | | **Agree.** Over the 10 years, 104,092 infections against 106,639 (means of 5 and 50 runs; four of the 5 Starsim runs are inside the original's 5% to 95% range of 103,139 to 108,758, and one is below it, at 101,352); in each of seven places from Norwich to Southwold within 3.8%; 529,399 people at the end against 529,833, and 43,114 deaths in the first year against 43,037. The share of weeks with no infections in each place, in the second half, correlates at 0.99 across places, but is a little lower on average (0.59 against 0.63) |
 
 Measured on 14 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine.
 

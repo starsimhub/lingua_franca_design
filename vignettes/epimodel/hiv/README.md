@@ -14,12 +14,12 @@ Measured on 14 October 2026 (after the fixes below) with Starsim 4.0.0 (the `v4`
 
 | Scenario | Cumulative infections | Final prevalence | Incidence per 100 person-years (second half) | Diagnosed, on ART, suppressed (second half) | PrEP among the HIV-negative |
 |---|---|---|---|---|---|
-| No intervention | 479 (original 459) | 16.2% (14.4%) | 2.04 (1.80) | | |
-| Cascade | 69 (74) | 4.8% (5.1%) | 0.13 (0.14) | 97.5%, 91.7%, 89.5% (97.6%, 91.9%, 89.7%) | |
-| PrEP | 226 (244) | 6.9% (7.3%) | 0.75 (0.80) | | 12.1% (12.0%) |
-| Both | 42 (45) | 3.9% (3.8%) | 0.071 (0.074) | 98.4%, 92.6%, 90.5% (98.0%, 92.1%, 89.9%) | 12.1% (12.0%) |
+| No intervention | 480 (original 459) | 16.4% (14.4%) | 2.06 (1.80) | | |
+| Cascade | 75 (74) | 5.0% (5.1%) | 0.15 (0.14) | 97.1%, 91.3%, 89.1% (97.6%, 91.9%, 89.7%) | |
+| PrEP | 237 (244) | 7.4% (7.3%) | 0.81 (0.80) | | 12.1% (12.0%) |
+| Both | 42 (45) | 3.9% (3.8%) | 0.075 (0.074) | 98.2%, 92.3%, 90.2% (98.0%, 92.1%, 89.9%) | 12.1% (12.0%) |
 
-Prevalence at 5 and 10 years agrees within 0.6 percentage points in every scenario. With no intervention, 234 ± 7 people have HIV at the end against 210 (the original's 10 runs range from 154 to 247, so its mean has a standard error of about 9); with PrEP alone, 107 ± 4 against 111. The likely cause is the casual network: Starsim's has the targets (a mean degree of 0.30, and 10.2% with two or more casual partners), while the original's undershoots them (0.28 and 8.9% with no intervention, 0.30 and 9.6% with PrEP). The main network is close in both (a mean degree of 0.49 to 0.50 against 0.49, and 4.0% to 4.1% with two main partners against 4.0% to 4.2%).
+Prevalence at 5 and 10 years agrees within 0.6 percentage points in every scenario. With no intervention, 239 ± 5 people have HIV at the end against 210 (the original's 10 runs range from 154 to 247, so its mean has a standard error of about 9); with PrEP alone, 115 ± 4 against 111. The likely cause is the casual network: Starsim's has the targets (a mean degree of 0.30, and 10.2% with two or more casual partners), while the original's undershoots them (0.28 and 8.9% with no intervention, 0.30 and 9.6% with PrEP). The main network is close in both (a mean degree of 0.49 to 0.50 against 0.49, and 4.0% to 4.1% with two main partners against 4.0% to 4.2%).
 
 ## What was declared and what was not
 

@@ -8,10 +8,10 @@ The translation of [examples/emulsion/quickstart](../../../examples/emulsion/qui
 |---|---|---|---|
 | Lines of model code | 280 | 75 | 66 lines, nine of them over 100 characters, so counted twice; docstrings and comments are not counted. About 80 of the original's lines are descriptions, names, and colors. The first version, before `where=` and comparisons in rates, was 76 |
 | One run | 1.46 s | 0.25 s | The original as a whole command, of which EMULSION reports 0.52 s for the simulation; Starsim's includes building the sim |
-| Results, as written | | | **Agree, except the quarantine.** The mean of 200 runs of every count is within 1.3 animals of the original's at every step, except `I`, `R`, and `Q` in the first weeks of each quarantine period (up to 6.5 animals), since EMULSION starts the quarantine two steps before April 1 (finding 7) |
-| Results, with EMULSION's quarantine | | | **Agree.** With the quarantine period moved to the steps EMULSION applies it on (`compare.py` does this by `pars=`), every count is within 1.8 animals at every step; `I` within 0.7 and `Q` within 0.5. Starsim ends with about 1.5 fewer animals (64.5 against 65.9), about two standard errors |
+| Results, as written | | | **Agree, except the quarantine.** The mean of 200 runs of every count is within 2.3 animals of the original's at every step, except `I`, `R`, and `Q` in the first weeks of each quarantine period (up to 6.5 animals), since EMULSION starts the quarantine two steps before April 1 (finding 7) |
+| Results, with EMULSION's quarantine | | | **Agree.** With the quarantine period moved to the steps EMULSION applies it on (`compare.py` does this by `pars=`), every count is within 1.4 animals at every step; `I` within 0.9 and `Q` within 0.5. Starsim ends with about 1.1 fewer animals (64.8 against 65.9), about two standard errors |
 
-Measured on 14 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine. Starsim's step `k` is compared with EMULSION's row `k + 1`: both are the state after `k + 1` steps, since Starsim has no row for the initial state. The revision for the fixes below gave the same numbers to the last digit, since the same random draws are made.
+Measured on 14 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine. Row `k` of the analyzer in `compare.py` is compared with EMULSION's row `k`: both are the state after `k` steps (row 0 is the start). The revision for the fixes below gave the same numbers to the last digit, since the same random draws are made.
 
 ## What was declared and what was not
 

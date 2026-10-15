@@ -8,7 +8,7 @@ The translation of [examples/laser/hub_spoke_seir](../../../examples/laser/hub_s
 |---|---|---|---|
 | Lines of model code | 50 | 16 | |
 | One agent-based run | 0.78 s | 1.3 s | The original has 1,750,000 agents; the Starsim run has 175,000, each standing for ten people |
-| Results | | | **Agree.** 1,533,050 recovered at the end, against 1,532,298, and within 1% in each place shown; peaks are within 4% in size and 7 days in time (one run of each) |
+| Results | | | **Agree.** 1,533,300 recovered at the end, against 1,532,298, and within 2% in each place shown; peaks are within 4% in size (11% in Interim 1A, the smallest place shown) and 7 days in time (one run of each) |
 
 Measured on 13 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine.
 

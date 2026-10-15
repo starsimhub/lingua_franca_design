@@ -20,9 +20,9 @@ names = dict(S='Susceptible', E='Exposed', INS='InfectedNoSymptoms', ISy='Infect
 if __name__ == '__main__':
     res = sim.new(verbose=0).run().results.secir
     for key,name in names.items():
-        ours, theirs = res[f'n_{key}'].values[:-1], np.array(ref[name][1])[1:] # A stock at index k is the number after step k, the original's at day k+1
+        ours, theirs = res[f'n_{key}'].values, np.array(ref[name][1]) # A stock at index k is the number on day k, in both
         print(f'{name:20s} at the end {ours[-1]:9.1f} (original {theirs[-1]:9.1f}); largest difference {np.abs(ours - theirs).max():7.1f} people')
-    dead = np.append(0, res.cum_death.values[:-1]) # Deaths up to the start of each day
+    dead = res.cum_death.values # Deaths up to each day
     print(f'{"Dead":20s} at the end {dead[-1]:9.1f} (original {ref["Dead"][1][-1]:9.1f}); largest difference {np.abs(dead - np.array(ref["Dead"][1])).max():7.1f} people')
 
     def run():

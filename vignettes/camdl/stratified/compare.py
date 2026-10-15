@@ -25,8 +25,8 @@ def worst(res, prefix):
     for age,label in ages.items():
         for patch in ['north', 'south']:
             ours = res.n_I.select(age=label, patch=patch).values
-            ours = (ours.mean(axis=0) if ours.ndim == 2 else ours)[:-1] # A stock at index k is the number after step k ...
-            theirs = np.array(ref[f'{prefix}_I_{age}_{patch}'][1])[1:] # ... and the original's at time k+1
+            ours = ours.mean(axis=0) if ours.ndim == 2 else ours # A stock at index k is the number at time k, in both
+            theirs = np.array(ref[f'{prefix}_I_{age}_{patch}'][1])
             out[f'{age}_{patch}'] = np.abs(ours - theirs).max()/theirs.max()
     return out
 

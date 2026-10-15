@@ -25,8 +25,9 @@ n_days = years*365
 
 
 def weekly(vals):
+    """ Weekly totals of a flow, whose value at index k is the number during the step ending on day k (so the first, at the start, is 0) """
     weeks = n_days//7
-    return np.asarray(vals)[:weeks*7].reshape(weeks, 7).sum(axis=1)
+    return np.asarray(vals)[1:weeks*7 + 1].reshape(weeks, 7).sum(axis=1)
 
 
 def run(seed):
@@ -37,7 +38,7 @@ def run(seed):
     out = dict(new_infections=weekly(res.infection.values), births=weekly(res.births.values), deaths=weekly(s.results.new_deaths.values))
     for place in places:
         out[f'new_infections_{place.lower()}'] = weekly(res.infection.select(patch=place).values)
-    for key in 'SEIR':
+    for key in 'SEIR': # A stock at index k is the number on day k, in both (day 0 is the start)
         out[key] = res[f'n_{key}'].values
     by_place = np.array([weekly(res.infection.select(patch=name).values) for name in names])
     out['prop_zero'] = (by_place[:, by_place.shape[1]//2:] == 0).mean(axis=1)

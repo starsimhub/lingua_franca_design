@@ -21,16 +21,16 @@ cascade = dict(plhiv='all_people', diagnosed='all_dx', treated='all_tx')
 
 def worst(res, scen):
     """ The largest difference in any compartment of either sex, and in the cascade, as a share of the largest value of each """
-    # A stock at index k is the number after step k, and the original's at year k+1: compare from 2017 to 2035
+    # A stock at index k is the number in year k after the start, in both: compare from 2016 to 2035
     out = {}
     for comp in comps:
         for sex in ['females', 'males']:
-            ours, theirs = res[f'n_{comp}'].select(sex=sex).values[:-1], np.array(ref[f'{scen}_{sex}_{comp}'][1])[1:]
+            ours, theirs = res[f'n_{comp}'].select(sex=sex).values, np.array(ref[f'{scen}_{sex}_{comp}'][1])
             out[f'{sex}_{comp}'] = np.abs(ours - theirs).max()/theirs.max()
     for ours,theirs in cascade.items():
         for sex in ['females', 'males']:
-            vals = np.array(ref[f'{scen}_{sex}_{theirs}'][1])[1:]
-            out[f'{sex}_{ours}'] = np.abs(res[ours].select(sex=sex).values[:-1] - vals).max()/vals.max()
+            vals = np.array(ref[f'{scen}_{sex}_{theirs}'][1])
+            out[f'{sex}_{ours}'] = np.abs(res[ours].select(sex=sex).values - vals).max()/vals.max()
     return out
 
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
         res = sim.new(verbose=0, pars=pars).run().results.hiv
         diffs = worst(res, scen)
         key = max(diffs, key=diffs.get)
-        vs = {sex: (res.n_vs.select(sex=sex)[-2], ref[f'{scen}_{sex}_vs'][1][-1]) for sex in ['females', 'males']}
+        vs = {sex: (res.n_vs.select(sex=sex)[-1], ref[f'{scen}_{sex}_vs'][1][-1]) for sex in ['females', 'males']}
         print(f'{scen:15s} largest difference {diffs[key]:.2g} ({key}); virally suppressed in 2035: ' + ', '.join(f'{k} {a:,.0f} (original {b:,.0f})' for k,(a,b) in vs.items()))
 
     def run(pars={}):

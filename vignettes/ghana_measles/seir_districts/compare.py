@@ -22,17 +22,17 @@ n_runs = 20
 
 
 def monthly(res, key):
-    """ A daily flow summed by month """
-    months = [str(t)[:7].replace('.', '-') for t in res.timevec]
-    return pd.Series(res[key].values, index=months).groupby(level=0, sort=False).sum()
+    """ A daily flow summed by month (a flow at index k is the number during the step ending on day k, so during day k-1) """
+    months = [str(t)[:7].replace('.', '-') for t in res.timevec[:-1]]
+    return pd.Series(res[key].values[1:], index=months).groupby(level=0, sort=False).sum()
 
 
 def run(seed):
     res = sim.new(verbose=0, rand_seed=seed).run().results.measles
     by_district = res.onset.by('district')
-    after = np.array([str(t)[:4] >= '2020' for t in res.timevec])
-    regions = pd.Series(by_district.values[after].sum(axis=0), index=[col.split(':')[1] for col in by_district.columns]).groupby(level=0).sum()
-    end = [str(t)[:10] for t in res.timevec].index('2025.12.01') - 1 # The original's last value is at the start of the last month; a stock at index k is the number after step k
+    after = np.array([str(t)[:4] >= '2020' for t in res.timevec[:-1]]) # By the day each step starts on, as in monthly()
+    regions = pd.Series(by_district.values[1:][after].sum(axis=0), index=[col.split(':')[1] for col in by_district.columns]).groupby(level=0).sum()
+    end = [str(t)[:10] for t in res.timevec].index('2025.12.01') # The original's last value is at the start of the last month
     return sc.objdict(infections=monthly(res, 'onset'), cases=monthly(res, 'cases'), regions=regions, S=res.n_S.values[end], R=res.n_R.values[end])
 
 

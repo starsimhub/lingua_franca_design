@@ -27,6 +27,8 @@ A build MUST generate, for every module with states and transitions:
 - `<transition>` for every named transition: the number of people who made that transition during each step (a flow, not a stock), named exactly as the transition is;
 - `cum_<transition>`: its running total.
 
+Results follow the convention of other modeling frameworks, under every solver: a result has one value for each time point of the sim, from `start` to `stop`. `n_<state>[ti]` is the number in the state at time point `ti` (so `n_<state>[0]` is the number at the start), and `<transition>[ti]` is the number who made the transition during the step that ends at time point `ti` (so it is 0 at the start). So if nobody has recovered at the start and 10 people recover in the first step, `n_R[0]` is 0 and `n_R[1]` and `recovery[1]` are both 10, and `n_R[ti] - n_R[ti-1]` is the net flow into the state in the step that ends at `ti`. A sim with `stop=T` takes a step from each time point but the last, so it ends at `T`. A declared model takes values that vary in time at the start of each step (between the time points, an ODE solver takes them where it needs them); a delivery at a time point happens there, between the steps, and is counted there.
+
 Starsim's standard disease results are kept under their existing names, so code and data files written for Starsim carry over. For any disease with transmission, `new_infections` is the total flow through all its transmission transitions, `cum_infections` its running total, and `prevalence` the fraction of the population in its infected states. In the SIR above, `res.new_infections` and `res.infection` are the same series. A result declared by the user under one of these names replaces the default.
 
 What a flow result should be called is open ([19-open-questions.md](19-open-questions.md)). Here it has the transition's name, which matches the model text exactly; Starsim's `new_<transition>` reads better. Until the vignettes have been written both ways, the transition's name is the specified one and `new_infections` exists alongside it.
@@ -114,7 +116,7 @@ An outcome is a reported quantity: a flow worked out from other flows. It covers
 ss.outcome(
     source,               # a transition, another outcome, or a weighted sum of them
     delay      = None,    # time from the source event to this one: a duration, a distribution, or a function of the sim
-    duration   = None,    # if given, also produces n_<name>: the number currently in this outcome
+    duration   = None,    # if given, also produces n_<name>: the number currently in this outcome; a duration (an exponential stay) or a distribution (ss.constant for a fixed stay)
     every      = None,    # a reporting period (ss.weeks(1)): the outcome is totaled over each period
     likelihood = None,    # optional; see below
 )
@@ -161,7 +163,7 @@ sim.plot()
 
 - `data=` takes a file name, a data frame, or an `ss.data(...)` object (below). It has a time column (`date`, `year`, `t`, or `time`) and one column per data series, **named like the result it corresponds to** (`cases`, `deaths`, `prevalence`). With several modules, a column is matched to the one module that has a result of that name, or is written `sir.cases` when the name is ambiguous.
 - A column that matches no result is an error (`E705 UnknownDataColumn`) that lists the result names closest to it, so a typo in a header is caught. `ss.data(..., ignore_extra=True)` drops such columns instead. Data entirely outside the simulated period raises `E704 DataMisaligned`.
-- Data for particular strata is given in long form: extra columns named after dimensions (`age`, `patch`) say which stratum each row belongs to.
+- Data for particular strata is given in long form: extra columns named after dimensions (`age`, `patch`) say which stratum each row belongs to, by the level's label (or position). Each result and stratum is then one data series, named like `cases[age=0-14]` and compared with `cases.select(age='0-14')`; a likelihood or weight given for `cases` applies to every stratum of it.
 - The data need not be on the model's time step. A flow (weekly reported cases) is compared with the model's flow summed over each data interval; a stock or ratio (a prevalence survey) is compared with the model's value at the data's time. The result already knows which it is. The interval assumed for flow data is the spacing of the data and is printed.
 - Results that have data are plotted with it automatically: `sim.plot()` draws the model as a line and the data as points.
 - The data's source and content are hashed with the fitting settings, not with the model ([11-random.md](11-random.md#run-identity)).
@@ -217,7 +219,7 @@ n_I.values                                   # the full array, runs by time
 
 The names `lines=True` and `.values` for "every run" and "the full array" are placeholders and are listed as open.
 
-Where extinction is possible, the MultiSim's results summary (`msim.summarize()`, Starsim's name) SHOULD report it:
+Where extinction is possible, `msim.extinction()` reports it, for each declared disease and scenario: the share of runs with nobody infected at the end (not counting runs that started with nobody infected), and the median time it happened. The MultiSim's results summary (`msim.summarize()`, Starsim's name) SHOULD also report it:
 
 ```text
 extinction: 41% of 500 runs (median time 23 days)

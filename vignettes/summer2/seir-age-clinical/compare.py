@@ -22,13 +22,8 @@ names = dict(zip(clinical, ['Ia', 'Is', 'Ii', 'Ih'])) # As four states
 
 
 def flow(values):
-    """ A flow in each step as summer2 reports it: a rate per unit of time, at the end of the step """
-    return np.append(0, values[:-1]/0.1)
-
-
-def stock(values):
-    """ A number in a state at each of the original's times: Starsim's at index k is the number after step k, and the start is not a result """
-    return np.append(np.nan, values[:-1])
+    """ A flow in each step as summer2 reports it: a rate per unit of time, at the end of the step (as Starsim's is, so the first, at the start, is 0) """
+    return values/0.1
 
 
 def start():
@@ -63,23 +58,23 @@ if __name__ == '__main__':
     ours = dict()
     for age in ages:
         for state in 'SER':
-            ours[f'{state}_{age}'] = stock(res[f'n_{state}'].select(age=age).values)
+            ours[f'{state}_{age}'] = res[f'n_{state}'].select(age=age).values # A stock at index k is the number at the original's time k
         for name in clinical:
-            ours[f'I_{age}_{name}'] = stock(res.n_I.select(age=age, clinical=name).values)
-    stocks = {k:np.abs(v[1:] - ref[k][1:]).max() for k,v in ours.items()}
+            ours[f'I_{age}_{name}'] = res.n_I.select(age=age, clinical=name).values
+    stocks = {k:np.abs(v - ref[k]).max() for k,v in ours.items()}
 
     # The derived outputs: summer2's flows are rates, and its cumulative deaths sum those rates without multiplying by the step, so are 10 times the deaths
     hosp = res.n_I.select(clinical='hospital').values
-    outputs = dict(hospital_occupancy=stock(hosp), prop_infected_hosp=stock(hosp/res.n_I.values), notifications=flow(res.incidence.select(clinical=['isolated', 'hospital']).values))
+    outputs = dict(hospital_occupancy=hosp, prop_infected_hosp=hosp/res.n_I.values, notifications=flow(res.incidence.select(clinical=['isolated', 'hospital']).values))
     for age in ages:
-        outputs[f'accum_death_{age}'] = np.append(0, res.cum_infection_death.select(age=age).values[:-1]) / 0.1
+        outputs[f'accum_death_{age}'] = res.cum_infection_death.select(age=age).values / 0.1
         outputs[f'incidence_{age}'] = flow(res.incidence.select(age=age).values)
         for name in clinical:
             outputs[f'incidence_{age}_{name}'] = flow(res.incidence.select(age=age, clinical=name).values)
     for name in clinical:
         outputs[f'incidence_{name}'] = flow(res.incidence.select(clinical=name).values)
     assert sorted(outputs) == sorted(k for k in ref if k not in ours), 'Every output of the original should be compared'
-    rel = {k:np.abs(v[1:] - ref[k][1:]).max()/np.abs(ref[k]).max() for k,v in outputs.items()}
+    rel = {k:np.abs(v - ref[k]).max()/np.abs(ref[k]).max() for k,v in outputs.items()}
     for label,d,unit in [('compartment', stocks, ' people (of 1,000)'), ('derived output', rel, ' of its peak')]:
         worst = max(d, key=d.get)
         print(f'largest difference in any {label}: {d[worst]:.3g}{unit} ({worst})')
@@ -94,7 +89,7 @@ if __name__ == '__main__':
 
     for solver in ['binomial', 'abm']:
         runs = sim.new(verbose=0, solver=solver, **(dict(n_agents=1000) if solver == 'abm' else {})).run(n_runs=100).results.seir
-        print(f'{solver}: recovered at the end {runs.n_R.values.mean(axis=0)[-2]:.0f} (ODE {res.n_R[-2]:.0f})')
+        print(f'{solver}: recovered at the end {runs.n_R.values.mean(axis=0)[-1]:.0f} (ODE {res.n_R[-1]:.0f})')
 
     def run():
         ss.Sim(sim.inputs, verbose=0).run()

@@ -21,7 +21,7 @@ keys = ['S_1', 'I_1', 'S_2', 'I_2', 'S_3', 'I_3', 'I', 'phi', 'nodes_infected', 
 
 
 def one(seed):
-    """ One run: the series the reference has, by day (Starsim's n[t] is the state on day t, after that day's events, as in SimInf) """
+    """ One run: the series the reference has, by day (Starsim's n[t] is the state after t steps, so after the transitions of SimInf's day t and, as in SimInf, that day's scheduled events) """
     from model import sim
     s = sim.new(rand_seed=seed, verbose=0).run()
     res = s.results.sise3

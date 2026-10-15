@@ -6,24 +6,24 @@ The translation of [examples/siminf/sise3](../../../examples/siminf/sise3). The 
 
 | Measure | Original | Starsim | |
 |---|---|---|---|
-| Lines of model code | 27 | 30 | 13 of the 30 read the data and turn SimInf's events, all four kinds, into a movement register, which the original gets from the package. The disease itself is 17 |
-| One run | 0.10 s | 14 s | Gillespie's method on one thread in both, as compartments (whole animals by herd, with `phi` a real number). The original as one command, starting R and loading the events, takes 1.6 s; building the Starsim sim takes 4 s, most of it reading the events with pandas |
-| Results | | | **Agree within a herd and in the demography; the spread between herds is about 25% slower.** Node 1 and every susceptible count agree on every day checked, and 86% to 98% of the runs are inside SimInf's 5% to 95% range for every series on every day. On day 1,457 the mean of 50 runs has 125 ± 12 herds infected (SimInf: 166, range 24 to 352) and 2,835 ± 267 animals (3,770; 519 to 8,138), about three standard errors low counting the error of SimInf's own mean |
+| Lines of model code | 27 | 33 | 13 of the 33 read the data and turn SimInf's events, all four kinds, into a movement register, which the original gets from the package. The disease itself is 20, three of them to turn SimInf's daily update of `phi` into rates |
+| One run | 0.10 s | 12 s | Gillespie's method on one thread in both, as compartments (whole animals by herd, with `phi` a real number). The original as one command, starting R and loading the events, takes 1.6 s; building the Starsim sim takes 4 s, most of it reading the events with pandas |
+| Results | | | **Agree, within a herd, between herds, and in the demography.** Every series is within about one standard error of SimInf's mean on every day checked, and 80% to 100% of the runs are inside SimInf's 5% to 95% range for every series on every day. On day 1,457 the mean of 50 runs has 184 ± 16 herds infected (SimInf: 166, range 24 to 352) and 4,190 ± 372 animals (3,770; 519 to 8,138) |
 
-Measured on 14 October 2026 with Starsim 4.0.0 (the `v4` branch, with uncommitted changes) on a 20-core x86-64 Linux machine. Earlier versions of this vignette ran as agents (150 s a run), and then as compartments with the aging as a custom intervention (60 lines), before findings 1 to 4 and 6 were fixed.
+Measured on 14 October 2026 with Starsim 4.0.0 (the `v4` branch, with uncommitted changes) on a 20-core x86-64 Linux machine. Earlier versions of this vignette ran as agents (150 s a run), and then as compartments with the aging as a custom intervention (60 lines), before findings 1 to 4, 6, and 8 were fixed.
 
 `compare.py` (50 runs one after another, about 12 minutes) gives, for the mean of the runs (± its standard error) against the mean of SimInf's 200:
 
 | Day | Herds infected | Animals infected | `phi` in node 1 | Infected in node 1 | `S_1` |
 |---|---|---|---|---|---|
-| 92 | 1.16 ± 0.06 (1.16) | 39 ± 3 (41) | 2.18 ± 0.14 (2.28) | 37 ± 2 (40) | 17,089 (17,088) |
-| 183 | 2.1 ± 0.2 (2.3) | 72 ± 3 (75) | 3.81 ± 0.09 (3.90) | 61 ± 1 (63) | 17,822 (17,822) |
-| 365 | 3.1 ± 0.3 (3.4) | 85 ± 6 (88) | 2.36 ± 0.05 (2.39) | 45 ± 1 (44) | 12,085 (12,084) |
-| 729 | 11.6 ± 1.2 (13.0) | 247 ± 23 (288) | 2.35 ± 0.05 (2.33) | 42 ± 1 (41) | 12,038 (12,036) |
-| 1,093 | 40 ± 4 (49) | 876 ± 86 (1,059) | 2.41 ± 0.05 (2.32) | 44 ± 1 (43) | 11,968 (11,959) |
-| 1,457 | 125 ± 12 (166) | 2,835 ± 267 (3,770) | 2.38 ± 0.05 (2.33) | 46 ± 1 (45) | 11,870 (11,819) |
+| 92 | 1.30 ± 0.06 (1.16) | 42 ± 3 (41) | 2.30 ± 0.14 (2.28) | 39 ± 2 (40) | 17,088 (17,088) |
+| 183 | 2.5 ± 0.2 (2.3) | 79 ± 3 (75) | 3.86 ± 0.07 (3.90) | 61 ± 1 (63) | 17,822 (17,822) |
+| 365 | 3.7 ± 0.3 (3.4) | 95 ± 7 (88) | 2.32 ± 0.05 (2.39) | 43 ± 1 (44) | 12,084 (12,084) |
+| 729 | 14.6 ± 1.3 (13.0) | 310 ± 27 (288) | 2.42 ± 0.06 (2.33) | 43 ± 1 (41) | 12,035 (12,036) |
+| 1,093 | 55 ± 5 (49) | 1,185 ± 110 (1,059) | 2.34 ± 0.05 (2.32) | 44 ± 1 (43) | 11,951 (11,959) |
+| 1,457 | 184 ± 16 (166) | 4,190 ± 372 (3,770) | 2.42 ± 0.06 (2.33) | 47 ± 1 (45) | 11,794 (11,819) |
 
-With aging in the register, in SimInf's order (exits, entries, aging, then movements between herds), the susceptible counts now agree to within one or two animals in the calving season, where the custom intervention was off by 80. The herd and animal totals came only slightly closer (125 herds, from 119), so the ordering was not the cause of the slower spread, which is not yet explained: every quantity within a herd agrees, so it is in how infected animals get to new herds or how often they start an outbreak there.
+Starsim's count at index `t` is the number after `t` steps, so after the transitions of SimInf's day `t` and that day's scheduled events, which both apply at the end of day `t` (when Starsim applied them at the start of the next step instead, the susceptible counts differed by exactly the day's events, up to about 100 animals). With aging in the register, in SimInf's order (exits, entries, aging, then movements between herds), the susceptible counts agree to within one or two animals in the calving season, where the custom intervention was off by 80. The herd and animal totals came only slightly closer (125 herds, from 119): the spread between herds was slower for the two reasons in finding 8.
 
 ## What was declared and what was not
 
@@ -45,6 +45,6 @@ Everything is declared. The six compartments are states, and the infectious pres
 
 6. **Fixed: no yearly cycle for a step function.** The seasonal decay is now one line, `ss.timeseries({0: ss.perday(0.1), 182: ss.perday(0.125)}, period=ss.years(1))`.
 
-7. **Speed.** 14 s a run, against 0.10 s for SimInf: from 150 s as agents. Building the sim takes another 4 s.
+7. **Speed.** 12 s a run, against 0.10 s for SimInf: from 150 s as agents. Building the sim takes another 4 s.
 
-8. **Open: the spread between herds is about 25% slower than in SimInf** (125 ± 12 herds infected on day 1,457 against 166), though everything within a herd agrees. Not yet explained; it may be in how an animal that is moved carries its infection, or in how often one infected animal starts an outbreak in a clean herd, where `phi` starts at zero.
+8. **Fixed: the spread between herds was about 25% slower than in SimInf** (125 ± 12 herds infected on day 1,457 against 166), though everything within a herd agreed. Two reasons, both in how `phi` is updated. (a) SimInf updates `phi` once a day, after the day's scheduled events, from the animals each herd has after them, so an infected animal that moves sheds into its new herd's `phi` from the day it arrives; Starsim settled `phi` before the register's events, which cost each infected animal that moved about a day of shedding in its new herd. Under Gillespie by place, Starsim now settles counts after the step's events, as SimInf does, which alone gave 187 ± 24 herds (25 runs). (b) SimInf's update is a daily map, `phi*(1 - beta) + alpha*I/n`, not the ODE it approximates; the model now uses the continuous rates that give the same `phi` at the end of each day (a decay of `-log(1 - beta)`, and shedding scaled to match), which made the growth of an outbreak in a newly infected herd about 5% faster, as in SimInf (in 20,000 herds each starting with one infected animal, 7.34 ± 0.08 infected on day 100, against SimInf's 7.27 ± 0.08). Found by running that experiment in both, and then reading SimInf's solver loop (`SimInf_solver_ssm.c`: events, then the post-time-step update of `phi`).

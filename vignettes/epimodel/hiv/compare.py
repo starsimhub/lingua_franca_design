@@ -21,27 +21,28 @@ for k,(t,v) in tools.read_results(example).items(): # Weeks 1 to 1040, with NaN 
     ref[k] = np.full(1040, np.nan)
     ref[k][np.array(t, dtype=int) - 1] = v
 n_runs = 20 # The reference has 10 of each scenario
-late = slice(520, 1040) # The second half, as in the original's summary
+weeks = slice(1, 1040) # Weeks 2 to 1040: index k is week k+1 in both (the start is week 1), for a stock the number then and for a flow the number during the step ending then
+late = slice(519, 1039) # The second half (weeks 521 to 1040), as in the original's summary
 
 
 def ours(msim):
-    """ The original's measures, for each run: one row a step from the first (the initial state) to week 1040 """
+    """ The original's measures, for each run: one row a week, from week 2 to week 1040 """
     res = msim.results.hiv
-    get = lambda r: np.atleast_2d(r.values)[:, :1040]
+    get = lambda r: np.atleast_2d(r.values)[:, weeks]
     inf, sus = get(res.infected), get(res.n_S)
     care = {k:get(res.infected.select(care=k)) for k in ['undx', 'art', 'supp']}
     out = sc.objdict(num=inf + sus, i=inf, s=sus, si=get(res.infection), dx=inf - care['undx'], art=care['art'] + care['supp'], supp=care['supp'])
     if msim.sims[0].interventions: # The PrEP scenarios
         out.prep = get(res.n_S.select(has_prep=True))
     for name in ['main', 'casual']:
-        out[f'{name}_deg'] = np.array([sim.networks[name].results.mean_degree[:1040] for sim in msim.sims])
-        out[f'{name}_conc'] = np.array([sim.networks[name].results.concurrency[:1040] for sim in msim.sims])
+        out[f'{name}_deg'] = np.array([sim.networks[name].results.mean_degree[weeks] for sim in msim.sims])
+        out[f'{name}_conc'] = np.array([sim.networks[name].results.concurrency[weeks] for sim in msim.sims])
     return out
 
 
 def theirs(scen):
-    """ The same measures from the means of the reference runs """
-    g = lambda k: ref[f'{scen}_{k}']
+    """ The same measures from the means of the reference runs, from week 2 """
+    g = lambda k: ref[f'{scen}_{k}'][weeks]
     out = sc.objdict(num=g('num'), i=g('i.num'), s=g('s.num'), si=np.nan_to_num(g('si.flow')), dx=g('dx.num'), art=g('art.num'), supp=g('supp.num'), prep=np.nan_to_num(g('prep.num')))
     for name,key in [('main', 'main'), ('casual', 'cas')]:
         out[f'{name}_deg'] = 2*g(f'{key}.edges')/out.num
@@ -54,10 +55,10 @@ def summary(d):
     m = {k:np.mean(v, axis=0) if np.ndim(v) == 2 else v for k,v in d.items()}
     i = np.where(m['i'][late] > 0, m['i'][late], np.nan)
     return dict(
-        cum_infections = m['si'][1:].sum(),
+        cum_infections = m['si'].sum(),
         final_prev     = m['i'][-1]/m['num'][-1],
-        prev_5y        = m['i'][260]/m['num'][260],
-        prev_10y       = m['i'][520]/m['num'][520],
+        prev_5y        = m['i'][259]/m['num'][259],
+        prev_10y       = m['i'][519]/m['num'][519],
         inc_100py      = np.mean(52*100*m['si'][late]/m['s'][late]),
         pct_dx         = 100*np.nanmean(m['dx'][late]/i),
         pct_art        = 100*np.nanmean(m['art'][late]/i),

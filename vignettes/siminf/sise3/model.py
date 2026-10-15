@@ -5,6 +5,7 @@ the infected shed into and that decays by season, with a register of births, dea
 aging between age categories
 """
 import os
+import numpy as np
 import pandas as pd
 import starsim as ss
 
@@ -26,8 +27,13 @@ register = pd.DataFrame({
 
 S_1, I_1, S_2, I_2, S_3, I_3 = [ss.State(people=True) for i in range(6)] # Aging, in the register, joins S_2 to I_3 to S_1
 phi = ss.State(people=False) # The environmental infectious pressure
-upsilon, gamma, alpha = ss.perday(0.018), ss.perday(0.1), ss.perday(1.0)
-beta = ss.timeseries({0: ss.perday(0.1), 182: ss.perday(0.125)}, period=ss.years(1)) # The decay of phi, by season
+# SimInf updates phi once a day, to phi*(1 - b) + alpha*I/n, with b by season; the continuous rates that give the same phi
+# at the end of each day are a decay of -log(1 - b) and a shedding of alpha*(-log(1 - b))/b
+upsilon, gamma, alpha = ss.perday(0.018), ss.perday(0.1), 1.0
+seasons = {0: 0.1, 182: 0.125} # SimInf's daily decay, by day of the year
+rate = {day:-np.log(1 - b) for day,b in seasons.items()}
+beta  = ss.timeseries({day:ss.perday(rate[day]) for day in seasons}, period=ss.years(1))
+shed  = ss.timeseries({day:ss.perday(alpha*rate[day]/b) for day,b in seasons.items()}, period=ss.years(1))
 sise3 = ss.Disease(
     infection_1 = S_1 >> I_1 @ upsilon * phi.n,
     recovery_1  = I_1 >> S_1 @ gamma,
@@ -35,7 +41,7 @@ sise3 = ss.Disease(
     recovery_2  = I_2 >> S_2 @ gamma,
     infection_3 = S_3 >> I_3 @ upsilon * phi.n,
     recovery_3  = I_3 >> S_3 @ gamma,
-    shedding    = ss.null >> phi @ alpha * (I_1 + I_2 + I_3).n / (S_1 + I_1 + S_2 + I_2 + S_3 + I_3).n,
+    shedding    = ss.null >> phi @ shed * (I_1 + I_2 + I_3).n / (S_1 + I_1 + S_2 + I_2 + S_3 + I_3).n,
     decay       = phi >> ss.null @ beta,
     init        = {key:ss.by(herd=u0[key].values) for key in ['I_1', 'S_2', 'S_3']}, # The rest in S_1
 )

@@ -33,13 +33,13 @@ if __name__ == '__main__':
         res = sim.new(verbose=0, dt=ss.days(dt)).run().results.secir # A shorter step only to show where the differences come from
         step = int(round(1/dt))
         print(f'\nWith a step of {dt} days:')
-        # A stock at index k is the number after step k, so the number on day d (d > 0) is at index d*step - 1
+        # A stock at index k is the number after k steps, so the number on day d is at index d*step
         for key,name in names.items():
-            report(name, res[f'n_{key}'].values[step-1::step], ref[name][1], start=1)
-        dead = np.append(0, res.cum_death.values[:-1])[::step] # Deaths up to the start of each day
+            report(name, res[f'n_{key}'].values[::step], ref[name][1])
+        dead = res.cum_death.values[::step] # Deaths up to each day
         report('Dead', dead, ref['Dead'][1])
         for g in range(3):
-            report(f'InfectedSymptoms_{g}', res.n_ISy.select(age=str(g)).values[step-1::step], ref[f'InfectedSymptoms_{g}'][1], start=1)
+            report(f'InfectedSymptoms_{g}', res.n_ISy.select(age=str(g)).values[::step], ref[f'InfectedSymptoms_{g}'][1])
 
     def run():
         ss.Sim(sim.inputs, verbose=0).run()

@@ -8,7 +8,7 @@ The translation of [examples/epimodel/sis-network](../../../examples/epimodel/si
 |---|---|---|---|
 | Lines of model code | 13 | 8 | |
 | One run | 3.9 s | 0.45 s | The original also takes 0.66 s to estimate the network first |
-| Results | | | **Agree, once the order within a step is allowed for**: 11.8 new infections a step at equilibrium, against 12.0, and 113 infected after step 50, against 113 (means of 100 runs each). Over the last 200 steps 237 of 500 are infected, against 227.5: EpiModel lets people recover in the step in which they are infected and counts them after that, which makes its count 5% lower for the same epidemic (237 × 0.95 = 225) |
+| Results | | | **Agree, once the order within a step is allowed for**: 11.8 new infections a step at equilibrium, against 12.0, and 115 infected after step 50, against 113 (means of 100 runs each). Over the last 200 steps 237 of 500 are infected, against 227.5: EpiModel lets people recover in the step in which they are infected and counts them after that, which makes its count 5% lower for the same epidemic (237 × 0.95 = 225) |
 
 Measured on 13 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine.
 

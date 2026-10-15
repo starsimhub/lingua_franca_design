@@ -45,7 +45,7 @@ The full signature:
 model.stratify(
     age      = [0, 15, 65],  # the dimension, by name: bin edges, labels, or a geography
     split    = None,       # share of the population in each level
-    adjust   = None,       # {transition_name: [multiplier per level]}
+    adjust   = None,       # {transition_name: [multiplier per level]}; also rel_trans and rel_sus
     states   = None,       # which states the dimension applies to (default: every state that is people; see Strain)
     where    = None,       # which existing groups are split, e.g. dict(sex='female') (default: all)
     mobility = None,       # movement between levels (space only)
@@ -64,7 +64,7 @@ After `stratify()`, the model is one in which:
 
 1. Every state in `states` is split into one state per level (within the groups selected by `where=`, if given).
 2. Every transition touching those states is split, keeping its name and its rate or dwell-time declaration.
-3. Each `adjust` multiplier is applied to the named transition in the corresponding level.
+3. Each `adjust` multiplier is applied to the named transition in the corresponding level. `adjust={'rel_trans': [...]}` and `adjust={'rel_sus': [...]}` multiply the infectiousness and susceptibility of the people in each level (of the states the dimension applies to), as summer2's infectiousness adjustments do.
 4. The transitions implied by the dimension's kind are generated ([below](#kinds)).
 5. Any extra transitions passed as keywords are added.
 
@@ -109,6 +109,7 @@ sir.stratify(age=[15, 25, 35, 50], where=dict(sex='female'))   # age groups for 
 ```
 
 - **`states=`** restricts which states are split. It takes state objects or their names.
+- **People entering a state with the dimension** from one without it (an infection entering `I`, above) take a level in proportion to `split`. A split that depends on another dimension is an `ss.by` over both, read as the share in each level for each level of the other: `sir.stratify(clinical=['mild', 'severe'], states=[I], split=ss.by([[0.9, 0.1], [0.7, 0.3], [0.2, 0.8]], dims=['age', 'clinical']))` makes the old more often severe, as summer2's `source_strata` do. Each row is normalized, so the other dimension's own split is unchanged. An `adjust` on a transition out of states that have no level of the dimension raises `E306`, since there is no level to apply it in.
 - **`where=`** restricts which existing groups are split, as a dict of dimension and level (or list of levels). The result is a ragged model: four age groups of women and one group of men. Selecting an age group then selects women only.
 
 In an agent-based run neither keyword changes much, since every agent has an age and a sex regardless; they decide the number of compartments in a compartmental run. How ragged results are plotted and exported is not settled ([19-open-questions.md](19-open-questions.md)), and `where=` is provisional until it has been tried on a real model.
@@ -194,7 +195,7 @@ flu.stratify(strain=['H1N1', 'H3N2'], immunity=[[1.0, 0.3], [0.3, 1.0]])
 
 A strain dimension changes the force of infection: each strain has its own infectious states and its own force of infection, and a person infected by strain `k` enters strain `k`'s states. By default the dimension applies to every state that can only be reached through infection (`E`, `I`, `R`, ...) and not to the never-infected state. `immunity[i][j]` is the protection that prior infection with strain `i` gives against strain `j` (1 is complete). If `immunity=` is omitted, the base model's structure applies as written (in an SIR model, recovery from any strain protects against all of them), and `describe()` says so. `adjust` on a transmission multiplies that strain's transmissibility.
 
-A person holds one strain coordinate at a time. A compartmental run tracks only the most recent strain a person was infected with, which is an approximation when immunity is partial and is noted when the model is built; an agent-based run keeps the full history.
+A person holds one strain coordinate at a time. A compartmental run tracks only the most recent strain a person was infected with, which is an approximation when immunity is partial and is noted when the model is built (with no protection between two strains, people can go from A to B and back to A); an agent-based run keeps the full history, and the strongest protection of the strains a person has had applies. The people who can be infected again are those in states that have the strain dimension and are neither infected nor already a source of infection (in an SIR, `R`).
 
 Drug resistance in TB is the standard example. Resistance is a strain dimension, and acquired resistance is a transfer along it that only happens during treatment:
 
@@ -218,7 +219,21 @@ tb.stratify(
 
 `resistance` is a dimension of this disease and not of people, so it is stratified on `tb` and not on the sim.
 
-**As a second disease**, when the pathogens are qualitatively different (different natural histories, or a person can carry both at once): write two `ss.Disease` modules and connect them with `ss.modify` ([07-effects.md](07-effects.md)). Co-infection needs this form, because a dimension gives each person one coordinate.
+**Strains carried together.** A level written as other levels joined by `+` is for people who carry those strains at once: `strain=['A', 'B', 'A+B']`. Each strain carried needs a level of its own. Someone who carries several strains is as infectious as their level (`adjust={'rel_trans': [...]}`), and passes each strain on in proportion to that strain's own infectiousness. Someone infected with a strain they do not carry carries it as well, at the level that adds it; if they carry it already, or there is no level for carrying it as well, they keep the strains they have. Superinfection is then a transmission that leaves people in their state, and is not counted for people it does not change:
+
+```python
+superinfection = latent >> latent @ ss.peryear(3) * active
+```
+
+A transition can change a person's level as well as their state with `move=`, an arrow between two levels (which also limits the transition to people at the first) or the level people move to. This is how one of two strains progresses alone, or resistance is acquired on progression:
+
+```python
+ss.progression('latent -> active', rate=ss.peryear(0.1), move=dict(strain='A+B -> A'))
+```
+
+tbsim's drug resistance (`tbsim.TB(drugs=['RIF', 'INH'])`) is built this way: the levels are the sets of strains people can carry, and treatment that fails is a transition that moves people to the strains that were not cured, with any resistance they acquired.
+
+**As a second disease**, when the pathogens are qualitatively different (different natural histories, or carrying both at once changes the course of each): write two `ss.Disease` modules and connect them with `ss.modify` ([07-effects.md](07-effects.md)). Co-infection with a different natural history needs this form, because a dimension gives each person one coordinate (strains carried together, above, share one natural history).
 
 ## Moving between coordinates: `ss.transfer`
 
@@ -259,6 +274,8 @@ Realized coverage and doses delivered are reported as results of the delivery, i
 A negative multiplier raises `E306 InvalidAdjustment`. A multiplier that pushes a probability above 1 is clipped to 1 with a note. Adjustments combine with `ss.modify` multipliers on the same quantity by multiplication ([07-effects.md](07-effects.md)).
 
 Parameters that differ by level can also be given directly in the base model with `ss.by(age=[...])` ([04-parameters.md](04-parameters.md)); `adjust` is for when the base model should not know about the dimension.
+
+A population that is not the product of a split by each dimension (more children in one patch than another) is given as one split over several dimensions: `sir.stratify(patch=['north', 'south'], split=ss.by(pop, dims=['age', 'patch']))`, where `pop` has a row for each age group and a column for each patch. Each dimension's own split is then the total over the others.
 
 ## Mixing over a dimension
 

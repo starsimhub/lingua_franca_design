@@ -18,11 +18,11 @@ ref = tools.read_results(os.path.join(root, 'examples', 'epimodel', 'sis-network
 
 if __name__ == '__main__':
     res = sim.new(verbose=0).run(n_runs=100).results.sis
-    theirs = np.array(ref['i.num'][1])[1:] # The original's first value is the start, and each after it the number after one more step
-    ours = res.n_I.values.mean(axis=0)[:len(theirs)] # Ours at index k is the number after step k+1, so both start after the first step
+    theirs = np.array(ref['i.num'][1]) # Index k is the number after k steps in both (the original's first value is the start)
+    ours = res.n_I.values.mean(axis=0)[:len(theirs)]
     print(f'infected, mean of the last 200 steps: {ours[-200:].mean():.1f} (original {theirs[-200:].mean():.1f})')
-    print(f'infected at step 50: {ours[49]:.1f} ({theirs[49]:.1f}); at step 100: {ours[99]:.1f} ({theirs[99]:.1f})')
-    print(f'new infections per step, last 200 steps: {res.infection.values.mean(axis=0)[-200:].mean():.2f} (original {np.mean(ref["si.flow"][1][-200:]):.2f})')
+    print(f'infected at step 50: {ours[50]:.1f} ({theirs[50]:.1f}); at step 100: {ours[100]:.1f} ({theirs[100]:.1f})')
+    print(f'new infections per step, last 200 steps: {res.infection.values.mean(axis=0)[:len(theirs)][-200:].mean():.2f} (original {np.mean(ref["si.flow"][1][-200:]):.2f})')
     print(f'original network: {np.mean(ref["edges"][1][-200:]):.0f} edges, mean degree {np.mean(ref["meandeg"][1][-200:]):.2f}, {np.mean(ref["concurrent"][1][-200:]):.0f} people with two or more partners')
 
     def run():

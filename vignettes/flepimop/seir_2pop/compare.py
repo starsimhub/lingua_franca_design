@@ -20,10 +20,8 @@ if __name__ == '__main__':
     res = sim.new(verbose=0).run().results.seir
     for place in pop:
         for state in 'SEIR':
-            ours, theirs = res[f'n_{state}'].select(patch=place).values, np.array(ref[f'{place}_{state}'][1])[1:] # A stock at index k is the number after step k, on day k+1, so start the original's at day 1
-            n = min(len(ours), len(theirs))
-            ours, theirs = ours[:n], theirs[:n]
-            print(f'{place} {state}: at the end {ours[-1]:8.1f} (original {theirs[-1]:8.1f}); peak on day {ours.argmax() + 1} ({theirs.argmax() + 1}); largest difference {np.abs(ours - theirs).max():6.1f} people')
+            ours, theirs = res[f'n_{state}'].select(patch=place).values, np.array(ref[f'{place}_{state}'][1]) # A stock at index k is the number on day k, in both
+            print(f'{place} {state}: at the end {ours[-1]:8.1f} (original {theirs[-1]:8.1f}); peak on day {ours.argmax()} ({theirs.argmax()}); largest difference {np.abs(ours - theirs).max():6.1f} people')
 
     def run():
         ss.Sim(sim.inputs, verbose=0).run()

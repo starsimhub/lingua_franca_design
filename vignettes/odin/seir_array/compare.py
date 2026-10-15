@@ -39,15 +39,15 @@ def worst(sim):
     """ The largest difference in each state over the year, as a share of its largest value: in total, and in the age group where it is largest """
     res = sim.new(verbose=0).run().results.seir
     out = {}
-    for state in 'SEIR': # A stock at index k is the number after step k, the original's on day k+1, so both start on day 1
-        theirs = np.array(ref[state][1])[1:]
-        total = np.abs(res[f'n_{state}'].values[:-1] - theirs).max()/theirs.max()
+    for state in 'SEIR': # A stock at index k is the number on day k, in both
+        theirs = np.array(ref[state][1])
+        total = np.abs(res[f'n_{state}'].values - theirs).max()/theirs.max()
         by_age = {}
         for age,label in ages.items():
-            theirs = np.array(ref[f'{state}_{age}'][1])[1:]
-            by_age[age] = np.abs(res[f'n_{state}'].select(age=label).values[:-1] - theirs).max()/theirs.max()
+            theirs = np.array(ref[f'{state}_{age}'][1])
+            by_age[age] = np.abs(res[f'n_{state}'].select(age=label).values - theirs).max()/theirs.max()
         age = max(by_age, key=by_age.get)
-        out[state] = (total, age, by_age[age], res[f'n_{state}'].values[:-1])
+        out[state] = (total, age, by_age[age], res[f'n_{state}'].values)
     return out
 
 
@@ -59,8 +59,8 @@ def show(label, sim):
 
 if __name__ == '__main__':
     diffs = show('model.py (200 stages)', sim)
-    I, theirs = diffs['I'][3], np.array(ref['I'][1])[1:] # Both from day 1
-    print(f'  peak I {I.max():,.0f} on day {I.argmax() + 1} (original {theirs.max():,.0f} on day {theirs.argmax() + 1}); I on day 30 {I[29]:.1f} (original {theirs[29]:.1f})')
+    I, theirs = diffs['I'][3], np.array(ref['I'][1]) # Both from day 0
+    print(f'  peak I {I.max():,.0f} on day {I.argmax()} (original {theirs.max():,.0f} on day {theirs.argmax()}); I on day 30 {I[30]:.1f} (original {theirs[30]:.1f})')
     show('without the workaround', variant('    history', '    # history'))
     for k in [50, 100, 400]:
         show(f'{k} stages', onset(ss.erlang(k=k, mean=ss.days(14))))

@@ -8,7 +8,7 @@ The translation of [examples/odin/stochastic_sir_arrays](../../../examples/odin/
 |---|---|---|---|
 | Lines of model code | 27 | 7 | |
 | 100 runs | 0.002 s | 0.04 s | The original takes 0.7 s to compile first. One Starsim run takes 0.025 s, nearly all of it building the sim |
-| Results | | | The mean of 2,000 runs is within 4.4 people of 1,001 at every time, against the original's 20,000 |
+| Results | | | The mean of 2,000 runs is within 4.6 people of 1,001 at every time, against the original's 20,000 |
 
 Measured on 13 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine.
 

@@ -18,7 +18,7 @@ times = [100, 200, 365, 500, 700, 1000, 1460]
 
 
 def one(seed):
-    """ One run: the series the reference has, by day (Starsim's n[t-1] is the state after t steps, so after the transitions of SimInf's day t; it does not yet have day t's scheduled events, which Starsim applies at the start of the next step, and SimInf at the end of day t) """
+    """ One run: the series the reference has, by day (Starsim's n[t] is the state after t steps, so after the transitions of SimInf's day t and, as in SimInf, that day's scheduled events) """
     from model import sim
     res = sim.new(rand_seed=seed, verbose=0).run().results.sir
     out = {key:res[f'n_{key}'].values for key in 'SIR'}
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         print(f'{key}:')
         for t in times:
             i = rt.index(float(t))
-            mean, se = vals[:, t-1].mean(), vals[:, t-1].std()/np.sqrt(n_runs)
+            mean, se = vals[:, t].mean(), vals[:, t].std()/np.sqrt(n_runs)
             print(f'  day {t:4d}: Starsim {mean:9,.0f} ± {se:7,.0f}   SimInf {rv[i]:9,.0f}')
     died = np.mean([run['I'][199] == 0 for run in runs])
     print(f'runs with no infection on day 200: {died:.0%} (SimInf about 7%)')

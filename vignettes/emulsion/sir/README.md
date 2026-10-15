@@ -8,8 +8,8 @@ The translation of [examples/emulsion/sir](../../../examples/emulsion/sir). The 
 |---|---|---|---|
 | Lines of model code | 81 (compartments), 86 (individuals) | 8 | The original is one YAML file per paradigm; here one model is run two ways |
 | One compartmental run | 0.81 s | 0.017 s | The original is timed as a whole command, which is mostly startup; it reports 0.06 s for the run itself |
-| Results, compartments | | | Mean of 200 runs: peak of 39 infectious on day 18, against 37 on day 18; 86 recovered at the end, against 85 |
-| Results, individuals | | | **Lower.** 75 recovered at the end, against 81, because more runs die out early (24%, against about 19%) |
+| Results, compartments | | | Mean of 200 runs: peak of 37 infectious on day 18, against 37 on day 18; 85 recovered at the end, against 85 |
+| Results, individuals | | | **Lower.** 77 recovered at the end, against 81, because more runs die out early (22%, against about 19%) |
 
 Measured on 13 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine.
 

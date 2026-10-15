@@ -36,12 +36,12 @@ class counts(ss.Analyzer):
 
 
 def run_many(**kwargs):
-    """ Run the sim many times, one at a time; Starsim's step k is the state after k + 1 steps, as is EMULSION's row k + 1 """
+    """ Run the sim many times, one at a time; the analyzer's row k is the state after k steps (row 0 is the start), as is EMULSION's row k """
     out = {key:[] for key in ref}
     for seed in range(n_runs):
         rows = sim.new(verbose=0, rand_seed=seed, analyzers=counts(), **kwargs).run().analyzers[0].rows
         for key in ref:
-            out[key].append([row[key] for row in rows][:len(ref[key][1]) - 1])
+            out[key].append([row[key] for row in rows][:len(ref[key][1])])
     return {key:np.array(val) for key,val in out.items()}
 
 
@@ -51,9 +51,9 @@ if __name__ == '__main__':
         print(label)
         res = run_many(**kwargs)
         for key,vals in res.items():
-            ours, theirs = vals.mean(axis=0), np.array(ref[key][1][1:])
+            ours, theirs = vals.mean(axis=0), np.array(ref[key][1])
             k = np.abs(ours - theirs).argmax()
-            print(f'  {key:18s} {ours[k] - theirs[k]:+18.2f} {k+1:6d}   ' + '   '.join(f'{ours[i-1]:6.1f} {theirs[i-1]:6.1f}' for i in [13, 53, 105]))
+            print(f'  {key:18s} {ours[k] - theirs[k]:+18.2f} {k:6d}   ' + '   '.join(f'{ours[i]:6.1f} {theirs[i]:6.1f}' for i in [13, 53, 105]))
 
     def run():
         ss.Sim(sim.inputs, verbose=0).run()

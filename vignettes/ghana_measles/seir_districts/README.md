@@ -8,7 +8,7 @@ The translation of [examples/ghana_measles/seir_districts](../../../examples/gha
 |---|---|---|---|
 | Lines of model code | 89 | 20 | Three lines are over 100 characters, so count twice; two read the data |
 | One run | 0.84 s | 1.37 s | Both with the data already loaded; Starsim's time includes building the sim |
-| Results | | | **Agree.** Over 2010 to 2025, 3,046,322 infections against 3,041,691 and 15,240 reported cases against 15,197 (means of 20 and 50 runs); monthly means correlate at 0.999; infections from 2020 in each of the 16 regions within chance (from −2.6 to +1.7 standard errors) |
+| Results | | | **Agree.** Over 2010 to 2025, 3,046,095 infections against 3,041,691 and 15,190 reported cases against 15,197 (means of 20 and 50 runs); monthly means correlate at 0.999; infections from 2020 in each of the 16 regions within chance (from −2.6 to +1.7 standard errors) |
 
 Measured on 14 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x86-64 Linux machine.
 

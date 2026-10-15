@@ -29,23 +29,27 @@ stocks = [f'{place}_{state}' for place in pop for state in flows] # The number i
 
 
 def ours(sims):
-    """ Each series of the original, from the runs of one scenario, as an array of runs by days """
+    """ Each series of the original, from the runs of one scenario, as an array of runs by days
+
+    A stock at index k is the number at the start of day k, in both. A flow (and an outcome) at index k is the number during
+    the step ending on day k, so its first value, at the start, is 0; the original's on day k is the number during day k, so
+    ours from index 1 match the original's from day 0 """
     out = dict()
     res = [sim.results.seir for sim in sims]
     for place in pop:
         for state,flow in flows.items():
-            out[f'{place}_{state}'] = np.array([r[f'n_{state}'].select(patch=place).values[:-1] for r in res]) # A stock at index k is the number after step k, the original's on day k+1
-            out[f'{place}_incidence_{state}'] = np.array([r[flow].select(patch=place).values for r in res])
+            out[f'{place}_{state}'] = np.array([r[f'n_{state}'].select(patch=place).values for r in res])
+            out[f'{place}_incidence_{state}'] = np.array([r[flow].select(patch=place).values[1:] for r in res])
         for name,key in outcomes.items():
-            out[f'{place}_{name}'] = np.array([r[key].select(patch=place).values for r in res])
+            out[f'{place}_{name}'] = np.array([r[key].select(patch=place).values[1:] for r in res])
     return out
 
 
 def theirs(scen, name, col='value'):
-    """ A series of the original; deaths are summed over the provinces, and the number in each state starts on day 1, as ours does """
+    """ A series of the original; deaths are summed over the provinces, and a flow leaves out its last day, the stop, which ours does not reach """
     names = [f'{place}_{name}' for place in pop] if name in outcomes else [name]
     vals = sum(ref[ref.series == f'{scen}_{n}'].sort_values('time')[col].values for n in names)
-    return vals[1:] if name in stocks else vals
+    return vals if name in stocks else vals[:-1]
 
 
 def summary(arr):
