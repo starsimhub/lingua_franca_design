@@ -56,6 +56,23 @@ Also worth noting: PyRoss implements multiple *stochastic approximations* of the
 
 ---
 
+## epidemik
+
+**Python · compartmental, network, metapopulation · [github.com/DataForScience/epidemik](https://github.com/DataForScience/epidemik) · MIT**
+
+A small library of compartmental models from Data For Science. A model is a set of transitions added to an `EpiModel` object: *interactions* (`add_interaction('S', 'I', 'I', beta=0.2)`, i.e. `S + I -> I + I`) and *spontaneous* transitions (`add_spontaneous('I', 'R', mu=0.1)`). `NetworkEpiModel` runs the same transitions on a contact network, and `MetaEpiModel` couples one `EpiModel` per sub-population through a travel matrix. One of the 20 comparison frameworks in the MEmilio paper (Bicker et al. 2026, Fig. 1a), listed there with ODE, age, and spatial stratification.
+
+**What to take:**
+
+- **The model prints as its own specification.** `print(SIR)` emits a YAML description (compartments, named parameters, `S + I = I beta`, `I -> R mu`), and `save_model` / `load_model` round-trip it. A text form that is both the display and the interchange format is the cheapest possible version of the interop goal.
+- **Named parameters as expressions of one another** (`mu="beta/2"`), declared with the model rather than computed outside it.
+- **R₀ from the structure.** `R0()` computes it generically via the next-generation matrix, because the model is a graph of typed transitions. Another structural result (like Catalyst's deficiency analysis) that comes for free once the model is data.
+- **One spec, two execution modes, identical output shape.** `integrate()` (ODE) and `simulate()` (seeded discrete-time stochastic) take the same arguments and return the same `DataFrame`, the same point epipack makes.
+
+**Why not a full review:** its specification style is close to epipack's reaction tuples and Epydemix's imperative transitions, both of which are reviewed in full; it adds the YAML round-trip and generic R₀ but no new abstractions.
+
+---
+
 ## Mesa
 
 **Python · general-purpose agent-based modeling · [github.com/projectmesa/mesa](https://github.com/projectmesa/mesa) · v4 in development**
@@ -69,6 +86,36 @@ The default general-purpose ABM framework in Python — the Python answer to Net
 - **Space as a separate, swappable component** (`discrete_space`, continuous space, networks) rather than baked into the model.
 
 **Why not a full review:** it contributes no epidemiological vocabulary, and its structural ideas are better evidenced in this domain by the frameworks above.
+
+---
+
+## Vahana.jl
+
+**Julia · general-purpose agent-based modeling, distributed · [github.com/s-fuerst/Vahana.jl](https://github.com/s-fuerst/Vahana.jl) · MIT**
+
+A high-performance ABM library built on **graph dynamical systems**: agents and edges are typed, each step applies a transition function per agent type that reads only the agent's own state and its incoming edges, and the result is distributed across processes with MPI. Not epidemiological, but its showcase model is a reimplementation of MATSim-Episim, and it is one of the 20 comparison frameworks in the MEmilio paper (Bicker et al. 2026, Fig. 1a).
+
+**What to take:**
+
+- **Locality as the contract that buys parallelism.** Because a transition may only see its own agent and that agent's incoming edges, the framework can partition the graph across processes without the user writing any communication code. This is the strongest version of the "declare what you read" idea: the restriction is what makes distributed execution automatic.
+- **Edges as typed, first-class state**, not just an adjacency structure. Contacts carry data, and the framework handles their storage and distribution.
+
+**Why not a full review:** it has no epidemiological vocabulary, and its specification style (structs plus transition functions) adds little beyond `individual` and Starsim; the locality contract is the one idea to carry forward.
+
+---
+
+## RepastHPC
+
+**C++ · general-purpose agent-based modeling, distributed (MPI) · [github.com/Repast/repast.hpc](https://github.com/Repast/repast.hpc) · New BSD**
+
+The high-performance member of the Repast family (Argonne National Laboratory): agents live in *contexts*, and *projections* (networks, discrete grids, continuous space) are layered over the same agents. Agents are distributed across MPI processes, with non-local agents shared as copies that are synchronized each step. It also ships ReLogo, a Logo-style API on top. One of the 20 comparison frameworks in the MEmilio paper (Bicker et al. 2026, Fig. 1a), where it is the only one listed with all three agent-based styles (network, location graph, continuous) and full shared- and distributed-memory parallelism.
+
+**What to take:**
+
+- **One agent population, several projections.** Network and spatial structure are separate views over the same agents rather than properties of the agent, which is the same separation of population from contact structure that the design wants.
+- **Ghost agents as the explicit cost of distribution.** Agents read across process boundaries need synchronized copies, and RepastHPC makes the user declare and manage them. It is a useful reference for what a distributed backend would have to ask of a model specification.
+
+**Why not a full review:** it is the HPC reference point for general-purpose ABM rather than an epidemiological framework, and has no disease vocabulary; Mesa covers the general-purpose ABM ideas and EpiHiper covers distributed ABM in this domain.
 
 ---
 
@@ -157,6 +204,8 @@ Recorded so the decisions are reviewable.
 - **MetaWards** — ward-level metapopulation for England and Wales. Real, but effectively one application with a configuration surface; epymorph and flepiMoP cover the metapopulation specification ground better.
 - **GEMS** (Julia) — nationwide microsimulation over synthetic German populations. Would have been the review's only Julia agent-based entry, but its specification style adds nothing beyond `individual` and Starsim; Catalyst.jl covers Julia's contribution to this project far better.
 - **Episimmer** — institutional-reopening simulator. Excluded on license (Commons Clause is not open source).
+- **UHOHCoronaPolicyLab** (TypeScript) — continuous-space COVID-19 policy simulation, one of the comparison frameworks in the MEmilio paper (Bicker et al. 2026, Fig. 1a). Excluded on license: CC BY-NC-SA 4.0's non-commercial clause is not open source.
+- **PanVADERE** (Java) — pandemic extension of the Vadere pedestrian-dynamics simulator, modeling transmission between individuals moving in continuous space; also in the MEmilio paper's comparison. A single-purpose application (indoor/crowd transmission) rather than a model-specification framework.
 - **statnet / ergm** — the network substrate under EpiModel; discussed inside [epimodel.md](epimodel.md).
 - **dust / monty** — the engine and inference layers under odin; discussed inside [odin.md](odin.md).
 - **Stan, PyMC, NumPyro** — inference substrates rather than model-structure languages. They belong to the calibration discussion in `best-practices`.

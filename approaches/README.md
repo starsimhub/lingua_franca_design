@@ -58,7 +58,10 @@ Shorter entries, collected in [notes.md](notes.md): enough to place each one and
 | [Covasim / HPVsim / STIsim / FPsim](notes.md#covasim--hpvsim--stisim--fpsim) | Python | Starsim's lineage; Covasim's `days`/`changes` intervention form was simpler than what replaced it |
 | [Kendrick](notes.md#kendrick) | Pharo / Smalltalk | The earliest and most explicit statement of separation-of-concerns as the organizing principle for epidemic models |
 | [PyRoss](notes.md#pyross) | Python | Optimal control — "what intervention is best?" rather than "what if we do X?" — plus multiple stochastic approximations of one model |
+| [epidemik](notes.md#epidemik) | Python | The model prints as its own YAML specification and round-trips through it; R₀ computed generically from the transition graph |
 | [Mesa](notes.md#mesa) | Python | Agent activation order as a named, user-selected modeling decision; `AgentSet` as a select-then-act primitive |
+| [Vahana.jl](notes.md#vahanajl) | Julia | Locality as the contract that buys parallelism: transitions see only their agent and its incoming edges, so distribution across processes is automatic |
+| [RepastHPC](notes.md#repasthpc) | C++ | One agent population with several projections (network, grid, continuous space) over it; the HPC reference point for general-purpose ABM |
 | [ModelingToolkit.jl / Catalyst.jl](notes.md#modelingtoolkitjl--catalystjl) | Julia | **Per-reaction `PhysicalScale`** — paradigm declared per *transition*, not per model. The sharpest version of this project's central idea, in another field |
 | [SBML](notes.md#sbml-systems-biology-markup-language) | XML standard | Twenty-five years of interchange-format experience, including why an unauthorable format degrades into a lossy export target |
 | [ASKEM AMR / MIRA](notes.md#askem-model-representation-amr--mira) | JSON / Python | The closest prior art: a closed Template taxonomy of transition types, and **ontology-identified Concepts** that let two models' compartments be compared |
@@ -77,6 +80,8 @@ Other models considered and not included:
 - **FRED** — **excluded on license.** Distributed under a University of Pittsburgh EULA, not an open-source license, per the landscape database's license audit. (Included if open source; it is not.)
 - **GLEAM / GLEAMviz** — closed source. A landmark metapopulation model, referenced from [epymorph.md](epymorph.md) as the paradigm's reference point rather than reviewed on its own.
 - **Episimmer** — excluded on license (Commons Clause is not open source).
+- **UHOHCoronaPolicyLab** — excluded on license (CC BY-NC-SA 4.0 is not open source).
+- **PanVADERE** — a single-purpose application (transmission among pedestrians in continuous space), not a model-specification framework. Reasons in [notes.md](notes.md#frameworks-considered-and-not-written-up).
 - **MetaWards**, **GEMS**, **Epi Info** — real tools, but each is effectively one application with a configuration surface, and each is covered better for our purposes by something already in the list. Reasons in [notes.md](notes.md#frameworks-considered-and-not-written-up).
 - **NDlib** — a network diffusion library with a compartment-composition API; EoN covers the same ground more rigorously and ships the analytic approximations alongside.
 - **statnet / ergm** — the network substrate under EpiModel, discussed inside [epimodel.md](epimodel.md).

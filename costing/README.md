@@ -19,6 +19,7 @@ This is not a survey of every economic evaluation ever published. It collects ex
 | [cancer-ncd-and-health-systems.md](cancer-ncd-and-health-systems.md) | Thanzi La Onse, Vivarium, HPVsim, the WHO cervical cancer elimination consortium, CISNET colorectal, IMPACT NCD, WHO-CHOICE and OneHealth, health-system capacity |
 | [cea-software.md](cea-software.md) | Dedicated health-economic software: heemod, hesim, dampack and DARTH, BCEA and voi, rdecision, TreeAge and Amua, PyHEOR, NICE-style Excel. Includes an API comparison table. |
 | [pandemics-and-frameworks.md](pandemics-and-frameworks.md) | Epi-economic pandemic models (DAEDALUS, preparedness investment cases, SIR-macro, covidm vaccine valuation, PTTI), and a table of which general frameworks (including the Starsim family) support costs and DALYs |
+| [spec.md](spec.md) | A proposed specification for Starsim v4, drawn from the findings below: costs per event, per time in a state, fixed, and by history; `ss.Economics`; DALYs and QALYs as recipes over weighted person-time; discounting after the run; paired scenarios, ICERs, PSA, and value of information; and the long-table output |
 
 ## Main findings
 

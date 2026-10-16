@@ -258,6 +258,7 @@ website:
         - costing/cancer-ncd-and-health-systems.md
         - costing/cea-software.md
         - costing/pandemics-and-frameworks.md
+        - costing/spec.md
 
 format:
   html:
