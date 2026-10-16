@@ -1,4 +1,4 @@
-framework: Ghana measles (NumPy and Sciris)
+framework: Ghana measles
 model: seir_districts
 version: the gm-port rewrite, commit 69d026c
 source: ghana_measles/model.py in a local checkout of the Ghana measles port (ghana-measles/gm-port), which has no public repository yet; it rewrites a LASER-measles notebook

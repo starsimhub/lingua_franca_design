@@ -65,6 +65,10 @@
   font-size: 0.9em;
 }
 
+.scorecard td:nth-child(3), .scorecard td:nth-child(4) { /* Lines and time: the original's above Starsim's, kept from wrapping inside a number */
+  min-width: 10rem;
+}
+
 .scorecard td:first-child {
   white-space: nowrap;
 }

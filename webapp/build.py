@@ -173,9 +173,9 @@ def numbers(text):
 
 
 def mark(original, starsim):
-    """ A Starsim cell, marked for the stylesheet as meeting its target (no more than the original) or not; it uses the original's first number and Starsim's last, which is the repeated run where there is one """
+    """ A cell with the original's number above Starsim's, marked for the stylesheet as meeting its target (no more than the original) or not; it uses the original's first number and Starsim's last, which is the repeated run where there is one """
     target = 'pass' if numbers(starsim)[-1] <= numbers(original)[0] else 'fail'
-    return f'[{starsim}]{{.{target}}}'
+    return f'Original: {original}<br>[Starsim: {starsim}]{{.{target}}}'
 
 
 def scorecard_row(model):
@@ -183,10 +183,10 @@ def scorecard_row(model):
     link = f'[**{model.meta.framework}**<br>{model.folder.parent.name}](/webapp/index.qmd#{model.id})'
     rows = table_rows(model.table)
     if not rows:
-        return f'| {link} | {model.meta.language} | | *Not written yet* | | | |'
+        return f'| {link} | {model.meta.language} | *Not written yet* | | |'
     lines, time = rows[0], rows[1]
     results = '; '.join(row[3] for row in rows[2:])
-    return f'| {link} | {model.meta.language} | {lines[1]} | {mark(lines[1], lines[2])} | {time[1]} | {mark(time[1], time[2])} | {results} |'
+    return f'| {link} | {model.meta.language} | {mark(lines[1], lines[2])} | {mark(time[1], time[2])} | {results} |'
 
 
 def load_models():
@@ -205,8 +205,8 @@ def comparison():
 def scorecard():
     """ The scorecard: a table with a row for each model """
     out = [
-        '| Model | Language | Lines: original | Lines: Starsim | Time: original | Time: Starsim | Results |',
-        '|---|---|---|---|---|---|---|',
+        '| Model | Language | Lines | Time | Results |',
+        '|---|---|---|---|---|',
     ] + [scorecard_row(model) for model in load_models()]
     return '\n'.join(out)
 
