@@ -61,6 +61,8 @@ project:
     - webapp/
     - webapp/README.md
     - admin/implementation.md
+    - costing/
+    - costing/README.md
 
 website:
   title: "Lingua franca"
@@ -87,6 +89,8 @@ website:
         text: Compare
       - href: admin/implementation.md
         text: Status
+      - href: costing/README.md
+        text: Cost modeling
     tools:
       - icon: github
         href: https://github.com/starsimhub/lingua_franca_design
@@ -241,6 +245,19 @@ website:
             - vignettes/siminf/sise3/README.md
             - vignettes/summer2/sir-age-location/README.md
             - vignettes/summer2/seir-age-clinical/README.md
+
+    - id: costing
+      title: Cost modeling
+      contents:
+        - href: costing/README.md
+          text: "**Summary**"
+        - costing/metrics.md
+        - costing/hiv-and-optimization.md
+        - costing/malaria-and-ntds.md
+        - costing/tb-and-vaccines.md
+        - costing/cancer-ncd-and-health-systems.md
+        - costing/cea-software.md
+        - costing/pandemics-and-frameworks.md
 
 format:
   html:

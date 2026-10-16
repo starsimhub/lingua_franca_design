@@ -2,6 +2,8 @@
 
 A review of how disease models do cost, financial, and economic modeling, and how they compute health economic outcomes such as DALYs and QALYs.
 
+> **Note:** This is an early-stage review. It is not yet part of the design or spec, and nothing here has been decided for Starsim v4.
+
 ## Purpose
 
 This is not a survey of every economic evaluation ever published. It collects exemplars: models whose costing is open, influential, or distinctive enough to show a pattern. Each exemplar answers the same questions: what is costed, how costs attach to the model, how health outcomes are computed, what analyses are supported, and a real snippet from the source. Where code is closed (CISNET, the WHO cervical cancer consortium, Spectrum, TIME, UNIVAC), the entry is drawn from the papers and says so.
