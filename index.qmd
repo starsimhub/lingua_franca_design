@@ -4,6 +4,20 @@ toc: false
 
 {{< include README.md >}}
 
+## Where the ideas come from
+
+What the design owes to each framework reviewed in [approaches](approaches/README.md), area by area: each row adds to 100%, **New** is what no framework did first, and **Other** is frameworks without a review here. Hover over a cell for what was taken; [influences](approaches/influences.qmd) has the overall shares and how the numbers were made.
+
+::: {.column-page}
+```{python}
+#| echo: false
+#| output: asis
+import sciris as sc
+influences = sc.importbypath('approaches/influences.py')
+print(influences.heatmap(folder='approaches/'))
+```
+:::
+
 ## Does it pass its own test?
 
 Each translation is held to two numbers from its original: no more lines of model code, and no more compute time. This is where each model stands; the model names link to the side-by-side comparison.

@@ -39,11 +39,11 @@ def totals(areas):
     return {key: share[key] for key in order}
 
 
-def label(key, link=True):
-    """ A framework's name, linked to its review """
+def label(key, link=True, folder=''):
+    """ A framework's name, linked to its review (in `folder`, relative to the page) """
     if key in extras:
         return extras[key]
-    return f'<a href="{key}.md">{names[key]}</a>' if link else names[key]
+    return f'<a href="{folder}{key}.md">{names[key]}</a>' if link else names[key]
 
 
 def overall():
@@ -62,29 +62,35 @@ def overall():
     return '\n'.join(out)
 
 
-def heatmap():
-    """ A table of areas by frameworks, each cell shaded by the share and explained on hover """
+def cell(key, val, top, tip):
+    """ One cell of the heatmap: shaded by the share, with what was taken on hover """
+    if not val:
+        return '<td></td>'
+    kind = 'extra' if key in extras else 'source'
+    dark = ' dark' if kind == 'source' and val/top > 0.45 else '' # White text on the darker blue cells only
+    text = f'{val:.0f}' if val >= 0.5 else '<1'
+    return f'<td class="{kind}{dark}" style="--share:{val/top:.2f}" title="{html.escape(tip)}">{html.escape(text)}</td>'
+
+
+def heatmap(folder=''):
+    """ A table of areas by frameworks, each cell shaded by the share and explained on hover, with the overall share at the bottom; `folder` is where the reviews are, relative to the page """
     areas = load()
-    keys = list(totals(areas))
+    share = totals(areas)
+    keys = list(share)
     top = max(val for area in areas.values() for val in area['shares'].values())
     out = ['```{=html}', '<div class="influence-map"><table>', '<thead><tr><th></th>']
-    out += [f'<th><div>{label(key)}</div></th>' for key in keys]
+    out += [f'<th><div>{label(key, folder=folder)}</div></th>' for key in keys]
     out += ['</tr></thead><tbody>']
     for name, area in areas.items():
         out += [f'<tr><th>{html.escape(name)}</th>']
         for key in keys:
             val = area['shares'].get(key, 0)
-            if not val:
-                out += ['<td></td>']
-                continue
-            tip = f'{label(key, link=False)}, {name}: {val:.0f}%. ' + area['notes'].get(key, '')
-            kind = 'extra' if key in extras else 'source'
-            dark = ' dark' if kind == 'source' and val/top > 0.45 else '' # White text on the darker blue cells only
-            out += [f'<td class="{kind}{dark}" style="--share:{val/top:.2f}" title="{html.escape(tip)}">{val:.0f}</td>']
+            out += [cell(key, val, top, f'{label(key, link=False)}, {name}: {val:.0f}%. ' + area['notes'].get(key, ''))]
         out += ['</tr>']
-    out += ['</tbody></table></div>', '```']
+    out += ['<tr class="overall"><th>Overall</th>'] # Shaded on the same scale as the areas, so it is paler
+    out += [cell(key, share[key], top, f'{label(key, link=False)}: {share[key]:.1f}% of the whole design, with each area counted equally') for key in keys]
+    out += ['</tr></tbody></table></div>', '```']
     return '\n'.join(out)
-
 
 if __name__ == '__main__':
     print(overall())

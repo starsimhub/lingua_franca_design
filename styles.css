@@ -120,9 +120,13 @@
 }
 
 .influence-map thead th {
-  height: 7rem;
   vertical-align: bottom;
+  padding-bottom: 0.3rem;
   font-weight: normal;
+}
+
+.influence-map thead a {
+  text-decoration: none; /* An underline on rotated text draws as a vertical rule */
 }
 
 .influence-map thead th div {
@@ -157,6 +161,11 @@
 
 .influence-map td.extra {
   background: rgba(128, 128, 128, calc(0.08 + 0.72 * var(--share)));
+}
+
+.influence-map tr.overall th, .influence-map tr.overall td {
+  font-weight: 600;
+  border-top: 2px solid var(--bs-border-color);
 }
 
 .influence-map td.dark {
