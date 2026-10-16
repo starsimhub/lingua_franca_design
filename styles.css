@@ -77,3 +77,88 @@
 .scorecard td:has(.fail) {
   background-color: rgba(220, 53, 69, 0.18);
 }
+
+/* The influences page (approaches/influences.qmd): blue for frameworks, gray for "Other" and "New" (translucent, so they work in the dark theme too) */
+.influence-bars {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 0.75rem;
+  align-items: center;
+  margin: 1rem 0 2rem;
+  font-size: 0.9em;
+}
+
+.influence-bars .name {
+  text-align: right;
+}
+
+.influence-bars .track {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.influence-bars .bar {
+  height: 1rem;
+  background: #2780e3;
+  border-radius: 0 4px 4px 0;
+}
+
+.influence-bars .bar.extra {
+  background: rgba(128, 128, 128, 0.6);
+}
+
+.influence-map {
+  overflow-x: auto;
+  margin: 1rem 0 2rem;
+}
+
+.influence-map table {
+  border-collapse: separate;
+  border-spacing: 2px;
+  font-size: 0.8em;
+}
+
+.influence-map thead th {
+  height: 7rem;
+  vertical-align: bottom;
+  font-weight: normal;
+}
+
+.influence-map thead th div {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}
+
+.influence-map tbody th {
+  text-align: right;
+  white-space: nowrap;
+  font-weight: normal;
+  padding-right: 0.5rem;
+}
+
+.influence-map table, .influence-map thead, .influence-map tbody, .influence-map tr, .influence-map th, .influence-map td {
+  border: none;
+  padding: 0;
+}
+
+.influence-map td {
+  min-width: 2rem;
+  height: 1.9rem;
+  text-align: center;
+  border-radius: 3px;
+  cursor: default;
+}
+
+.influence-map td.source {
+  background: rgba(39, 128, 227, calc(0.08 + 0.92 * var(--share)));
+}
+
+.influence-map td.extra {
+  background: rgba(128, 128, 128, calc(0.08 + 0.72 * var(--share)));
+}
+
+.influence-map td.dark {
+  color: #fff;
+}

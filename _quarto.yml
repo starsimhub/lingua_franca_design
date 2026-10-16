@@ -99,6 +99,8 @@ website:
           text: "**Summary**"
         - href: approaches/README.md
           text: Full comparison
+        - href: approaches/influences.qmd
+          text: Influences
         - section: Framework reviews
           contents:
             - approaches/atomica.md
