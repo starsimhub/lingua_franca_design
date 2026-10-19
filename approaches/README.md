@@ -22,7 +22,7 @@ Every document follows the same template, so that the sections can be read acros
 
 ### Included — full reviews
 
-22 frameworks, one document each.
+23 frameworks, one document each.
 
 | Framework | Language | Paradigms | Specification style | Why |
 |---|---|---|---|---|
@@ -46,6 +46,7 @@ Every document follows the same template, so that the sections can be read acros
 | [flepiMoP](flepimop.md) | Python / R | Metapopulation, inference pipeline | YAML configuration spanning model, seeding, interventions, and fitting | Config-file specification at production scale, including the intervention grammar |
 | [EpiHiper](epihiper.md) | C++ / JSON | ABM on explicit contact networks, national scale | Five JSON documents against published schemas | The only framework here where *both* the disease model and the intervention layer are data; declarative dwell-time distributions and a real set/trigger/action rule language |
 | [Vivarium](vivarium.md) | Python | Agent-based microsimulation | Components listed in YAML; behavior as `Component` subclasses with a declared lifecycle | The value-pipeline pattern — named quantities with one producer, many registered modifiers, and a declared combiner — is the best answer here to cross-module effects |
+| [Thanzi La Onse](tlo.md) | Python | Agent-based microsimulation, whole health system | `Module` subclasses with declared parameters and properties; behavior as scheduled events | The only model here with a health system that can refuse care: requests with staff-time and consumable footprints, priorities, and finite capacity, plus built-in DALY accounting |
 | [LASER](laser.md) | Python / Numba | Spatial ABM at eradication scale | A columnar `LaserFrame` of agent properties plus a list of components | IDM's other agent-based engine; its design point differs from Starsim's in instructive ways, and its migration-model library is the best spatial-interaction vocabulary in the review |
 | [epidemics](epidemics.md) | R (odin under the hood) | Compartmental, fixed structures | Model structure is a library; the user composes *composable elements* around it | The clearest statement of the opposite design choice — fix the structure, open the scenario — with a published design-principles document |
 

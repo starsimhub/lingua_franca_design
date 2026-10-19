@@ -14,7 +14,7 @@ Measured on 14 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x8
 
 ## What was declared and what was not
 
-Declared: the four states and three transitions, the latent period as an Erlang with 40 stages (the original's gamma with shape 40) and the infectious period as a normal, births into `S`, the places with their populations and the original's distance matrix, the coupling as a moving force of infection (`ss.Mobility(..., kind='force')`), the initial conditions in each place, the age pyramid, and the seasonal transmission as a time series that repeats every year.
+Declared: the four states and three transitions, the latent period and the infectious period as normals (the original gives its transmission the infectious period's normal for the latent period of everyone it infects; its gamma with shape 40 is used only for people exposed at the start, of whom there are none), births into `S`, the places with their populations and the original's distance matrix, the coupling as a moving force of infection (`ss.Mobility(..., kind='force')`), the initial conditions in each place, the age pyramid, and the seasonal transmission as a time series that repeats every year.
 
 Not declared, and marked as workarounds:
 

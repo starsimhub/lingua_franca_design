@@ -11,7 +11,7 @@ k     = ss.par(10,  doc='dispersion of the reported counts')
 S, I, R = ss.states(3)
 infection = S >> I @ beta * I
 recovery  = I >> R @ gamma
-cases     = ss.outcome(rho * infection, every=ss.weeks(1), likelihood=ss.nbinom(n=k))
+cases     = ss.outcome(rho * infection, likelihood=ss.nbinom(n=k)) # Compared with weekly data as its total over each week
 
 sir = ss.Disease(infection, recovery, cases, init=dict(I=10))
 sim = ss.Sim(sir, total_pop=10_000, unit='day', stop=ss.weeks(12))

@@ -42,8 +42,8 @@ def as_states():
         s          = E >> Is @ 0.5 * ss.by(age=[0.3, 0.3]),
         i          = E >> Ii @ 0.5 * ss.by(age=[0.2, 0.2]),
         h          = E >> Ih @ 0.5 * ss.by(age=[0.1, 0.3]),
-        recovery   = (Ia | Is | Ii | Ih) >> R @ 0.3,
-        death      = (Is | Ii) >> ss.null @ 0.05,
+        recovery   = Ia + Is + Ii + Ih >> R @ 0.3,
+        death      = Is + Ii >> ss.null @ 0.05,
         hosp_death = Ih >> ss.null @ 0.1,
         init       = init,
         name       = 'seir',
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     hosp = res.n_I.select(clinical='hospital').values
     outputs = dict(hospital_occupancy=hosp, prop_infected_hosp=hosp/res.n_I.values, notifications=flow(res.incidence.select(clinical=['isolated', 'hospital']).values))
     for age in ages:
-        outputs[f'accum_death_{age}'] = res.cum_infection_death.select(age=age).values / 0.1
+        outputs[f'accum_death_{age}'] = res.infection_death.cum.select(age=age).values / 0.1
         outputs[f'incidence_{age}'] = flow(res.incidence.select(age=age).values)
         for name in clinical:
             outputs[f'incidence_{age}_{name}'] = flow(res.incidence.select(age=age, clinical=name).values)

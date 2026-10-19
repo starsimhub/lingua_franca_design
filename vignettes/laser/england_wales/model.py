@@ -55,7 +55,7 @@ def importation(sim):
 S, E, I, R = ss.states(4)
 measles = ss.Disease(
     infection = ss.transmission('S -> E', beta=beta, source='I'),
-    onset     = ss.progression('E -> I', dur=ss.erlang(k=40, mean=ss.days(10))),
+    onset     = ss.progression('E -> I', dur=ss.normal(8, 2, unit='days')), # The original's infectious-period distribution, which its transmission is given for the latent period (its gamma is used only for people exposed at the start, of whom there are none)
     recovery  = ss.progression('I -> R', dur=ss.normal(7, 2, unit='days')), # 8 in the original, which loses a day, see README
     births    = ss.birth('-> S', rate=ss.peryear(r)),
     init      = dict(I=ss.by(patch=[3]*len(pop)), R=0.95),

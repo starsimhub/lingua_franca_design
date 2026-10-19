@@ -36,7 +36,7 @@ if __name__ == '__main__':
         # A stock at index k is the number after k steps, so the number on day d is at index d*step
         for key,name in names.items():
             report(name, res[f'n_{key}'].values[::step], ref[name][1])
-        dead = res.cum_death.values[::step] # Deaths up to each day
+        dead = res.death.cum.values[::step] # Deaths up to each day
         report('Dead', dead, ref['Dead'][1])
         for g in range(3):
             report(f'InfectedSymptoms_{g}', res.n_ISy.select(age=str(g)).values[::step], ref[f'InfectedSymptoms_{g}'][1])

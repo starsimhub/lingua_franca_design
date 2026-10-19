@@ -16,7 +16,7 @@ foi  = (1 - (1 - prev * transpercontact)**contacts) * (1 - 0.008)
 sir = ss.Disease(
     infection  = sus >> inf @ foi,
     recovery   = inf >> rec @ ss.years(5),
-    death      = (sus | inf | rec) >> dead @ susdeath,
+    death      = sus + inf + rec >> dead @ susdeath,
     inf_death  = inf >> dead @ infdeath,
     init       = dict(sus=700, inf=285.71429, rec=14.28571),
 )
