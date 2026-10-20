@@ -1,30 +1,37 @@
 # A lingua franca for epi modeling
 
-**Version:** 1.3 | **Date:** 2026.10.19 | **Status:** Implementation in progress
+**Version:** 1.4 | **Date:** 2026.10.20 | **Status:** Alpha version near completion
 
 ## Introduction
 
-This project describes the design of a _lingua franca_ for epi modeling. The lingua franca should:
+This project describes the design of a _lingua franca_ for epidemiological modeling (a.k.a. disease modeling or infectious disease dynamics). The vision for the lingua franca is to:
 
-- Capture the best aspects of all existing epi models (in terms of flexibility, simplicity, and elegance), and improve upon them when possible. In other words, **a model should always be easier to write with the lingua franca than without it**. A concrete definition of this is that compared to existing epi models, implementing a model in the lingua franca should require no more lines of code than the original, and be as fast or faster.
-- Be AI-native, serving as a rigorous-yet-simple and deterministic representation of modeling concepts (as expressed as prose or using other modeling frameworks) into code.
+- Capture the best aspects of all existing epi modeling frameworks (in terms of flexibility, simplicity, and elegance), and improve upon them when possible. In other words, **a model should always be easier to write with the lingua franca than without it**. For example, compared to existing epi models, implementing a model in the lingua franca should require no more lines of code than the original, and be as fast or faster.
 - Provide a unified representation across different modeling paradigms, including at least:
     - Compartmental/ODE models
     - Stochastic compartmental/SDE models
     - Metapopulation models
     - Agent-based models
-- Allow interconversion between modeling frameworks (e.g. EpiModel to epydemix) and paradigms (e.g. compartmental to agent-based).
+- Allow low- to zero-effort interconversion between modeling frameworks (e.g. EpiModel to epydemix) and paradigms (e.g. compartmental to agent-based).
+- Be AI-native, serving as a rigorous-yet-simple and deterministic representation of modeling concepts (as expressed via code with other modeling frameworks, or even as prose) into a single consistent code representation.
 
 ## Motivation
 
-Why do we need a lingua franca? Why can't LLMs just write disease models directly? Two main reasons:
+Why do we need a lingua franca? What's wrong with existing modeling frameworks? And why can't LLMs just write disease models directly?
 
-- AI is most efficient and accurate as a thin wrapper for code that already provides most desired functionality; imagine an LLM trying to correctly do a dataframe merge without access to R or `pandas`.
-- A lingua franca serves as a rigorous source of truth for comparing other models to, and provides a robust endpoint (MCP) to develop AI skills, guardrails, and evals against. If a compartmental model written in R with EpiModel gives a different result than an agent-based model written in Python in Vivarium, currently it's extremely difficult to understand why. A lingua franca allows the differences between models to be clarified and explored.
+- Unlike other fields such as neuroscience or astrophysics, epi modeling frameworks haven't captured a significant "market share". This is most likely because of the diversity of the epi modeling landscape, and because existing frameworks tend to work well for some things and poorly or not at all at others. A lingua franca would remove these barriers.
+- While AI certainly _can_ write epi models, even quite complex ones, it does not necessarily do it quickly or rigorously. AI is most efficient and accurate as a thin wrapper for code that already provides most desired functionality; imagine an LLM trying to correctly do a dataframe merge without access to R or `pandas`.
+- A lingua franca serves as a rigorous source of truth for comparing other models to, and provides a robust endpoint (MCP) to develop AI skills, guardrails, evals, and harnesses against. If a compartmental model written in R with EpiModel gives a different result than an agent-based model written in Python in Vivarium, currently it's extremely difficult to understand why. A lingua franca allows the differences between models to be clarified and explored.
 
-While AI is not always very creative, we can be certain that the lingua franca can do *at least as well* as existing models. AI is the perfect tool for this: it can easily review all existing models, see who did it best, and at minimum copy that implementation (and improve upon it as possible).
+## Standing on the shoulders of giants
 
-We used Starsim as the base for the lingua franca because agent-based modeling is the most complex paradigm; all other models can be expressed as agent-based models, and of course real diseases act on agents (humans). The lingua franca will be released as Starsim v4. You can see the [current code](https://github.com/starsimhub/starsim/tree/v4) and the draft [PR #1437](https://github.com/starsimhub/starsim/pull/1437).
+We have been using AI tools to summarize and evaluate the existing disease modeling landscape. Because of this, the lingua franca owes its existence to the many years (and hundreds of thousands of hours) of human contributors; see [Influences][approaches/influences.qmd] for where we have incorporated ideas from other models. We can be (somewhat) confident that a lingua franca based on existing models can do *at least as well* as them in terms of performance and brevity. While AI is not always very creative, it is the perfect tool for this task: it can impartially review all existing models, see who did it best, and at minimum copy that implementation (and improve upon it where possible). 
+
+Because of this, we acknowledge our indebtedness to the broader disease modeling community, and inclusiveness is one of our core principles. (More bluntly: we do not want to be the AI jerks who steal other people's work and pass it off as our own.) We are in the process of reaching out to authors of the disease modeling frameworks we borrowed from, but please [get in touch](mailto:info@starsim.org) if we haven't written to you yet!
+
+Although the lingua franca aims to reflect a "consensus" view of disease modeling approaches, we needed a concrete basis to start from. We used Starsim as the basis for the lingua franca for two reasons. First, because we're biased (a downside of human involvement in these projects!). Second, because agent-based modeling is the most complex paradigm; all models can be expressed as agent-based models, and of course real diseases act on agents (humans and/or other animals), so in a sense agent-based models are already a disease modeling lingua franca, even though the majority of epi models are written as ODEs in practice.
+
+The lingua franca will be released as Starsim v4 (so "lingua franca", "Starsim", and "v4" are all synonyms), planned for the end of 2026. You can see the [current code](https://github.com/starsimhub/starsim/tree/v4) and the draft [PR #1437](https://github.com/starsimhub/starsim/pull/1437). We are also currently working on a publication. We enthusiastically invite the disease modeling community to [join us](mailto:info@starsim.org) as both code contributors and coauthors. 
 
 ## Project structure
 

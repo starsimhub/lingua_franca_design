@@ -25,15 +25,18 @@ Nothing was declared. Results live under the module that produced them, `sim.res
 A build MUST generate, for every module with states and transitions:
 
 - `n_<state>` for every state: the number of people in it at each time point;
-- `<transition>` for every named transition: the number of people who made that transition during each step (a flow, not a stock), named exactly as the transition is.
+- `<transition>` for every named transition: the number of people who made that transition during each step (a flow, not a stock), named exactly as the transition is;
+- and `<transition>.<state>` for each destination of a transition with several (`cin = ss.progression('C -> X | R', ...)` gives `cin.X` and `cin.R`): the number who made it and arrived in that state, whose sum is the transition's flow. It is read `res.cin.X` or `res['cin.X']`, and `res.cin.select(to='X')` is the same result; it is kept by group like the total, is a source of an outcome (`ss.outcome(0.8*cin.X)`) and a series in a result expression, and is matched by a data column named `cin.X`. A destination may not be named like an attribute of a result (`cum`, `values`, ...), which raises when the disease is made.
 
 Each flow's running total is `res.<transition>.cum`, a result (a stock) computed when it is asked for, not a second stored series.
 
 Results follow the convention of other modeling frameworks, under every solver: a result has one value for each time point of the sim, from `start` to `stop`. `n_<state>[ti]` is the number in the state at time point `ti` (so `n_<state>[0]` is the number at the start), and `<transition>[ti]` is the number who made the transition during the step that ends at time point `ti` (so it is 0 at the start). So if nobody has recovered at the start and 10 people recover in the first step, `n_R[0]` is 0 and `n_R[1]` and `recovery[1]` are both 10, and `n_R[ti] - n_R[ti-1]` is the net flow into the state in the step that ends at `ti`. A sim with `stop=T` takes a step from each time point but the last, so it ends at `T`. A declared model takes values that vary in time at the start of each step (between the time points, an ODE solver takes them where it needs them); a delivery at a time point happens there, between the steps, and is counted there.
 
-A flow has one name, the transition's, which matches the model text, `ss.modify()` targets, `ss.outcome()`, and data columns. Starsim's standard disease results are kept under their existing names on the library's `ss.SIR`, `ss.SIS`, and `ss.SEIR` (or any disease class with `standard_results = True`), so code written for Starsim carries over: for a disease with transmission, `new_infections` is the total flow through its transmission transitions, `cum_infections` its running total, and `prevalence` the fraction of the population in its infected states. A disease declared with `ss.Disease(...)` does not have them; a result declared under one of these names gives it one (e.g. `prevalence = I / N`). A data column called `new_infections` is matched to the flow of the transmission of a declared disease that has one, so Starsim data files still line up.
+A flow has one name, the transition's, which matches the model text, `ss.modify()` targets, `ss.outcome()`, and data columns. Starsim's standard disease results are kept under their existing names on the library's `ss.SIR`, `ss.SIS`, and `ss.SEIR` (or any disease class with `standard_results = True`), so code written for Starsim carries over: for a disease with transmission, `new_infections` is the total flow through its transmission transitions, `cum_infections` its running total, and `prevalence` the fraction of the population in its infected states, kept as the ratio of the infected over people, so in a stratified run it is by group as a declared ratio is (`res.prevalence.select(risk='high')`, ST20). A disease declared with `ss.Disease(...)` does not have them; a result declared under one of these names gives it one (e.g. `prevalence = I / N`). A data column called `new_infections` is matched to the flow of the transmission of a declared disease that has one, so Starsim data files still line up.
 
 A state that is not people (a water reservoir, a mosquito population; [03-states-and-transitions.md](03-states-and-transitions.md)) gets the same results: `n_W` is the count it holds.
+
+A family of diseases (`ss.Strains`, [05-dimensions.md](05-dimensions.md#strain)) has results made from its members' results of the same name: for a state or a named sum of states that every member has (a stock), the number in it in at least one member, a union that counts each person once (`sim.results.hpv.infected` is the number infected with any genotype, where a sum would count the co-infected twice); for a transition (or outcome) that every member has (a flow), the sum, since each event belongs to one member (`sim.results.hpv.cancer`). `res.by('<family>')` gives each member's own result (`sim.results.hpv.infected.by('hpv')`). The members keep their own results (`sim.results.hpv16.infected`). An outcome over unrelated diseases is still not declared.
 
 `ss.SIR`, `ss.SIS`, and `ss.SEIR` are declared diseases, so their results are named after their states (`sim.results.sir.n_I`, not Starsim 3's `n_infected`), with the three standard results above added. Starsim 3's versions, written as code (`ssl.AgentSIR` and the others), keep Starsim 3's names.
 
@@ -146,7 +149,7 @@ An outcome is a shortcut for an observation process that the model does not repr
 | The situation | Use |
 |---|---|
 | Testing and reporting are not in the model: "about half of infections are reported, five days later" | An outcome |
-| Testing is modeled, by one or more interventions | The interventions' own results. Each testing intervention reports the diagnoses it made, and reported cases are their sum: `cases = symptomatic_testing.diagnosed + screening.diagnosed` |
+| Testing is modeled, by one or more interventions | The interventions' own results. Each testing intervention reports the diagnoses it made, and reported cases are their sum: `cases = symptomatic_testing.positive + screening.positive` |
 | Being counted changes what happens to the person (hospitalized people are isolated and stop transmitting) | A state, with transitions in and out |
 
 So an outcome never competes with a testing intervention over who produces `cases`: if the model has tests, the tests produce the cases ([08-interventions.md](08-interventions.md)), and `ss.outcome` is not used for them.
@@ -162,7 +165,7 @@ sim = ss.Sim(sir, data='kenya_2020.csv', start='2020-01-01', stop='2020-12-31').
 sim.plot()
 ```
 
-- `data=` takes a file name, a data frame, or an `ss.data(...)` object (below). It has a time column (`date`, `year`, `t`, or `time`) and one column per data series, **named like the result it corresponds to** (`cases`, `deaths`, `prevalence`). With several modules, a column is matched to the one module that has a result of that name, or is written `sir.cases` when the name is ambiguous. This works the same for modules written as code (Starsim 3's diseases among them), so it is a way into fitting for a Starsim 3 model.
+- `data=` takes a file name, a data frame, or an `ss.data(...)` object (below). It has a time column (`date`, `year`, `t`, or `time`) and one column per data series, **named like the result it corresponds to** (`cases`, `deaths`, `prevalence`, or `cin.X` for the flow to one destination of a transition). With several modules, a column is matched to the one module that has a result of that name, or is written `sir.cases` when the name is ambiguous. This works the same for modules written as code (Starsim 3's diseases among them), so it is a way into fitting for a Starsim 3 model.
 - A column that matches no result is an error (`UnknownDataColumn`) that lists the result names closest to it, so a typo in a header is caught. `ss.data(..., ignore_extra=True)` drops such columns instead. Data entirely outside the simulated period raises `DataMisaligned` when it is compared with the results (by `sim.calibrate()`, for instance); data partly outside is used where it overlaps.
 - Data for particular strata is given in long form: extra columns named after dimensions (`age`, `patch`) say which stratum each row belongs to, by the level's label (or position). Each result and stratum is then one data series, named like `cases[age=0-14]` and compared with `cases.select(age='0-14')`; a likelihood or weight given for `cases` applies to every stratum of it.
 - The data need not be on the model's time step. A flow (weekly reported cases) is compared with the model's flow summed over each data interval; a stock or ratio (a prevalence survey) is compared with the model's value at the data's time. The result already knows which it is. The interval assumed for flow data is the spacing of the data.
@@ -218,7 +221,7 @@ n_I.values                                   # the full array, runs by time
 - `n_runs` belongs to the MultiSim, not to the sim. `ss.Sim` has no replicate count, and `sim.results` always holds one series per result. Each run has its own seed ([11-random.md](11-random.md)).
 - **A MultiSim is its results, and a MultiSim result is the same `ss.Result` with a `run` dimension first.** `.select()` and `.by()` work as on a single sim (`msim.results.sir.n_I.select(age=0).quantiles([0.5])`), `.select(run=3)` is one run (a result of one sim), and arithmetic, `.resample()`, `.to_df()`, and `.plot()` work on it as on any result. `len(msim)` is the number of runs, whichever way they were taken (restarted compartmental runs, runs in one call to the kernels or to JAX, or sims run in parallel).
 - `.quantiles(q)` takes a list of quantiles and returns a result with one series per quantile (for each scenario), over the runs; `.median()` and `.mean()` return the series over the runs (of each scenario). `.values` is the full array with one row per run.
-- `msim.summarize()`, `msim.diff()`, `msim.extinction()`, and `msim.compare()` work from the results.
+- `msim.summarize()`, `msim.diff()`, `msim.extinction()`, `msim.outbreaks()`, and `msim.compare()` work from the results.
 - `msim.plot()` draws the median and an interval. `msim.plot(lines=True)` draws every run, because extinction, bimodality, and threshold behavior cannot be seen in a median.
 - `ss.parallel(baseline=sim_a, vaccine=sim_b, n_runs=100)` returns one object whose results are indexed by scenario, run, and time ([08-interventions.md](08-interventions.md)): `msim.results.sir.n_I.select(scenario='vaccine')`. A sweep, `ss.parallel(sim, pars=dict(beta=[0.2, 0.4]), n_runs=10)`, has the values as coordinates of the runs: `msim.results.sir.n_I.select(beta=0.2).quantiles()`.
 - `ss.parallel()` is the one way to run many sims, and `sim.run(n_runs=100)` is its shortcut for running one sim many times; both end in the same results.
@@ -228,6 +231,12 @@ Where extinction is possible, `msim.extinction()` reports it, for each declared 
 
 ```text
 sir: died out in 41% of 500 runs (median time 23 days)
+```
+
+A disease that nobody can catch again dies out in every run that is long enough, after a major outbreak as after a minor one, so for it the question is how often there was a major outbreak. `msim.outbreaks(threshold=0.1)` gives the share of runs in which more than a threshold were infected: a share of the people at the start, or a number of people if it is 1 or more. The number infected is the total of the acquisitions over the run, so the people infected at the start are not counted:
+
+```text
+sir: a major outbreak (more than 100 infected) in 48% of 500 runs
 ```
 
 ## The transmission log
