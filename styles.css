@@ -1,3 +1,6 @@
+/* Raleway, the site font (set as mainfont in _quarto.yml) */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
 /* The comparison page (webapp/index.qmd): a row of models to pick from, and two panes of code */
 
 .model-picker {
