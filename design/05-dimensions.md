@@ -199,7 +199,7 @@ campaign = ss.Delivery(increment='doses', coverage=0.6, at=[2025, 2026, 2027])
 waning   = ss.transfer(increment=dict(immunity=-1), rate=ss.peryear(0.5))
 ```
 
-A **clock** (`kind='clock'`) holds the time since an event, and advances with time as age does. Its levels are the lower edges of bins of time, as durations (`ss.months([0, 1, 2, 3, 6, 12, 24])`) or numbers in the sim's unit, followed by a level `none` for the people who have not had the event, where everyone starts; it takes no `split=`. An event sets it with `move=` (`move=dict(since_birth=0)`, a time in the clock's unit), and a value by it is an `ss.by` table whose row with key `None` is for the people at `none` ([04](04-parameters.md)). As agents, each person holds the time since it was set (NaN at `none`), advanced by a step at the end of each step. In a compartmental run the levels are whole steps from 0 to the last edge (the last open-ended, then `none`), and everyone moves up one at the start of each step, which is exact; edges that are not whole steps are rounded, with a note, and results by group are by step. Age is the clock that birth sets; `after=` and `before=` stay the time in the source state, which needs no clock.
+A **clock** (`kind='clock'`) holds the time since an event, and advances with time as age does. Its levels are the lower edges of bins of time, as durations (`ss.months([0, 1, 2, 3, 6, 12, 24])`) or numbers in the sim's unit, followed by a level `none` for the people who have not had the event, where everyone starts; it takes no `split=`. An event sets it with `move=` (`move=dict(since_birth=0)`, a time in the clock's unit), and a value by it is an `ss.by` table whose row with key `None` is for the people at `none` ([04](04-parameters.md)). Each person holds the time since it was set (NaN at `none`), advanced by a step at the end of each step, so a clock is kept by agents only: `solver='auto'` runs a model with one as agents, and a compartmental solver raises `CapabilityError` (decided 2026-10-20; its compartmental form, levels of whole steps, is gone). Age is the clock that birth sets; `after=` and `before=` stay the time in the source state, which needs no clock.
 
 ### Space
 
@@ -273,7 +273,8 @@ superinfection = latent >> latent @ ss.peryear(3) * active
 A transition can change a person's level as well as their state with `move=`, an arrow between two levels (which also limits the transition to people at the first) or the level people move to (for a clock, the time it is set to), and move them up a counter with `increment=` ([counters](#counters-and-clocks)). This is how one of two strains progresses alone, or resistance is acquired on progression:
 
 ```python
-ss.progression('latent -> active', rate=ss.peryear(0.1), move=dict(strain='A+B -> A'))
+latent, active = ss.states('latent active')
+ss.Transition(latent, active, rate=ss.peryear(0.1), move=dict(strain='A+B -> A'))
 ```
 
 tbsim's drug resistance (`tbsim.TB(drugs=['RIF', 'INH'])`) is built this way: the levels are the sets of strains people can carry, and treatment that fails is a transition that moves people to the strains that were not cured, with any resistance they acquired.
@@ -297,7 +298,7 @@ sim.results.hpv.cancer       # new cancers, any genotype: a sum of flows
 sim.results.hpv.infected.by('hpv')   # each member's own
 ```
 
-The members are in `sim.diseases` under their own names, beside the family. The family's names (`protected=`, the states of `dur=`, `exclusive=`) name states or named sums of states of each member and are resolved when the sim is built, so no member needs another to exist when it is written; a member that lacks one raises, unless it has a row of zeros in that matrix. A stock that every member has (a state, or a named sum of states such as `infected`) is a union over the members, and a flow (a transition) a sum. The family's attributes are the same unions as conditions: `where=hpv.infected` is the people infected with any member, and `hpv.infected.count() >= 2` the co-infected. With `init_prev=`, each person seeded gets one member, entering it as a new infection would (through its first transmission, in its shares), on the family's own random numbers; a member may not then have initial values of its own. The family is exact as agents, over networks too. It runs as agents for now: a compartmental solver raises `CapabilityError`, and `solver='auto'` chooses agents. Members that run side by side under the compartmental solvers, coupled through their shares, are the next step ([19-open-questions.md](19-open-questions.md)). A family named like a dimension raises.
+The members are in `sim.diseases` under their own names, beside the family. The family's names (`protected=`, the states of `dur=`, `exclusive=`) name states or named sums of states of each member and are resolved when the sim is built, so no member needs another to exist when it is written; a member that lacks one raises, unless it has a row of zeros in that matrix. A stock that every member has (a state, or a named sum of states such as `infected`) is a union over the members, and a flow (a transition) a sum. The family's attributes are the same unions as conditions: `where=hpv.infected` is the people infected with any member, and `hpv.infected.count() >= 2` the co-infected. With `init_prev=`, each person seeded gets one member, entering it as a new infection would (through its first transmission, in its shares), on the family's own random numbers; a member may not then have initial values of its own. The family is exact as agents, over networks too. Members that affect each other (`immunity=`, `exclusive=`) run as agents only: a compartmental solver raises `CapabilityError`, whatever `approx=`, and `solver='auto'` chooses agents (decided 2026-10-20). Members that do not run side by side under the compartmental solvers ([12-backends.md](12-backends.md#a-family-of-diseases-side-by-side)). A family named like a dimension raises.
 
 **As a second disease**, when the pathogens are unrelated (HIV and syphilis): write two `ss.Disease` modules and connect them with `ss.modify` ([07-effects.md](07-effects.md)).
 
@@ -359,7 +360,8 @@ ss.Sim(sir, networks=ss.contacts('Kenya'))
 
 - **In a compartmental run** the matrix is aggregated to the model's groups, weighted by population. Where a model group cuts through a matrix band, the band is split in proportion to population. A one-line note says the matrix was aggregated (`MatrixAggregated`).
 - **In an agent-based run** the matrix is used with its own groups: each agent has an exact age and is counted in whichever band the matrix uses.
-- **With places**, a contact matrix acts within each place, under every solver ([06-routes.md](06-routes.md#mobility)).
+- **With places**, a contact matrix acts within each place, under every solver ([06-routes.md](06-routes.md#mobility)); a matrix over the places themselves (`ss.contacts(patch=...)`) says who meets whom across them, and is how a force of infection shared between places (LASER's coupling) is written.
+- **The data is optional.** A matrix given as numbers needs nothing else: only a country's matrix by name (and `ss.geo` and `ss.people` by name) reads `starsim_data`, the optional `data` extra, and a model with no named data never imports it.
 
 With no mixing given, people mix homogeneously across the levels of every dimension except space, where the default is to mix within the patch ([06-routes.md](06-routes.md)).
 

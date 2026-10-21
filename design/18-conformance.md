@@ -22,7 +22,7 @@ An implementation can be complete in stages. Each level includes the ones before
 |---|---|
 | **Core** | Objects ([01](01-objects.md)), types ([02](02-types.md)), states and transitions ([03](03-states-and-transitions.md)), parameters ([04](04-parameters.md)), the ordered loop ([10](10-execution.md)), the model spec ([14](14-model-spec.md)), errors as classes ([15](15-errors.md)), and `solver='abm'` |
 | **Compartmental** | `solver='ode'` and `'auto'`; mixing pools and contact matrices; Erlang stages; `equations()`; states that are not people |
-| **Stochastic** | `'gillespie'` (with tau-leaping as its noted fallback for a run of too many events) and `'binomial'`; `ss.MultiSim` for many runs; extinction reporting |
+| **Stochastic** | `'gillespie'` (exact), `'tau'` (tau-leaping), and `'binomial'`; `ss.MultiSim` for many runs |
 | **Structured** | Stratification ([05](05-dimensions.md)), `ss.modify` and conditions ([07](07-effects.md)), interventions ([08](08-interventions.md)), results and data ([09](09-results.md)) |
 | **Spatial** | Patches, mobility models, commuting, geography |
 | **Inference** | Calibration, sensitivity, and model comparison ([13](13-inference.md)) |
@@ -34,10 +34,9 @@ Each suite ends with what tests it now. "Not yet tested" means the claim is a ho
 
 ### 1. Form equivalence
 
-For every corpus model, the three spellings of its transitions (arrow-string constructors, operators, explicit `ss.Transition`) and the two ways of building the module (constructor and class) MUST produce the same model spec and the same model hash, once names agree. ([01-objects.md](01-objects.md#the-equivalence-rule)) The same holds for:
+For every corpus model, the two spellings of its transitions (operators and explicit `ss.Transition`) and the two ways of building the module (constructor and class) MUST produce the same model spec and the same model hash, once names agree. ([01-objects.md](01-objects.md#the-equivalence-rule)) The same holds for:
 
 - the ways of declaring states: `S, I, R = ss.states(3)`, `ss.states('S I R')`, and `S = ss.State()` one at a time;
-- the spellings of an arrow string: `'I -> R'`, `'I->R'`, `'I >> R'`, and `'I>>R'`;
 - results and outcomes passed as keywords and passed through `transitions=`, `results=`, and `outcomes=`.
 
 Tested by `test_transitions.py::test_forms` on the SIR (the spellings, a class, and the ways of declaring states, by their hashes). Not yet tested on the rest of the corpus.
@@ -61,7 +60,7 @@ For each **simple** corpus model (marked below), every solver is run and compare
 | Destinations | The flow to each destination of a transition with several sums to its total, by group too, under every solver; deaths by age along one destination agree with the ODE within 3 standard errors over 20 runs of `binomial`, `gillespie`, and `abm` | `test_results.py::test_destinations`, `test_contracts.py::test_destinations` |
 | Competing exits | Reordering three equal competing exits leaves a third leaving by each, under every solver (including tau-leaping) | `test_contracts.py::test_exit_order` |
 | Stochastic agreement | The mean over time of each state, averaged over a few runs of `binomial`, `gillespie`, and `abm`, is within 5% of the ODE's (wider for some models, each with its reason); a small state is compared with a tenth of the largest | `test_contracts.py::test_solvers_agree` (the simple models; every compartmental corpus model with `STARSIM_SLOW=1`) |
-| Time in state | A branch probability given the time in the state (an exponential dwell of mean 1 and `p = 1 - exp(-P.dwell)`, so half go each way) within 0.01 under `ode` and 3 standard errors under `binomial` and `abm`; a hazard that grows with it, against a death rate, clears the exact share within 0.01; the agents' expression and a function reading `hpv.P.dwell[uids]` give the same run | `test_transitions.py::test_given_dwell` |
+| Time in state | A branch probability given the time in the state (an exponential dwell of mean 1 and `p = 1 - exp(-P.time)`, so half go each way) within 3 standard errors under `abm`, and a compartmental solver refuses it (`CapabilityError`, and `auto` runs agents); a hazard that grows with it, against a death rate, clears the exact share within 0.01; the agents' expression and a function reading `hpv.P.time[uids]` give the same run | `test_transitions.py::test_given_dwell` |
 | Convergence in `dt` | The difference between a stepped solver and the ODE shrinks with `dt`, and `sim.check_dt()` reports it | `test_transitions.py::test_time_values` (one model) |
 | Backend equivalence | A stepped run and a whole run in the kernels draw the same numbers; so do a run stopped and continued, and a run with another sim run in between | `test_contracts.py::test_streams`, `test_streams_across_sims` |
 
@@ -80,7 +79,7 @@ For every approximation in [12-backends.md](12-backends.md#the-standard-approxim
 - with an explicit solver and `approx=False`, the same request raises `ss.CapabilityError` naming the piece and the approximation that would have been used;
 - with `solver='auto'` and `approx=False`, the dwell-time model runs as agents, where the dwell time is sampled directly;
 - with `verbose=0` nothing is printed, and the note is still kept in `sim.notes`;
-- `sim.solvers()` shows `approx` for that ingredient under that solver, before anything is run;
+- `sim.describe()` shows `approx` for that ingredient, before anything is run;
 - a distribution on `beta` or `rel_sus` runs as agents under `'auto'`, and under an explicit `solver='ode'` uses the mean and says so.
 
 For the things with no approximation (contact tracing, transmission trees, agent-only custom code), a compartmental solver raises `ss.CapabilityError` with a message in the shape [15-errors.md](15-errors.md) asks for.
@@ -157,7 +156,7 @@ The catalog in [15-errors.md](15-errors.md) is generated from the classes in `st
 - The printed output names the fitting method and the reason.
 - For an ODE run, the gradient of the results with respect to each parameter, from automatic differentiation, agrees with a finite-difference gradient (`test_gradients.py::test_gradient`).
 - `fit.sim` is a run sim with the fitted values, and the original sim is unchanged.
-- `ss.compare_models` compares models by their prediction of held-out data, with one measure for all (`test_transitions.py::test_likelihood`).
+- `ss.fit.compare_models` compares models by their prediction of held-out data, with one measure for all (`test_transitions.py::test_likelihood`).
 - Staged fitting and `sim.sensitivity()` run (`test_contracts_inference.py::test_staged_and_sensitivity`).
 
 ### 13. North star
@@ -193,7 +192,7 @@ The models are the functions of `tests/corpus.py`, each returning an unrun sim s
 | # | Model | What it tests |
 |---|---|---|
 | 1 | **SIR**, with no unit anywhere (simple); its spellings and a class are in `test_forms` | Form equivalence; every solver; time in timesteps when nothing has a unit |
-| 2 | **SEIR**, in the operator form and in the string form with `source='I'` (simple) | The source of infection; the printed guess when `source=` is left out |
+| 2 | **SEIR**, in the operator form (simple) | The source of infection, in the rate |
 | 3 | **SIR with an Erlang dwell time**, `ss.erlang(mean=10, k=3)` (simple) | Sub-stages, exact in every solver |
 | 4 | **SIR with a lognormal dwell time** | `'auto'` keeps it an ODE with fitted Erlang stages and prints `StagesUnderAuto`; `solver='ode'` prints the stage approximation; `approx=True` silences it; `solver='ode'` with `approx=False` raises `CapabilityError`; `'auto'` with `approx=False`, and `solver='abm'`, sample the dwell time directly; the difference is recorded |
 | 5 | **A branching model** with per-branch dwell times and a competing death hazard (simple) | Split on entry versus competing hazards |
@@ -202,11 +201,11 @@ The models are the functions of `tests/corpus.py`, each returning an unrun sim s
 | 8 | **Vaccination as a stratification plus a transfer** | The disease never mentions vaccination; coverage delivers `f`; capacity is a total |
 | 9 | **Two diseases with `ss.modify` in both directions** (HIV and syphilis) | Mutual dependence; combination rules; base and effective values; `what_modifies()` |
 | 10 | **A sexual-network model** (`ss.MFNet`) | `'auto'` runs it as agents; `solver='ode'` raises `CapabilityError` (there is no approximation for partnerships yet) |
-| 11 | **Cholera**: one disease whose states include a water reservoir `W` | Counts in rates; `W` inferred to be a count and printed (`StateNotPeople`); inflow from and outflow to `ss.null`; `'auto'` gives an ODE; adding `n_agents=` makes people agents while the water stays a count; `beta * W` raises `ExposureToCount` |
+| 11 | **Cholera**: one disease whose states include a water reservoir `W` | Counts in rates; `W` declared a count (`ss.State(people=False)`); inflow from and outflow to `ss.null`; `'auto'` gives an ODE; adding `n_agents=` makes people agents while the water stays a count; `beta * W` raises `ExposureToCount` |
 | 12 | **A vector-borne model** (Ross-Macdonald malaria): humans and mosquitoes as states of one disease | Two populations coupled by counts; a seasonal inflow; humans as agents with mosquitoes as three counts; mosquito states left out of `total_pop` and of an age stratification, and split by species with `states=` |
 | 13 | **Screening with follow-up treatment** | The within-step chain: a treatment triggered by the test's outcome (`who=screen.positive`), run after it in the same step; moving a module with `sim.loop.insert` |
 | 14 | **A model with custom code**: a function of the sim in a branch probability that works on age groups | The try-it rule; what `'auto'` chooses. A function that needs `uids` and a `step()` override are in `test_transitions.py::test_functions`, not the corpus |
-| 15 | **A model with outcomes, data, and bounds** (cases, hospitalizations, deaths) | Outcomes as weighted sums of flows with `delay=` and `duration=`; results by name; data matching with `ss.data(aliases=)`; `sim.calibrate()` end to end; `ss.compare_models` |
+| 15 | **A model with outcomes, data, and bounds** (cases, hospitalizations, deaths) | Outcomes as weighted sums of flows with `delay=` and `duration=`; results by name; data matching with `ss.data(aliases=)`; `sim.calibrate()` end to end; `ss.fit.compare_models` |
 | 16 | **A threshold-triggered intervention**, with `when=` as a function of the sim | `when=` functions. The same policy held for four weeks by an intervention's `step()` (memory) is not yet in the corpus |
 | 17 | **A TB model with a resistance stratification** and acquired resistance as a transfer with `states=` | Strain as a dimension; `ss.transfer` restricted to some states |
 | 18 | **Two diseases in one sim** (flu and RSV) **with age stratified on the sim** | `sim.stratify`; every module gets the same groups; `InconsistentDimension` when two diseases disagree |

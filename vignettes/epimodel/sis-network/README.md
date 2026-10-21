@@ -14,7 +14,7 @@ Measured on 13 October 2026 with Starsim 4.0.0 (the `v4` branch) on a 20-core x8
 
 ## What was declared and what was not
 
-Everything is declared: two transitions and a network, described by the same targets as the original (`ss.PartnerNet(n_contacts=0.7, concurrency=0.22, max_contacts=3, dur=50)`). Probabilities per step are written as `ss.prob`.
+Everything is declared: two transitions and a network, described by the same targets as the original (`ssl.DegreeNet(n_contacts=0.7, concurrency=0.22, max_contacts=3, dur=50)`, from the library). Probabilities per step are written as `ss.prob`.
 
 ## Findings
 

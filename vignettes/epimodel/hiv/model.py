@@ -5,6 +5,7 @@ testing to viral suppression, PrEP for those at risk, arrivals and departures, a
 """
 import numpy as np
 import starsim as ss
+import starsim.library as ssl
 
 depart = 0.0005 # Departures a week, for everyone not in AIDS
 week   = ss.prob # EpiModel uses each rate as the probability of an event in a week (a step)
@@ -56,9 +57,9 @@ def indicated(sim):
     return ss.uids(np.flatnonzero(sus & ((degree >= 2) | exposed)))
 
 
-# Partnerships last 200 and 26 weeks in all, counting those ended by a departure (ss.PartnerNet allows for them, as EpiModel's d.rate does)
-main   = ss.PartnerNet(n_contacts=0.5, concurrency=0.04, max_contacts=2, dur=200)
-casual = ss.PartnerNet(n_contacts=0.3, concurrency=0.10, dur=26)
+# Partnerships last 200 and 26 weeks in all, counting those ended by a departure (ssl.DegreeNet allows for them, as EpiModel's d.rate does)
+main   = ssl.DegreeNet(n_contacts=0.5, concurrency=0.04, max_contacts=2, dur=200)
+casual = ssl.DegreeNet(n_contacts=0.3, concurrency=0.10, dur=26)
 prep   = ss.Vaccine(efficacy=0.95, waning=-1/np.log(1 - 0.015)) # Stopped with a probability of 0.015 a week
 preps  = [ss.vaccinate(prep, at=[0], coverage=0.5, where=indicated, name='start_prep'), # Half of those indicated at the start
           ss.vaccinate(prep, interval=1, coverage=0.015, where=indicated, name='take_prep')] # And then 0.015 a week
