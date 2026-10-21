@@ -113,7 +113,7 @@ Starsim's, with Starsim's names: `ss.Dist` (the base class, which also wraps any
 
 Fitting is the submodule `ss.fit`, which `import starsim` does not import (`sim.calibrate()` does, or `import starsim.fit`), so its names are not counted here: `ss.fit.Fit`, what `sim.calibrate()` returns (called `fit` below), `ss.fit.compare_models` (fit and compare by out-of-sample prediction), and `ss.fit.optimize` (reallocate spending between programs to maximize or minimize a result). (Starsim 3's `ss.Calibration` is removed.)
 
-### Methods and attributes: 47 distinct names
+### Methods and attributes: 43 distinct names
 
 | On | Names |
 |---|---|
@@ -124,7 +124,7 @@ Fitting is the submodule `ss.fit`, which `import starsim` does not import (`sim.
 | `sim.loop` | `insert` `to_df` `plot` `plot_step_order` |
 | A result | **`select`** **`by`** **`cum`** `resample` `sum` |
 | A result of an `ss.MultiSim`, which has a run dimension | **`quantiles`** `values` |
-| An `ss.MultiSim`, which is what `ss.parallel` returns | `run` `plot` `summarize` `to_df` `results` **`diff`** **`extinction`** **`outbreaks`** **`to_hub`** |
+| An `ss.MultiSim`, which is what `ss.parallel` returns | `run` `plot` `summarize` `to_df` `results` **`diff`** |
 | `fit` | **`sim`** `pars` `plot` `summarize` `to_df` **`project`** **`samples`** |
 | What `ss.fit.compare_models` returns | **`fits`** `plot` `summarize` `to_df` |
 
@@ -146,8 +146,8 @@ Names that repeat across rows (`plot`, `summarize`, `to_df`, `describe`, `strati
 | Running, comparing, saving | 6 | 1 |
 | Types you get back or subclass | 5 | 0 |
 | **`ss.` names** | **101** | **38** |
-| Methods and attributes | 47 | 32 |
-| **Total** | **148** | **70** |
+| Methods and attributes | 43 | 28 |
+| **Total** | **144** | **66** |
 
 <!-- counts end -->
 
