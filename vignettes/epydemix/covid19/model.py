@@ -12,7 +12,7 @@ import starsim as ss
 folder = sc.thispath(__file__)/'../../../examples/epydemix/covid19'
 data = sc.loadjson(folder/'reference/population.json')
 matrix = sum(np.array(layer) for layer in data['contacts'].values()) # Four settings
-deaths = ss.data(str(folder/'original/data/MA_deaths.csv'), aliases=dict(deaths='data'))
+deaths = ss.simdata(str(folder/'original/data/MA_deaths.csv'), aliases=dict(deaths='data'))
 mob = pd.read_csv(folder/'original/data/MA_google.csv', index_col='date')
 
 # The contact reduction from mobility, from 23 February to 31 May, and held at its last value after

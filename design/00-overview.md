@@ -71,16 +71,17 @@ Interventions ([08](08-interventions.md)) are a product or a change to a quantit
 ```
 ss.Sim                          modules, a population, mixing, a timeline, a solver
  ├── modules                    one or more ss.Module
- │     ├── ss.Disease           states people are in, and transitions between them (ss.Infection for a disease written as code)
+ │     ├── ss.Disease           any disease: declared states and transitions, code, or both
  │     │     ├── ss.State           declared; people, or a plain count
  │     │     ├── ss.Transition      contact-mediated or spontaneous (derived from its rate)
  │     │     ├── ss.par             named parameters, in sir.pars
- │     │     └── results            n_<state>, one flow per transition, ss.outcome, ratios
+ │     │     ├── results            n_<state>, one flow per transition, ss.outcome, ratios
+ │     │     └── ss.Infection       a subclass that adds transmission written as code (beta over networks), as in Starsim 3
  │     ├── ss.Demographics      births, deaths, pregnancy
  │     ├── ss.Intervention      deliveries: ss.vaccinate, ss.screen, ss.treat
  │     └── ss.Connector, ss.Analyzer
  ├── people:   ss.People        size, demography, per-agent attributes
- ├── stratifications            dimensions such as age and place (sim.stratify), with ss.Mobility between places
+ ├── stratifications            dimensions such as age and place (sim.stratify), with ss.geo.Mobility between places
  ├── networks: ss.Network, ss.MixingPool     none given means homogeneous mixing
  ├── modifiers: ss.modify, ss.change     changes to named quantities while a condition holds, or at given times
  ├── loop                       the order modules run in each step (sim.loop)

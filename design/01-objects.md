@@ -11,9 +11,9 @@ ss.Sim                      modules, a population, a timeline, and a solver; one
 ss.MultiSim                 many runs of a sim, or several sims; made by ss.parallel
 ss.People                   the population: size, demography, per-agent attributes
 ss.Module                   lifecycle: init → step → finalize; owns states, transitions, parameters, results
- ├── ss.Disease             states that people are in, and the transitions between them
- │    └── ss.Infection      a disease written as code, as in Starsim 3
- ├── ss.Network             who contacts whom: ss.RandomNet, ss.MFNet, ss.PartnerNet, ...
+ ├── ss.Disease             any disease: states that people are in and the transitions between them (declared), code, or both
+ │    └── ss.Infection      adds transmission written as code (beta over networks, rel_sus, rel_trans), as in Starsim 3
+ ├── ss.Network             who contacts whom: ss.RandomNet, ss.SexualNet, ...
  ├── ss.MixingPool          group-level mixing; also ss.MixingPools, which ss.contacts makes
  ├── ss.Demographics        births, deaths, pregnancy, migration
  ├── ss.Product             ss.Vaccine, ss.Diagnostic, ss.Treatment (08-interventions.md)
@@ -25,7 +25,7 @@ ss.Transition               a movement between states; built by >> and @, or by
                             ss.transmission, ss.progression, ss.birth, ss.death, ss.transfer
 ss.par                      a named parameter with bounds, prior, and provenance
 ss.dur, ss.per, ss.prob      time types (base classes ss.TimePar, ss.Rate); 02-types.md
-ss.Mobility                 movement between the places of a stratification (06-routes.md)
+ss.geo.Mobility                 movement between the places of a stratification (06-routes.md)
 ss.Dist                     distributions: ss.normal, ss.lognorm_ex, ...
 ss.Result                   a named time series, with a dimension per stratification and, for many runs, a run axis
 ```
@@ -38,7 +38,7 @@ ss.Result                   a named time series, with a dimension per stratifica
 
 | | Examples |
 |---|---|
-| CamelCase | `ss.Sim`, `ss.MultiSim`, `ss.People`, `ss.Module`, `ss.Disease`, `ss.Network`, `ss.RandomNet`, `ss.MixingPool`, `ss.Mobility`, `ss.Intervention`, `ss.Connector`, `ss.Analyzer`, `ss.fit.Fit`; the two graph classes `ss.State` and `ss.Transition`; the products `ss.Vaccine`, `ss.Diagnostic`, `ss.Treatment` |
+| CamelCase | `ss.Sim`, `ss.MultiSim`, `ss.People`, `ss.Module`, `ss.Disease`, `ss.Network`, `ss.RandomNet`, `ss.MixingPool`, `ss.geo.Mobility`, `ss.Intervention`, `ss.Connector`, `ss.Analyzer`, `ss.fit.Fit`; the two graph classes `ss.State` and `ss.Transition`; the products `ss.Vaccine`, `ss.Diagnostic`, `ss.Treatment` |
 | lowercase | time (`ss.days`, `ss.perday`), distributions (`ss.normal`, `ss.lognorm_ex`), `ss.par`, `ss.states`, `ss.null`, `ss.transmission`, `ss.progression`, `ss.birth`, `ss.death`, `ss.transfer`, `ss.modify`, `ss.outcome`, `ss.by`, `ss.timeseries`, `ss.seasonal`; deliveries `ss.vaccinate`, `ss.screen`, `ss.treat`, `ss.change`; loaders `ss.people`, `ss.contacts`, `ss.data`; functions `ss.parallel`, `ss.fit.compare_models` |
 
 Methods that describe the model are `describe()`, `diagram()`, and `equations()`. Methods about results keep their Starsim names: `plot()`, `summarize()`, `to_df()`.
@@ -141,7 +141,9 @@ class SEIR(ss.Disease):
 
 Use the class form when there is behavior that is not a transition, or when the model is going into a library. A module that only has states, transitions, parameters, and results never needs to define a method.
 
-A disease written entirely as code (per-agent arrays from `define_states()`, updated in `step_state()` and `set_prognoses()`, as in Starsim 3) subclasses `ss.Infection` if it is transmitted between agents (it has the susceptible and infected states, `rel_sus`, `rel_trans`, and transmission over networks), or `ss.Disease` itself (as Starsim 3's `ss.Disease`, with no states of its own): a subclass of `ss.Disease` whose class body (or a base's) and arguments declare no states, transitions, or outcomes is written as code, and one with no states and no `step()` or `step_state()` raises an error when the sim is initialized. The verbs that act on arrays reach it (`ss.modify` of its `rel_sus` and `rel_trans`, conditions on its arrays, fitting its parameters given as `ss.par` with bounds, `sim.new()`); those that need structure (`equations()`, `R0()`, the compartmental solvers) raise `ss.CapabilityError`.
+`ss.Disease` is the base of every disease, and whether each part of it is declared or written as code is a question about that part, not about the class. A disease may declare states and transitions (in the operator or the class form), which its engine runs under any solver; it may instead define per-agent arrays (`define_states()`) and change them in its own `step_state()`, `step()`, and other methods, as in Starsim 3; or it may mix the two in one class, e.g. a declared natural history and a coded `ss.FloatArr` that its `step()` updates after `super().step()` has taken the declared transitions. The seam is the engine: each lifecycle method of `ss.Disease` runs its engine's part, and a disease that declares nothing has an engine with nothing to run, so a coded override calls `super()` as for any module, and no method asks which kind of disease it is. A disease with no declared states and no transmission (malnutrition, contraception as a behavior, Starsim 3's `class X(ss.Disease)` with its own states and `step()`) is a plain `ss.Disease`, with no `susceptible` or `infected` states forced on it, and `describe()` prints its class, arrays, and parameters. `ss.Infection(ss.Disease)` adds transmission written as code and nothing else: the `susceptible` and `infected` states, `rel_sus`, `rel_trans`, `ti_infected`, `init_prev`, transmission over the networks for its `beta` (`infect()`, `infect_route()`), `set_prognoses()` for those infected, and the standard `prevalence` and `new_infections` results; with no `beta` it is not transmitted (as `ssl.NCD`). `isinstance(x, ss.Disease)` is true of both, and both are diseases to the sim (`sim.diseases`, the infection log, deaths, `sim.rescale()`). What cannot work is refused: a class that declares states or transitions and also defines one of `ss.Infection`'s transmission methods (`set_prognoses()`, `infect()`, ...) without subclassing `ss.Infection` raises `ss.CapabilityError`, since the declared engine never calls it. What needs structure (`describe()` in full, `equations()`, `diagram()`, `R0()`, `move_to()`, `current_state()`, `stratify()`) works on the declared part. A disease with nothing declared runs as agents (a compartmental solver raises `ss.CapabilityError`); a declared one with code of its own follows the try-it rule of [12-backends.md](12-backends.md) (`compartmental = False` if its code needs agents). Starsim 3's `ss.Disease` and `ss.Infection` keep their meaning, so `python -m starsim.migrate` does not rewrite either. The verbs that act on arrays reach a disease written as code (`ss.modify` of an `ss.Infection`'s `rel_sus` and `rel_trans`, conditions on its arrays, fitting its parameters given as `ss.par` with bounds, `sim.new()`).
+
+Code can also read and write the states of a declared disease run as agents, as Starsim 3 code does: indexing (`sir.I[uids] = True`), `set()`, and in-place operators (`sir.I |= ...`) are tracked, so the counts (`sir.I.n`), the results, and other modules later in the same step see the change. Writes through the NumPy array behind a state (`sir.I.raw`) are not tracked, and the counts and results do not see them; `STARSIM_CHECK_COUNTS=1` checks the counts at every step. The time each agent entered a state (`ti_X`) is kept only where the engine needs it, unless `ss.options.keep_times = True`; reading another raises `ss.errors.TimeNotKept`. A disease written as code takes declared products and deliveries that act on the states it has (e.g. `ss.vaccinate()` on `rel_sus`).
 
 ### Library models
 
@@ -185,7 +187,7 @@ ss.Sim(
     interventions = None,
     connectors    = None,
     analyzers     = None,
-    data      = None,            # a file, a dataframe, or ss.data(...), with columns named like results (09-results.md)
+    data      = None,            # a file, a dataframe, or ss.simdata(...), with columns named like results (09-results.md)
     pars      = None,            # parameter values by name (04-parameters.md)
     results   = None,            # the results to keep by group, e.g. ['n_I', 'cases']; the totals are always kept (09-results.md)
     label     = None,
@@ -271,7 +273,7 @@ Every module has the same lifecycle, and it is Starsim's:
 
 A module that only has states, transitions, parameters, and results does not define any of these.
 
-`step()` reads and writes the sim's current state directly. Modules run in a defined order each step (Starsim's: start of step, custom modules, demographics, disease state updates, connectors, networks, interventions, diseases (transmission, and every transition of a declared disease), deaths, the move of time to the end of the step, results, analyzers, end of step), modules of one type run in the order given, and the order is a data object, `sim.loop`, that can be printed, plotted, and inserted into. During a step, `sim.ti` is the time point at its start; results are recorded at its end, at `ti + 1`. There are no queued updates and no named phases: a module sees whatever the modules before it did this step, so infection, testing, and treatment can all happen within one step if ordered that way. [10-execution.md](10-execution.md) specifies the loop.
+`step()` reads and writes the sim's current state directly. Modules run in a defined order each step (Starsim's: start of step, custom modules, demographics, disease state updates, connectors, networks, interventions, diseases (transmission, and every transition of a declared disease), deaths, the move of time to the end of the step, results, analyzers, end of step), modules of one type run in the order given, and the order is a data object, `sim.loop`, that can be printed, plotted, and inserted into. Step `k` runs from time point `k-1` to `k`, and throughout it, in every module, `sim.ti` is `k`, where its results go (`self.results.x[self.ti]`), and `sim.now` is its start. There are no queued updates and no named phases: a module sees whatever the modules before it did this step, so infection, testing, and treatment can all happen within one step if ordered that way. [10-execution.md](10-execution.md) specifies the loop.
 
 ## The module contract
 

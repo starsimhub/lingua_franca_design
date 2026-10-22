@@ -27,9 +27,9 @@ fit = sim.calibrate()
 fit.plot()
 ```
 
-`calibrate()` fits **every parameter that has `bounds`** to **every result that has data**, and returns an `ss.fit.Fit`. Both were already stated where they belong: the bounds on the parameter, the data on the sim. Nothing is said twice. A parameter of a module written as code, given as an `ss.par` with bounds (`ssl.HIV(beta=ss.par(0.01, bounds=[0.001, 0.1]))`), is fitted too. A parameter with a value for each level of a stratification (`ss.par(ss.by(patch=[0.2, 0.3]), bounds=[0.1, 1])`) is fitted level by level, with the same bounds and prior, as `beta[a]`, `beta[b]`, and so on, and a typed value takes typed bounds (`ss.par(ss.days(8), bounds=[ss.days(3), ss.weeks(4)])`).
+`calibrate()` fits **every parameter that has `bounds`** to **every result that has data**, and returns an `ss.fit.Fit`. Both were already stated where they belong: the bounds on the parameter, the data on the sim. Nothing is said twice. A parameter of a module written as code, given as an `ss.par` with bounds (`ssl.HIV(beta=ss.par(0.01, bounds=[0.001, 0.1]))`), is fitted too, and so is a setting that such a module keeps as an attribute rather than a parameter (`test_prob(symp_prob=ss.par(0.1, bounds=[0.01, 0.5]))`, as Covasim's interventions do): its code sees the value, and it is fitted and set by name (`pars={'test_prob.symp_prob': 0.2}`) as a parameter is. Bounds given through another `ss.Pars` (a package's full set of defaults for a module, passed to `pars.update()`) are kept. A parameter with a value for each level of a stratification (`ss.par(ss.by(patch=[0.2, 0.3]), bounds=[0.1, 1])`) is fitted level by level, with the same bounds and prior, as `beta[a]`, `beta[b]`, and so on, and a typed value takes typed bounds (`ss.par(ss.days(8), bounds=[ss.days(3), ss.weeks(4)])`).
 
-The fitting itself is the submodule `ss.fit`, which an ordinary run never imports: `sim.calibrate()` imports it when it is called, and `import starsim.fit` makes its parts available directly (`ss.fit.loglik()`, `ss.fit.ParticleFilter`, `ss.fit.compare_models()`, and so on).
+The fitting itself is the submodule `ss.fit`, which an ordinary run never imports: it is imported the first time it is used, by `sim.calibrate()` or by any of its parts (`ss.fit.loglik()`, `ss.fit.ParticleFilter`, `ss.fit.compare_models()`, and so on).
 
 ### Compared with Starsim 3
 
@@ -110,11 +110,11 @@ Data is attached to the sim and matched to results by name, as in Covasim:
 
 <!-- fragment -->
 ```python
-sim = ss.Sim(sir, data='cases.csv')       # a path, a dataframe, or ss.data(...)
+sim = ss.Sim(sir, data='cases.csv')       # a path, a dataframe, or ss.simdata(...)
 ```
 
 - The time column is `date`, `year`, `t`, or `time`. Every other column is matched to a result with the same name (`cases`, or `sir.cases` when the short name is ambiguous). A column that matches nothing is an error that lists the closest result names (`UnknownDataColumn`).
-- Headers that do not match are renamed on the way in, and columns that are not wanted are dropped: `data=ss.data(df, aliases=dict(cases='Reported Cases', year='Years'), ignore_extra=True)` ([09-results.md](09-results.md#data)).
+- Headers that do not match are renamed on the way in, and columns that are not wanted are dropped: `data=ss.simdata(df, aliases=dict(cases='Reported Cases', year='Years'), ignore_extra=True)` ([09-results.md](09-results.md#data)).
 - Results that have data are plotted against it by `sim.plot()` without being asked.
 - **Alignment is automatic.** A result that is a state of the system at a point in time (a count, a prevalence) is compared at the data's dates, interpolating if needed. A result that is a flow (new infections, reported cases, deaths) is summed over the interval ending at each data date. The library knows which is which because results are declared ([09-results.md](09-results.md)).
 - Stratified data uses extra columns named after the stratification (`age`, `sex`), matched to the result's coordinates.
@@ -167,12 +167,12 @@ By default a fit is a best fit (a point estimate), by the method that suits the 
 
 | The sim | The default: a best fit | A posterior, by name |
 |---|---|---|
-| `solver='ode'`, with gradients (JAX installed, and the kernels run the sim whole) | L-BFGS-B, with gradients by automatic differentiation (Nelder-Mead for one or two parameters, where it is faster) | `'nuts'`, with a likelihood for every series (needs BlackJAX) |
+| `solver='ode'`, with gradients (the kernels run the sim whole) | L-BFGS-B, with gradients by automatic differentiation (Nelder-Mead for one or two parameters, where it is faster) | `'nuts'`, with a likelihood for every series |
 | `solver='ode'`, without gradients | Nelder-Mead | `'abc-smc'` |
 | Stochastic compartmental, run whole by the kernels | Optuna | `'pmcmc'` (particle MCMC), with a likelihood for every series |
 | Agent-based, or a stochastic run stepped from Python | Optuna | `'abc-smc'` |
 
-With a likelihood for every series, the best fit is the maximum likelihood (or, with priors, the most probable values), and the printed reason names the posterior method the sim allows. The other methods are chosen by name: `'abc-smc'` (approximate Bayesian computation by sequential Monte Carlo: a posterior without a likelihood, for any sim, with `generations=`, `quantile=`, `tolerance=`, and `particles=`), `'if2'` (iterated filtering, as pomp's and camdl's: the maximum likelihood of a stochastic compartmental sim, from passes of a particle filter in which each particle's values follow a shrinking random walk, with `particles=`, `iterations=`, `cooling=`, `sd=`, and `chains=`), `'asd'` (adaptive stochastic descent, `sc.asd()`), and any method of `scipy.optimize.minimize`. Settings for a method are keywords of `calibrate()`: `trials=` for Optuna (100 by default), `draws=`, `warmup=`, and `chains=` for NUTS (500, 500, and 4) and particle MCMC (1,000, 1,000, and 4), `particles=` for particle MCMC (chosen by each chain in its warm-up by default). An unknown `method=` is an error that lists the methods. For the SciPy methods, a search starts from each of the best three points (`restarts=3`) of a spread of points over the bounds (`scan=`, 10 per parameter by default, with the initial values) that are at least a tenth of the bounds apart, and the best result is kept; NUTS starts each chain from one of the best of the same points, so that chains caught in different modes disagree and R-hat sees it.
+With a likelihood for every series, the best fit is the maximum likelihood (or, with priors, the most probable values), and the printed reason names the posterior method the sim allows. The other methods are chosen by name: `'abc-smc'` (approximate Bayesian computation by sequential Monte Carlo: a posterior without a likelihood, for any sim, with `generations=`, `quantile=`, `tolerance=`, and `particles=`), `'if2'` (iterated filtering, as pomp's and camdl's: the maximum likelihood of a stochastic compartmental sim, from passes of a particle filter in which each particle's values follow a shrinking random walk, with `particles=`, `iterations=`, `cooling=`, `sd=`, and `chains=`), `'asd'` (adaptive stochastic descent, `sc.asd()`), and any method of `scipy.optimize.minimize`. Settings for a method are keywords of `calibrate()`: `trials=` for Optuna (100 by default), `draws=`, `warmup=`, and `chains=` for NUTS (500, 500, and 4) and particle MCMC (1,000, 1,000, and 4), `particles=` for particle MCMC (chosen by each chain in its warm-up by default). An unknown `method=` is an error that lists the methods. Optuna also takes `n_workers=` (processes that propose and run trials at once, sharing what they have learned through Optuna's storage; each trial is one point, run once for agents) and `storage=` (a file name, kept as an Optuna journal, or a database URL), which keeps the trials so that calling the fit again with the same storage resumes it, the trials already there counting towards `trials=`. For the SciPy methods, a search starts from each of the best three points (`restarts=3`; one for a single parameter of a deterministic sim, where the scan already finds the valley) of a spread of points over the bounds (`scan=`, 10 per parameter by default, with the initial values) that are at least a tenth of the bounds apart, and the best result is kept; NUTS starts each chain from one of the best of the same points, so that chains caught in different modes disagree and R-hat sees it.
 
 The same model with no network, run as an ODE:
 
@@ -210,7 +210,7 @@ Parameters that the data cannot tell apart are noted when the fit ends (`Unident
 
 ### Gradients
 
-For a sim with `solver='ode'`, the fit has gradients. The ODE is run by the kernels (RK4 in Numba); for a gradient, the same RK4 steps are taken in JAX and differentiated by automatic differentiation, and the steps either side of the run (from the parameters to the numbers in the program, and from the run to the results and the goodness of fit) by central differences, so a gradient is exact to about 1e-10 ([12-backends.md](12-backends.md)). For NUTS, the whole log-density (the run, the results with data, the likelihood, and the priors) is one function in JAX, differentiated in forward mode, so the sampling is compiled and the chains run on cores of their own; a model it does not cover yet is sampled with Python in the loop, which is much slower, and the fit says so. This is what camdl gets by symbolic differentiation, without anything symbolic. Two things follow:
+For a sim with `solver='ode'`, the fit has gradients. The ODE is run by the kernels (RK4, as plain Python or compiled by Numba); for a gradient, the same RK4 steps are taken in JAX and differentiated by automatic differentiation, and the steps either side of the run (from the parameters to the numbers in the program, and from the run to the results and the goodness of fit) by central differences, so a gradient is exact to about 1e-10 ([12-backends.md](12-backends.md)). For NUTS, the whole log-density (the run, the results with data, the likelihood, and the priors) is one function in JAX, differentiated in forward mode, so the sampling is compiled and the chains run on cores of their own; a model it does not cover yet is sampled with Python in the loop, which is much slower, and the fit says so. This is what camdl gets by symbolic differentiation, without anything symbolic. Two things follow:
 
 - **Gradient-based optimizers** (L-BFGS-B) are the default for ODE models, and converge in far fewer runs than a simplex or a trial-based search when there are more than a few parameters.
 - **HMC/NUTS** is available for ODE models that have a likelihood, which gives a posterior at a cost that does not grow badly with the number of parameters.
@@ -218,7 +218,6 @@ For a sim with `solver='ode'`, the fit has gradients. The ODE is run by the kern
 Conditions and limits:
 
 - Gradients need a sim that the kernels run from start to finish: no interventions other than the deliveries the kernels take, no modifier with `when=`, no transfer whose rate varies, and no movement register. A rate written with NumPy functions of counts has gradients; a rate that is a Python function of the sim has none. Without gradients the fit uses Nelder-Mead, and the printed reason says why.
-- Without JAX installed, ODE models are fitted by Nelder-Mead; NUTS also needs BlackJAX.
 - Gradients exist for `solver='ode'` only. Stochastic compartmental and agent-based sims are fitted by the methods in the table that need none.
 - The same machinery is available directly: `sim.gradient()` gives the derivatives of results with respect to parameters, and `sim.log_density()` the log-density as a function in JAX, with its gradient by reverse mode.
 - Symbolic Jacobians, fixed points, and eigenvalues are not part of this and stay out of v1.
@@ -295,7 +294,7 @@ Every fit says whether it converged: `fit.converged` is true or false, and `fit.
 | NUTS | R-hat (rank-normalized) and bulk effective sample size of each parameter, and divergences; converged if R-hat is at most 1.01 with no divergent draws |
 | Particle MCMC | R-hat, effective sample size, and the share of proposals each chain accepted; converged if R-hat is at most 1.01 |
 | ABC-SMC | the final tolerance, the share of the last proposals accepted, and the effective sample size; converged if the tolerance has stopped shrinking (by less than 10% in the last generation) |
-| Optuna | the number of trials and the improvement over the last quarter of them (converged if less than 1%) |
+| Optuna | the number of trials and the improvement over the last quarter of them (converged if less than 1%); not converged if the best trial is the initial values or one of the first 10, which are random, or if, rerun with the same seeds, the best values score worse than the initial values. The score at the best values and at the initial values is printed beside it |
 
 A best-fit value at or near a bound is flagged when the fit ends (`AtBound`), because that usually means the bound was too tight rather than that the parameter is extreme. "Near" is within 1% of the range on the scale the parameter was searched on, so a value near the low end of a log-scaled range is not flagged.
 

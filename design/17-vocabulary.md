@@ -12,11 +12,11 @@ The rule is Starsim's existing one (`ss.Dist` and `ss.normal`, `ss.Rate` and `ss
 
 > **Modules, containers, and base classes are CamelCase. The concrete pieces you put inside a module are lowercase.**
 
-So `ss.Sim`, `ss.MultiSim`, `ss.Disease`, `ss.RandomNet`, `ss.MixingPool`, and `ss.Intervention` are CamelCase, along with the two graph classes `ss.State` and `ss.Transition` and the products `ss.Vaccine`, `ss.Diagnostic`, `ss.Treatment`. Time values, distributions, `ss.par`, `ss.states`, `ss.null`, the transition constructors, `ss.modify`, `ss.outcome`, the parameter forms, the deliveries, and functions such as `ss.parallel` are lowercase. So are the loaders, which look up named data and return an ordinary object: `ss.people('Kenya')` returns an `ss.People`, and `ss.contacts('Kenya')` a set of `ss.MixingPools`.
+So `ss.Sim`, `ss.MultiSim`, `ss.Disease`, `ss.RandomNet`, `ss.MixingPool`, and `ss.Intervention` are CamelCase, along with the two graph classes `ss.State` and `ss.Transition` and the products `ss.Vaccine`, `ss.Diagnostic`, `ss.Treatment`. Time values, distributions, `ss.par`, `ss.states`, `ss.null`, the transition constructors, `ss.modify`, `ss.outcome`, the parameter forms, the deliveries, and functions such as `ss.parallel` are lowercase. So are the loaders, which look up named data and return an ordinary object: `ss.people('Kenya')` returns an `ss.People`, and `ss.contacts('Kenya')` a set of `ss.MixingPools`. The tables they read are in `ss.data` (`ss.data.age('Kenya')`, `ss.data.population()`, `ss.data.rates()`, `ss.data.contacts()`, `ss.data.geography()`), which is not counted here, as `ss.geo`'s other names are not.
 
 ## The names
 
-The names below are checked against the code: each one is exported by `starsim`, each method exists, and the counts in the headings and in [the total](#the-total) are made from one list in `tests/test_spec.py`, which a test compares with this page. To update the counts after changing the list, run `check_vocabulary(write=True)` from that file. `ss.` also exports names that are not counted: Starsim's library modules, the errors, the classes for writing modules as code, and internals; sorting them into tiers is a separate item of the review's plan.
+The names below are checked against the code: each one is exported by `starsim`, each method exists, and the counts in the headings and in [the total](#the-total) are made from one list in `tests/test_spec.py`, which a test compares with this page. To update the counts after changing the list, run `check_vocabulary(write=True)` from that file. `ss.` also exports names that are not counted: the classes and helpers for writing modules as code (the second tier, listed in `tests/test_spec.py`), and the base classes of the errors (`ss.CodedError`, `ss.StarsimWarning`, `ss.Note`), `ss.note`, and `ss.CapabilityError`. The other errors, warnings, and notes are in `ss.errors` (`ss.errors.UnknownState`), the testing and profiling tools in `ss.debugtools`, and everything else in its own submodule (`ss.solvers.Compartmental`, `ss.transitions.Expr`).
 
 ### Sim and modules: 12
 
@@ -27,15 +27,15 @@ The names below are checked against the code: each one is exported by `starsim`,
 | **`ss.people`** | A named population: `ss.people('Kenya', year=2024)` returns an `ss.People` |
 | **`ss.ppl`** | The people's properties before there are people: `ss.ppl.age < 15` is a condition, and `expit(b0 + b1*ss.ppl.urban)` a rate, with each person's value (each group's, as compartments) |
 | `ss.Module` | The one module abstraction; everything below is one |
-| `ss.Disease` | A declared disease: states and the transitions between them. Most states hold people; a reservoir or a vector population is a state that holds a count |
-| **`ss.Strains`** | A family of declared diseases that a person can have several of at once, each with its own natural history (HPV genotypes): `ss.Strains('hpv', [hpv16, hpv18], immunity=..., init_prev=..., split=..., exclusive=...)`. Its results and conditions are unions over its members (`sim.results.hpv.infected`, `where=hpv.infected`, `hpv.infected.count() >= 2`); agents only for now |
-| `ss.Infection` | Base class for a disease written as code (`define_states()`, `step()`, `set_prognoses()`), as in Starsim 3 |
+| `ss.Disease` | Any disease: declared states and the transitions between them, code (`define_states()`, `step()`), or both. Most states hold people; a reservoir or a vector population is a state that holds a count |
+| **`ss.Strains`** | The strains of a disease, `ss.Disease(..., strains=ss.Strains(['DS', 'RIF'], ...))`, giving `dis.strains`; unpacked into strain objects (`DS, RIF = strains`) for conditions and `move=DS >> (DS, RIF)`. States are shared (one course, sets carried up to `max_strains`) or each strain's own (`shared=False`, or `shared=['Ca']`); strains can also be diseases of their own sharing a natural history (`ss.Strains([hpv16, hpv18])`) |
+| `ss.Infection` | An `ss.Disease` with transmission written as code (`beta` over networks, `rel_sus`, `rel_trans`, `set_prognoses()`), as in Starsim 3 |
 | `ss.Demographics` | Births, deaths, pregnancy, migration |
 | `ss.Intervention` | Base class for interventions with custom `step()` code |
 | `ss.Connector` | Base class for cross-module `step()` code |
 | `ss.Analyzer` | Base class for extra results |
 
-Starsim's library modules (`ss.SIR`, `ss.SIS`, `ss.SEIR`, `ss.Births`, `ss.Deaths`, `ss.LegacyPregnancy`, the `ss.infection_log` analyzer, and the rest) remain available and are not counted here; they are models written in the language, not part of it. Nor are the error, warning, and note classes (`ss.UnknownState`, `ss.ImportIncomplete`, and the rest), which are listed in [15-errors.md](15-errors.md): they are what the library says, not what a user writes.
+Starsim's library modules (`ss.SIR`, `ss.SIS`, `ss.SEIR`, `ss.Births`, `ss.Deaths`, `ss.LegacyPregnancy`, the `ss.infection_log` analyzer, and the rest) remain available and are not counted here; they are models written in the language, not part of it. Nor are the error, warning, and note classes (`ss.errors.UnknownState`, `ss.errors.ImportIncomplete`, and the rest), which are listed in [15-errors.md](15-errors.md): they are what the library says, not what a user writes.
 
 ### States, transitions, parameters, results: 13
 
@@ -53,7 +53,7 @@ Starsim's library modules (`ss.SIR`, `ss.SIS`, `ss.SEIR`, `ss.Births`, `ss.Death
 | **`ss.transfer`** | Movement between levels of a stratification |
 | **`ss.par`** | A named parameter with `bounds`, `prior`, `source`, `doc` |
 | **`ss.outcome`** | A reported quantity: a weighted sum of flows that is delayed, given a duration, or totaled by reporting period |
-| **`ss.data`** | A data file or data frame with its columns matched to result names: `ss.data(df, aliases=..., ignore_extra=True)` |
+| **`ss.simdata`** | A data file or data frame with its columns matched to result names: `ss.simdata(df, aliases=..., ignore_extra=True)` |
 
 The operators `>>`, `@`, `|`, and arithmetic on states are part of this group and add no names. A custom per-step function needs no name of its own: a plain function is given as a keyword, or written in `step()`.
 
@@ -80,18 +80,19 @@ Starsim's, with Starsim's names: `ss.Dist` (the base class, which also wraps any
 
 **`ss.by`** (one value per stratum), **`ss.timeseries`** (varies in time), **`ss.seasonal`** (a yearly cycle). The other forms a parameter can take (a number, a typed quantity, a distribution, a function) need no names of their own.
 
-### Mixing and space: 10
+### Mixing and space: 9
+
+Everything spatial is in the submodule `ss.geo`.
 
 | Name | What it is |
 |---|---|
 | `ss.Network` | Base class for networks |
-| `ss.RandomNet` `ss.MFNet` | Individual-level networks (Starsim's; its other networks are available too, and the library's, e.g. `ssl.StaticNet` for a NetworkX graph) |
+| `ss.RandomNet` `ss.SexualNet` | Individual-level networks (Starsim's; its other networks are available too, and the library's, e.g. `ssl.StaticNet` for a NetworkX graph). `ss.SexualNet` is partnerships between two groups (`between=`): men and women (`'mf'`, the default), men (`'mm'`), or e.g. sex workers and clients (`('fsw', 'client')`), with acts per unit time in each, as in Starsim 3 (people with no partner are paired), or with a target number of partners at a time (`n_contacts`, `concurrency`, `max_contacts`). Partnerships between anyone (needle sharing), and EpiModel's targets (`match=`), are the library's `ssl.DegreeNet`; more structured sexual networks are STIsim's |
 | `ss.MixingPool` `ss.MixingPools` | Group-level mixing; `ss.MixingPool(n_contacts=10)` with no groups is homogeneous |
-| **`ss.PartnerNet`** | Lasting partnerships that form and dissolve (not only sexual: needle sharing, sex work), described by the mean number of partners at a time (`n_contacts`), their duration, acts per unit time in each partnership (`acts=`), who takes part (`where=`), and partnerships between two groups only (`between=`, lasting or one-off). Targets for the number of partners (concurrency, a maximum, `match=`, as EpiModel's) are the library's `ssl.DegreeNet` (`ss.MFNet` takes `n_contacts`, `concurrency` and `max_contacts`) |
 | **`ss.contacts`** | A contact matrix as mixing pools: a named one, `ss.contacts('Kenya')`, or one given as a matrix (over several dimensions together with `dims=`) |
-| **`ss.geo`** | A geography: names, populations, centroids, distances; named (`ss.geo('Kenya', level=1)`) or given directly |
-| **`ss.Mobility`** | Movement between places from a matrix, a data file of moves, or a movement model |
-| **`ss.gravity`** | Movement model (radiation, Stouffer, and competing destinations are deferred; a matrix covers them) |
+| **`ss.geo.geography`** | A geography: names, populations, centroids, distances; named (`ss.geo.geography('Kenya', level=1)`) or given directly |
+| **`ss.geo.Mobility`** | Movement between places from a matrix, a data file of moves, or a movement model |
+| **`ss.geo.gravity`** | Movement model (radiation, Stouffer, and competing destinations are deferred; a matrix covers them) |
 
 ### Interactions and interventions: 9
 
@@ -99,19 +100,19 @@ Starsim's, with Starsim's names: `ss.Dist` (the base class, which also wraps any
 |---|---|
 | **`ss.modify`** | While a condition holds, multiply, add to, or set a named quantity |
 | **`ss.change`** | A parameter change at given times; shorthand for a modifier |
-| **`ss.immunity`** | Protection between strains, combined by a rule: the quantity it lowers is the keyword and the protection its value, a matrix (rows from, columns against) or a number (`ss.immunity(protected='nab', rel_sus=m, combine='sum')`, `rel_trans=`, `dur=dict(In=m)`); for `ss.Strains`, and for a strain dimension's `immunity=` |
+| **`ss.immunity`** | Protection between strains, combined by a rule: what protects is `due_to=` (a state, an attribute, `strains.last`, `strains.ever`), the quantity it lowers is the keyword and the protection its value, a matrix (rows from, columns against) or a number (`ss.immunity(due_to=R, rel_sus=m, combine='sum')`, `rel_trans=`, `dur=dict(In=m)`, `p=dict(to_symp=m)`); for `ss.Strains(immunity=)` |
 | **`ss.Vaccine`** **`ss.Diagnostic`** **`ss.Treatment`** | Products: nouns for things (Starsim 3's `ss.Vx`, `ss.Dx`, `ss.Tx` remain only as base classes for products written as code, not as aliases; `ss.Diagnostic` was `ss.Test`, renamed so that no product and delivery differ only by case) |
 | **`ss.vaccinate`** **`ss.screen`** **`ss.treat`** | Deliveries: verbs (`ss.Delivery` with no product is a step people attend, a visit) |
 
-### Running, comparing, saving: 6
+### Running, comparing, saving: 7
 
-`ss.MultiSim` (several runs of a sim, or several sims, whose results have a run dimension), `ss.parallel` (run them in parallel: `ss.parallel(sim, n_runs=100)` for replicates, with `sim.run(n_runs=100)` as its shortcut, and `ss.parallel(baseline=..., vaccine=...)` for scenarios), `ss.options` (Starsim's global options; `ss.options.crn = False` turns common random numbers off), **`ss.diff`** (what differs between two models), `ss.load` (a sim saved by `ss.save`, or a model in another framework's format), `ss.save` (a sim with its results, or a model as code with `ss.save('model.py', sim)`, or in another format).
+`ss.MultiSim` (several runs of a sim, or several sims, whose results have a run dimension), `ss.parallel` (run them in parallel: `ss.parallel(sim, n_runs=100)` for replicates, with `sim.run(n_runs=100)` as its shortcut, and `ss.parallel(baseline=..., vaccine=...)` for scenarios), `ss.options` (Starsim's global options; `ss.options.crn = False` turns common random numbers off), **`ss.diff`** (what differs between two models), `ss.load` (a sim saved by `ss.save`, or a model in another framework's format), `ss.save` (a sim with its results, or a model as code with `ss.save('model.py', sim)`, or in another format), **`ss.compile`** (compile the compartmental solvers' kernels ahead of time, e.g. in a Docker image or before a calibration; until then, small runs are taken uncompiled, with the same results).
 
 ### Types you get back or subclass: 5
 
 `ss.Result`, `ss.Loop`, `ss.Timeline`, `ss.Rate`, `ss.TimePar`, all Starsim's. Users rarely construct these.
 
-Fitting is the submodule `ss.fit`, which `import starsim` does not import (`sim.calibrate()` does, or `import starsim.fit`), so its names are not counted here: `ss.fit.Fit`, what `sim.calibrate()` returns (called `fit` below), `ss.fit.compare_models` (fit and compare by out-of-sample prediction), and `ss.fit.optimize` (reallocate spending between programs to maximize or minimize a result). (Starsim 3's `ss.Calibration` is removed.)
+Fitting is the submodule `ss.fit`, which `import starsim` does not import (its first use does), so its names are not counted here: `ss.fit.Fit`, what `sim.calibrate()` returns (called `fit` below), `ss.fit.compare_models` (fit and compare by out-of-sample prediction), and `ss.fit.optimize` (reallocate spending between programs to maximize or minimize a result). (Starsim 3's `ss.Calibration` is removed.)
 
 ### Methods and attributes: 43 distinct names
 
@@ -141,9 +142,9 @@ Names that repeat across rows (`plot`, `summarize`, `to_df`, `describe`, `strati
 | Time | 27 | 1 |
 | Distributions | 16 | 3 |
 | Parameter forms | 3 | 3 |
-| Mixing and space | 10 | 5 |
+| Mixing and space | 9 | 4 |
 | Interactions and interventions | 9 | 9 |
-| Running, comparing, saving | 6 | 1 |
+| Running, comparing, saving | 7 | 2 |
 | Types you get back or subclass | 5 | 0 |
 | **`ss.` names** | **101** | **38** |
 | Methods and attributes | 43 | 28 |
@@ -163,28 +164,27 @@ Keywords are not counted above, but they are vocabulary too, so the main sets ar
 |---|---|
 | `ss.Sim` | the model (a module or a list of modules) as the first argument; `networks` `people` `total_pop` `n_agents` `start` `stop` `dt` `unit` `solver` `integrator` `substeps` `approx` `stratify` `rand_seed` `verbose` `interventions` `connectors` `analyzers` `data` `pars` `results` `use_aging` `label`; plus `diseases`, `demographics`, `modules` as in Starsim. `solver` may also be given to `sim.run` before the sim is initialized, and `n_runs` to `sim.run` |
 | `ss.MultiSim`, `ss.parallel` | `n_runs` `pars` `priors`, and one keyword per scenario |
-| `ss.Disease` | `name` `dt` `init_prev` `init` `transitions` `results` `outcomes`, and one keyword per member |
+| `ss.Disease` | `name` `dt` `init_prev` `init` `init_n` `first` `transitions` `results` `outcomes`, and one keyword per member |
 | `ss.State` | `name` `people` `init` `rel_sus` `rel_trans` `label` |
 | `ss.Transition` | `rate` `dur` `p` `stages` `where` `move` `increment` `after` `before` `name` `label` |
 | `ss.birth`, `ss.immigration` | `rate` |
 | `ss.death`, `ss.emigration` | `rate` `dur`; `lifetable` (`ss.death`) |
 | `ss.transfer` | the stratification's name (or `increment`, for a counter), `rate` `dur` `p` `states`, and the delivery keywords |
 | `ss.par` | `bounds` `prior` `source` `doc` `literal` |
-| `stratify` (on a model or a sim) | the dimension's name, `split` `adjust` `states` `where` `inplace` `mobility` `immunity` `kind` (`'age'`, `'space'`, `'strain'`, `'clock'`, `'plain'`) |
-| `ss.Strains` | `name` and `members` (first and second, or by keyword), `immunity` `init_prev` `split` `exclusive` `label` |
-| `ss.immunity` | `protected` `rel_sus` `rel_trans` `dur` `combine` |
+| `stratify` (on a model or a sim) | the dimension's name, `split` `adjust` `states` `where` `inplace` `mobility` `kind` (`'age'`, `'space'`, `'clock'`, `'plain'`) |
+| `ss.Strains` | the strains (names, a dict of values by strain, or diseases), `shared` `immunity` `max_strains` `transmit` `split` `cross_immunity` `name` `label`, and values by parameter |
+| `ss.immunity` | `due_to` `scale` `curve` `rel_sus` `rel_trans` `dur` `p` `combine` |
 | `ss.modify` | `multiply` `add` `set` `efficacy` `share` `route` `where` `when` `start` `stop` `hold` `name` |
 | `ss.change` | `at` `by` `to` |
 | Deliveries | `what` `who` `operator` `start` `stop` `at` `interval` `at_age` `where` `coverage` `capacity` `deliver` `on` `when` `trace` `move` `increment` `disease` |
 | Products | `efficacy` `waning` `cost` (all); `leaky` (`ss.Vaccine`); `sensitivity` `specificity` `delay` `detects` (`ss.Diagnostic`); `cure` (a number, or a dict by state) `transition` `to` (`ss.Treatment`) |
 | `ss.outcome` | `delay` `duration` `likelihood` |
-| `ss.data` | `aliases` `ignore_extra` |
+| `ss.simdata` | `aliases` `ignore_extra` |
 | `ss.MixingPool` | `n_contacts` `src` `dst` `beta` |
-| `ss.MFNet` | Starsim's `dur` `acts` `participation` `debut` `n_contacts` `concurrency` `max_contacts` |
-| `ss.Mobility` | `matrix` `data` `kind` `away` |
-| `ss.PartnerNet` | `n_contacts` `dur` `acts` `sides` `between` `where` |
+| `ss.SexualNet` | `between` (`'mf'`, `'mm'`, or a pair of groups) `dur` `acts` `participation` `debut` `n_contacts` `concurrency` `max_contacts` `match` |
+| `ss.geo.Mobility` | `matrix` `data` `kind` `away` |
 | `ss.contacts` | `bands` `name` `source` `layer` `dims`, and a matrix for each stratification by its name |
-| Networks | `sides` (and `net.directions`, which follow from them) |
+| Networks | `sides` (and `net.directions`, which follow from them; `between` on `ss.SexualNet`) |
 | `sim.calibrate` | `pars` `data` `weights` `likelihood` `gof` `method` `n_runs` `rand_seed`, and the method's own settings |
 | `ss.fit.optimize` | `maximize` `minimize` `at` `start` `total` `spend` `bounds` |
 | `ss.fit.compare_models` | `data` `holdout` `folds` |
@@ -195,24 +195,25 @@ A bare number in any of these slots takes the slot's type and the sim's unit ([0
 
 | Slot | A bare number is | Appears on |
 |---|---|---|
-| `beta=` | a rate per unit time with no network; a probability per contact on a network without acts; a probability per act on a network with acts (`ss.MFNet`, `ss.PartnerNet(acts=...)`), as `ss.peract`. A dict gives one value per network; directions are named with `ss.peract(m2f=..., f2m=...)` (a pair is an error) | `ss.SIR`, `ss.SIS`, `ss.SEIR` and the library's diseases |
+| `beta=` | a rate per unit time with no network; a probability per contact on a network without acts; a probability per act on a network with acts (`ss.SexualNet`, `ssl.DegreeNet(acts=...)`), as `ss.peract`. A dict gives one value per network; directions are named with `ss.peract(m2f=..., f2m=...)` (a pair is an error) | `ss.SIR`, `ss.SIS`, `ss.SEIR` and the library's diseases |
 | `rate=`, and a bare number after `@` | a rate (hazard) per unit time | `ss.Transition` and every shorthand constructor |
 | `dur=` | a duration; a scalar means an exponential dwell time with that mean | `ss.Transition`, `ss.transfer`, networks |
 | `p=` | a branch probability | `ss.Transition`, `ss.transfer` |
 | `stages=` | a whole number of sub-stages | `ss.Transition` |
-| `init=` | below 1 a fraction, 1 or more a number of people (whether written `1` or `1.0`); on the disease, a dict of these by state name | `ss.State`, `ss.Disease` |
+| `init=` | a share of people, up to 1 (a whole number too, with a warning to write a float); on the disease, a dict of these by state name | `ss.State`, `ss.Disease` |
+| `init_n=` | a number of people; on the disease, a dict of these by state name | `ss.State`, `ss.Disease` |
 | `init_prev=` | a fraction | `ss.Disease` |
-| `n_contacts=` | contacts per unit time; on a sexual network, the mean number of partners at a time | `ss.MixingPool`, `ss.RandomNet`, `ss.PartnerNet` |
-| `acts=` | on lasting partnerships, an error (it would be acts per step): give acts per unit time, e.g. `ss.freqperweek(2)`; on one-off contacts, acts per contact | `ss.MFNet`, `ss.PartnerNet` |
+| `n_contacts=` | contacts per unit time; on a sexual network, the mean number of partners at a time | `ss.MixingPool`, `ss.RandomNet`, `ss.SexualNet` |
+| `acts=` | on lasting partnerships, an error (it would be acts per step): give acts per unit time, e.g. `ss.freqperweek(2)` | `ss.SexualNet` |
 | `share=` | the share of acts (or contacts) a modifier acts on | `ss.modify` |
 | `coverage=` | a fraction of the eligible people | deliveries, `ss.transfer` |
 | `capacity=` | a number per round (or step), or a rate per unit time (required for routine delivery) | deliveries |
 | `efficacy=`, `sensitivity=`, `specificity=` | a probability | products; `efficacy=` also on `ss.modify` (`multiply=1 - efficacy`) |
-| `waning=` | a duration: the product is lost at an exponentially distributed time with that mean (a function of the time since delivery fades the efficacy instead, as agents only) | products |
+| `waning=` | a duration: the product is lost at an exponentially distributed time with that mean (a function of the time since delivery fades the efficacy instead, as agents only, and a new dose restarts it); other shapes are written as states ([08](08-interventions.md#products)) | products |
 | `delay=`, `duration=` | a duration | `ss.outcome`, `ss.Diagnostic` |
-| `interval=`, `away=` | a duration; `away` is a fraction of time | deliveries, `ss.Mobility` |
+| `interval=`, `away=` | a duration; `away` is a fraction of time | deliveries, `ss.geo.Mobility` |
 | `multiply=`, `add=`, `set=`, `by=`, `to=` | a multiplier, or a value in the target's own type | `ss.modify`, `ss.change` |
-| `at=`, `start=`, `stop=` | a time in the sim's unit, counted from the start (a calendar year only in a sim whose own `start` and `stop` are year-like numbers); dates are written as dates. A time outside the sim raises `ss.TimeOutsideSim` | `ss.change`, `ss.modify`, deliveries |
+| `at=`, `start=`, `stop=` | a time in the sim's unit, counted from the start (a calendar year only in a sim whose own `start` and `stop` are year-like numbers); dates are written as dates. A time outside the sim raises `ss.errors.TimeOutsideSim` | `ss.change`, `ss.modify`, deliveries |
 | `bounds=` | a pair, in the unit of the parameter's value | `ss.par` |
 | `cost=` | a plain number | products |
 
@@ -226,7 +227,7 @@ A bare number in any of these slots takes the slot's type and the sim's unit ([0
 | `ss.radiation`/`ss.stouffer`/`ss.competing_destinations`, `msim.check_runs()` | Deferred from v1: one use case each, and the vocabulary is smaller without them ([19-open-questions.md](19-open-questions.md#c-deferred-not-in-v1)) | A mobility matrix; `check_dt` |
 | `ss.process` | A penalty-box name for custom code | A plain function as a keyword, or `step()` |
 | `ss.Homogeneous` | Not needed | No network given, or `ss.MixingPool(n_contacts=10)` |
-| `ss.SexualNet`, `ss.Network(edges=)` | Starsim already has names | `ss.MFNet` and Starsim's other networks; `ssl.StaticNet(graph=...)`, with a NetworkX graph or a function that makes one |
+| `ss.Network(edges=)` | Starsim already has names | Starsim's networks; `ssl.StaticNet(graph=...)`, with a NetworkX graph or a function that makes one |
 | `ss.Par`, `ss.Outcome` | Capitalization rule | `ss.par`, `ss.outcome` |
 | `ss.cascade`, `observe()`, `Model.results()` | A separate observation step (`ss.cascade` came back as a group of steps, and was removed again on 2026-10-20: it ran as its steps would as a list) | Results declared as keywords with the model; the steps as a list |
 | `ss.visit`, `ss.Resource`, `ss.share` | Delivery extras, removed 2026-10-20 with stock targets (`target=`, `above=`), shared resources (`uses=`), and `count_events=` | `ss.Delivery(who=...)` with no product; `capacity=` or `deliver=` as a function of the sim; an analyzer |

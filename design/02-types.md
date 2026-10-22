@@ -13,7 +13,7 @@ Justified by [best-practices/time-and-units.md](../best-practices/time-and-units
 | `ss.prob` | probability per period | the chance of an event within a period | `ss.probperday`, `ss.probperweek`, `ss.probpermonth`, `ss.probperyear` (the same as `ss.prob(0.1, 'day')` and so on) |
 | `ss.freq` | time⁻¹ | an expected number of events per unit time | `ss.freqperday`, `ss.freqperweek`, `ss.freqpermonth`, `ss.freqperyear` |
 
-One more value type is not a time value: **`ss.peract(p)`**, a probability per act, for a transmission over a network that defines acts (`ss.MFNet`, `ss.PartnerNet(acts=...)`). It has no unit and no conversion, so it means the same at any step: a partnership with `a` acts per unit time transmits over a step with probability `1 − (1 − p)^(a·dt)`. It takes one value, or one for each of the network's directions (`ss.peract(m2f=0.3, f2m=0.15)`; see [06-routes.md](06-routes.md#beta-per-route-and-direction)); each value is a number in [0, 1] (else `OutOfBounds`), an `ss.par` or an expression of them, an `ss.timeseries`, or an `ss.by`. A typed rate inside it raises `WrongDimension`.
+One more value type is not a time value: **`ss.peract(p)`**, a probability per act, for a transmission over a network that defines acts (`ss.SexualNet`, `ssl.DegreeNet(acts=...)`). It has no unit and no conversion, so it means the same at any step: a partnership with `a` acts per unit time transmits over a step with probability `1 − (1 − p)^(a·dt)`. It takes one value, or one for each of the network's directions (`ss.peract(m2f=0.3, f2m=0.15)`; see [06-routes.md](06-routes.md#beta-per-route-and-direction)); each value is a number in [0, 1] (else `OutOfBounds`), an `ss.par` or an expression of them, an `ss.timeseries`, or an `ss.by`. A typed rate inside it raises `WrongDimension`.
 
 `ss.per`, `ss.prob`, and `ss.freq` share the base class `ss.Rate`; all four types share `ss.TimePar`. `ss.per` is the hazard type and keeps its Starsim name. A typed value needs its unit: `ss.dur(3)` and `ss.per(2)` with no unit raise (they were years in Starsim 3).
 
@@ -38,7 +38,7 @@ Converting to a timestep is the type's job, not the user's. For a step of length
 
 A solver MUST NOT substitute `r·dt` for `1 − exp(−r·dt)`.
 
-**Large steps.** In a run that takes whole steps (`'binomial'`, `'abm'`, or the ODE with Euler steps of a given size), when `rate × dt > 0.1` for a dwell time, the build gives the note `ss.LargeStep`, naming the transition, `rate × dt`, the share of people who leave in a step, and what to do (a smaller `dt`, `substeps=`, or `solver='gillespie'`). Under the other solvers, which follow the rates within a step, it is given only for a mean dwell time shorter than the step, which is usually a rate meant as a duration (`rate=10`). It is a note, not an error; `sim.check_dt()` shows how much the results change with a smaller step ([10-execution.md](10-execution.md)).
+**Large steps.** In a run that takes whole steps (`'binomial'`, `'abm'`, or the ODE with Euler steps of a given size), when `rate × dt > 0.1` for a dwell time, the build gives the note `ss.errors.LargeStep`, naming the transition, `rate × dt`, the share of people who leave in a step, and what to do (a smaller `dt`, `substeps=`, or `solver='gillespie'`). Under the other solvers, which follow the rates within a step, it is given only for a mean dwell time shorter than the step, which is usually a rate meant as a duration (`rate=10`). It is a note, not an error; `sim.check_dt()` shows how much the results change with a smaller step ([10-execution.md](10-execution.md)).
 
 Continuous-time solvers (`'ode'`, `'gillespie'`) have no `dt` in this sense and do no conversion at all.
 
@@ -106,17 +106,20 @@ A typed value (`ss.perday(0.05)`) keeps its own unit and is converted to the sim
 | | What is given | The sim's unit |
 |---|---|---|
 | 1 | `unit='day'` | what it says |
-| 2 | typed values in the model (`dur=ss.days(10)`, or a declared module's typed `dt`) | their unit; if they differ and the model has bare numbers, an error asking for `unit=` (which unit the bare numbers are in cannot be guessed) |
+| 2 | typed values in the model's diseases, declared or written as code (`dur=ss.days(10)`, or a disease's typed `dt`) | their unit; if they differ, the finest, with a warning when nothing gives the step; if they differ and the model has bare numbers, an error asking for `unit=` (which unit the bare numbers are in cannot be guessed) |
 | 3 | `start=` or `stop=` as a date, such as `start='2020-01-01'` | days |
 | 4 | a typed `dt` or a typed `start`, `stop`, or `dur`, such as `dt=ss.weeks(1)` | its unit |
 | 5 | `start=` or `stop=` as a year, such as `start=2020, stop=2030` | years |
-| 6 | none of these | none: time is in timesteps |
+| 6 | typed values in the other modules (networks, demographics, interventions, `ss.Pregnancy`) | the finest of them |
+| 7 | none of these | none: time is in timesteps |
 
 The model's unit is a property of the model, so its own typed values come before how the run is written; `dt` then sets only the step. Only `start` and `stop` supply a unit from dates: a date on an intervention or in the data does not. A year-like number for `start` or `stop` (`stop=2020`) is a calendar year, since Starsim 3 sims are written that way, unless `unit=` gives another unit. The unit is never guessed from the size of the numbers: 0.05 is plausible per day and per year.
 
-Modules written as code are outside this rule: their typed defaults do not set the unit (they convert themselves), and a bare number given for one of their parameters (`ss.MFNet(duration=5)`) keeps the unit of its default, as in Starsim 3, with a warning when that differs from the sim's. A sim with no declared states keeps Starsim 3's time defaults (years, and 50 of them with no `stop`).
+A function that gives a rate or a duration (`rate=fn`, `dur=fn`) and returns a bare number, in a model whose unit comes from its typed values (rule 2), raises `IncompatibleTypes` when the sim runs, saying to return a typed value or give `unit=`: which unit the function meant cannot be guessed, and reading it in the inferred unit gave silent wrong answers when a typed value elsewhere was in weeks (ST33, decided 2026-10-22). Zero is accepted, and with `unit=` given (or no typed values) a bare number is in the sim's unit, as elsewhere.
 
-Whenever the unit comes from rules 2 to 4 it is a guess about what the bare numbers meant, so the sim says where it came from (`UnitInferred`), at `init()` and in `describe()`:
+The rule is the same whether a disease is declared or written as code. The other modules' typed values are their own defaults or settings, which say nothing of the unit of the model's bare numbers, so they count only when nothing else gives a unit. A bare number given for a parameter of a module written as code (`ss.RandomNet(dur=5)`) keeps the unit of its default, as in Starsim 3, with a warning when that differs from the sim's.
+
+Whenever the unit comes from rules 2 to 6 it is a guess about what the bare numbers meant, so the sim says where it came from (`UnitInferred`), at `init()` and in `describe()`:
 
 ```text
 >>> ss.Sim(sir, start='2020-03-01', stop='2020-09-01').init()
@@ -126,7 +129,7 @@ solver: ode (every part of the model has a compartmental form)
 
 and `describe()` shows `unit  day  [from start and stop dates]`.
 
-The default timestep is one unit: one day, one year, or one step. With no `stop`, a sim runs for 50 units (or 50 steps) from its start.
+The default timestep is one unit: one day, one year, or one step; when that comes to more than 3,000 steps and `dt` was not given (ten years in days, say), a warning says so. With no `stop`, a sim runs for 50 units (or 50 steps) from its start. With no `start`, a sim in years starts in the year 2000, and one in any other unit at 0.
 
 ### Time in timesteps
 
@@ -146,7 +149,7 @@ This is what a textbook model means. No note is printed, because nothing was gue
 
 - The timestep is one step. With a different `dt`, the bare numbers are per unit of time, a unit with no name: `describe()` then says `time is in units with no name, and a step is 0.1 of them`, `beta = 0.3 per unit`, and `every 0.1 units`, not "per step".
 - The times have no dates: `sim.t.datevec` raises, and so does an `ss.seasonal()`, which is a yearly cycle. (The arithmetic is done in days underneath, so a module written as code with typed values, such as `ss.peryear`, takes a step as a day.)
-- A unitless sim has no calendar, so it cannot be compared with dated data or given a dated intervention: a date on an intervention is outside the sim (`ss.TimeOutsideSim`). Give the sim a unit or dates.
+- A unitless sim has no calendar, so it cannot be compared with dated data or given a dated intervention: a date on an intervention is outside the sim (`ss.errors.TimeOutsideSim`). Give the sim a unit or dates.
 - This differs from Starsim 3, which assumes years when nothing is specified, and which sims with no declared states still do.
 
 ## Time in a sim
@@ -161,6 +164,18 @@ ss.Sim(sir, stop=100)                                               # relative t
 All four are supported. A string is a calendar date; a bare number in `start=` or `stop=` is read as a year if it looks like one (`2020`) and as a relative time otherwise (`0`), and the reading is printed (`unit='year' (from start and stop years)`). Relative time works with or without a unit.
 
 The sim's `Timeline` provides the parallel time vectors Starsim already has (`tvec`, `yearvec`, `datevec`, `timevec`, and so on), so output can be requested in the frame the data are in. Nothing is added to it; whether it can be reduced is an open question below.
+
+## The timing contract
+
+A run has N + 1 time points (index 0 is the start) and N steps; step k goes from time point k − 1 to k. The full loop is in [10-execution.md](10-execution.md); what a modeler needs is this:
+
+- **One index per step.** Throughout step k, in every phase and every module, `self.ti == k`, so `self.results.x[self.ti] = v` is right wherever it is written. The loop itself records index 0 (the start), before the first step.
+- **Inputs are read at the step's start.** `self.now` is time point k − 1: values by year, `ss.timeseries`, data labeled by period, and dates (`start=2020`) are taken there, as in Starsim 3.
+- **An infection is dated at the end of its step** (`ti_I == ti`), since it has happened by then. What follows it (a latent period, a recovery) starts then, so durations ported unchanged from a model that dates infections at the start put the epidemic about a step later (CV5: 11 days on Covasim's daily model, from its latent period). Other moves are taken at the step's start.
+- **A state's count includes the step people enter it**, and people stay for their whole dwell, so `n_X` carries one extra step per stay (ST4: it cost STIsim's trichomoniasis about 14% of its infections against Starsim 3, since people reinfected as soon as they clear are counted per stay).
+- **Dwells are whole steps for agents.** A drawn dwell is rounded at random to the step before or after (0.2 steps is 0 steps 80% of the time), which keeps its mean; `dur=0` is instant. The compartmental solvers take dwells as continuous, or as whole slots for a fixed delay.
+
+`describe()` prints the two lines that change counts (CV5 and ST4) for any disease with a transmission.
 
 ## Per-module timesteps
 
